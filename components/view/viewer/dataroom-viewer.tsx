@@ -360,6 +360,7 @@ export default function DataroomViewer({
           allowDownload={allowDownload && item.canDownload}
           isProcessing={isProcessing}
           dataroomIndexEnabled={dataroomIndexEnabled}
+          showLastUpdated={dataroom?.showLastUpdated ?? true}
         />
       );
     }
@@ -375,6 +376,7 @@ export default function DataroomViewer({
         viewId={viewId}
         allowDownload={item.allowDownload}
         dataroomIndexEnabled={dataroomIndexEnabled}
+        showLastUpdated={dataroom?.showLastUpdated ?? true}
       />
     );
   };
