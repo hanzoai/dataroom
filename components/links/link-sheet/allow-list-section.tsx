@@ -53,16 +53,15 @@ export default function AllowListSection({
   );
 
   useEffect(() => {
-    // Update the allowList in the data state when their inputs change
-    const newAllowList = sanitizeList(allowListInput);
-    setEnabled((prevEnabled) => prevEnabled && emailProtected);
-    setData((prevData) => ({
-      ...prevData,
-      allowList: emailProtected && enabled ? newAllowList : [],
-      visitorGroupIds:
-        emailProtected && enabled ? prevData.visitorGroupIds : [],
-    }));
-  }, [allowListInput, emailProtected, enabled, setData]);
+    if (!emailProtected && enabled) {
+      setEnabled(false);
+      setData((prevData) => ({
+        ...prevData,
+        allowList: [],
+        visitorGroupIds: [],
+      }));
+    }
+  }, [emailProtected, enabled, setData]);
 
   useEffect(() => {
     if (isAllowed && presets?.allowList && presets.allowList.length > 0) {
@@ -94,7 +93,15 @@ export default function AllowListSection({
   const handleAllowListChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
-    setAllowListInput(event.target.value);
+    const updatedAllowListInput = event.target.value;
+    setAllowListInput(updatedAllowListInput);
+
+    if (emailProtected && enabled) {
+      setData((prevData) => ({
+        ...prevData,
+        allowList: sanitizeList(updatedAllowListInput),
+      }));
+    }
   };
 
   const toggleVisitorGroup = (groupId: string) => {
