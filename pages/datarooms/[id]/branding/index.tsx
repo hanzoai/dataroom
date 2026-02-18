@@ -585,7 +585,7 @@ export default function DataroomBrandPage() {
                     <Label htmlFor="accent-color">
                       Background Color{" "}
                       <span className="font-normal text-muted-foreground">
-                        (front page)
+                        (dataroom &amp; front page)
                       </span>
                     </Label>
                     <div className="flex items-center space-x-3">

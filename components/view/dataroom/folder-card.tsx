@@ -68,7 +68,7 @@ export default function FolderCard({
   };
 
   return (
-    <div className="group/row relative flex items-center justify-between rounded-lg border-0 p-3 ring-1 ring-gray-400 transition-all hover:bg-secondary hover:ring-gray-500 dark:bg-secondary dark:ring-gray-500 hover:dark:ring-gray-400 sm:p-4">
+    <div className="group/row relative flex items-center justify-between rounded-lg border-0 bg-white p-3 ring-1 ring-gray-400 transition-all hover:bg-gray-50 hover:ring-gray-500 dark:bg-secondary dark:ring-gray-500 hover:dark:ring-gray-400 sm:p-4">
       {/* Click target - outside of text hierarchy to fix Safari truncation issue */}
       <button
         onClick={() => setFolderId(folder.id)}
