@@ -19,6 +19,7 @@ import * as SheetPrimitive from "@radix-ui/react-dialog";
 import { PanelLeftIcon, XIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { determineTextColor } from "@/lib/utils/determine-text-color";
 import {
   HIERARCHICAL_DISPLAY_STYLE,
   getHierarchicalDisplayName,
@@ -379,6 +380,11 @@ export default function DataroomViewer({
     );
   };
 
+  const viewerBgColor = brand?.accentColor || undefined;
+  const isViewerBgDark = viewerBgColor
+    ? determineTextColor(viewerBgColor) === "white"
+    : false;
+
   // Prepare documents for chat context
   const documentsForChat = documents.map((doc) => ({
     dataroomDocumentId: doc.dataroomDocumentId,
@@ -414,10 +420,16 @@ export default function DataroomViewer({
         isTeamMember={viewData.isTeamMember}
       />
       <ViewerChatLayout>
-        <div className="relative flex flex-1 items-center overflow-hidden bg-white dark:bg-black">
+        <div
+          className="relative flex flex-1 items-center overflow-hidden bg-white dark:bg-black"
+          style={viewerBgColor ? { backgroundColor: viewerBgColor } : undefined}
+        >
           <div className="relative mx-auto flex h-full w-full items-start justify-center">
             {/* Tree view */}
-            <div className="hidden h-full w-1/4 space-y-8 overflow-auto px-3 pb-4 pt-4 md:flex md:px-6 md:pt-6 lg:px-8 lg:pt-9 xl:px-14">
+            <div
+              className="hidden h-full w-1/4 space-y-8 overflow-auto px-3 pb-4 pt-4 md:flex md:px-6 md:pt-6 lg:px-8 lg:pt-9 xl:px-14"
+              style={isViewerBgDark ? { color: "white" } : undefined}
+            >
               <ScrollArea showScrollbar className="w-full">
                 <ViewFolderTree
                   folders={folders}
@@ -436,13 +448,19 @@ export default function DataroomViewer({
               showScrollbar
               className="h-full flex-grow overflow-auto"
             >
-              <div className="h-full px-3 pb-4 pt-4 md:px-6 md:pt-6 lg:px-8 lg:pt-9 xl:px-14">
+              <div
+                className="h-full px-3 pb-4 pt-4 md:px-6 md:pt-6 lg:px-8 lg:pt-9 xl:px-14"
+                style={isViewerBgDark ? { color: "white" } : undefined}
+              >
                 <div className="flex items-center gap-x-2">
                   {/* sidebar for mobile */}
                   <div className="flex md:hidden">
                     <Sheet>
                       <SheetTrigger asChild>
-                        <button className="text-muted-foreground lg:hidden">
+                        <button className={cn(
+                          "lg:hidden",
+                          isViewerBgDark ? "text-white/70" : "text-muted-foreground",
+                        )}>
                           <PanelLeftIcon
                             className="h-5 w-5"
                             aria-hidden="true"
@@ -482,7 +500,10 @@ export default function DataroomViewer({
                         <BreadcrumbItem key={"root"}>
                           <BreadcrumbLink
                             onClick={() => setFolderId(null)}
-                            className="cursor-pointer"
+                            className={cn(
+                              "cursor-pointer",
+                              isViewerBgDark && "text-white/80 hover:text-white",
+                            )}
                           >
                             Home
                           </BreadcrumbLink>
@@ -531,12 +552,23 @@ export default function DataroomViewer({
 
                 {/* Search results banner */}
                 {searchQuery && (
-                  <div className="mt-4 rounded-md border border-muted/50 bg-muted px-4 py-3">
+                  <div className={cn(
+                    "mt-4 rounded-md border px-4 py-3",
+                    isViewerBgDark
+                      ? "border-white/20 bg-white/10"
+                      : "border-muted/50 bg-muted",
+                  )}>
                     <div className="flex items-center gap-2">
-                      <div className="text-sm font-medium text-muted-foreground">
+                      <div className={cn(
+                        "text-sm font-medium",
+                        isViewerBgDark ? "text-white/80" : "text-muted-foreground",
+                      )}>
                         Search results for &quot;{searchQuery}&quot;
                       </div>
-                      <div className="text-xs text-muted-foreground">
+                      <div className={cn(
+                        "text-xs",
+                        isViewerBgDark ? "text-white/60" : "text-muted-foreground",
+                      )}>
                         ({mixedItems.length} result
                         {mixedItems.length !== 1 ? "s" : ""} across all folders)
                       </div>
@@ -546,7 +578,10 @@ export default function DataroomViewer({
 
                 <ul role="list" className="-mx-4 space-y-4 overflow-auto p-4">
                   {mixedItems.length === 0 ? (
-                    <li className="py-6 text-center text-muted-foreground">
+                    <li className={cn(
+                      "py-6 text-center",
+                      isViewerBgDark ? "text-white/60" : "text-muted-foreground",
+                    )}>
                       {searchQuery
                         ? "No documents match your search."
                         : "No items available."}
