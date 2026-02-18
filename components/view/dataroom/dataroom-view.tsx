@@ -278,7 +278,14 @@ export default function DataroomView({
 
   if (submitted) {
     return (
-      <div className="bg-gray-950">
+      <div
+        className="bg-gray-950"
+        style={
+          brand?.accentColor
+            ? { backgroundColor: brand.accentColor }
+            : undefined
+        }
+      >
         <DataroomViewer
           accessControls={link.accessControls || group?.accessControls || []}
           brand={brand!}
@@ -307,7 +314,14 @@ export default function DataroomView({
   }
 
   return (
-    <div className="bg-gray-950">
+    <div
+      className="bg-gray-950"
+      style={
+        brand?.accentColor
+          ? { backgroundColor: brand.accentColor }
+          : undefined
+      }
+    >
       <div className="flex h-screen items-center justify-center">
         <LoadingSpinner className="h-20 w-20" />
       </div>

@@ -1,5 +1,7 @@
 import { useRouter } from "next/router";
 
+import { determineTextColor } from "@/lib/utils/determine-text-color";
+
 import { ViewFolderTree } from "@/components/datarooms/folders";
 import DocumentCard from "@/components/view/dataroom/document-card";
 import FolderCard from "@/components/view/dataroom/folder-card";
@@ -8,14 +10,22 @@ const DEFAULT_BANNER_IMAGE = "/_static/papermark-banner.png";
 
 export default function ViewPage() {
   const router = useRouter();
-  const { brandLogo, brandColor, brandBanner } = router.query as {
+  const { brandLogo, brandColor, brandBanner, accentColor } = router.query as {
     brandLogo: string;
     brandColor: string;
     brandBanner: string;
+    accentColor: string;
   };
 
+  const isViewerBgDark = accentColor
+    ? determineTextColor(accentColor) === "white"
+    : false;
+
   return (
-    <div className="bg-white">
+    <div
+      className="bg-white"
+      style={accentColor ? { backgroundColor: accentColor } : undefined}
+    >
       {/* Nav */}
       <nav
         className="bg-black"
@@ -66,7 +76,10 @@ export default function ViewPage() {
       {/* Body */}
       <div style={{ height: "calc(100vh - 64px)" }} className="relative flex">
         {/* Tree view */}
-        <div className="hidden h-full w-1/4 space-y-8 overflow-auto px-3 pb-4 pt-4 md:flex md:px-6 md:pt-6 lg:px-8 lg:pt-9 xl:px-14">
+        <div
+          className="hidden h-full w-1/4 space-y-8 overflow-auto px-3 pb-4 pt-4 md:flex md:px-6 md:pt-6 lg:px-8 lg:pt-9 xl:px-14"
+          style={isViewerBgDark ? { color: "white" } : undefined}
+        >
           <ViewFolderTree
             folders={[
               {
@@ -121,7 +134,10 @@ export default function ViewPage() {
         <div className="flex-grow overflow-auto">
           <div className="h-full space-y-8 px-3 pb-4 pt-4 md:px-6 md:pt-6 lg:px-8 lg:pt-9 xl:px-14">
             <div className="space-y-4">
-              <div className="text-sm text-muted-foreground">Home</div>
+              <div
+                className="text-sm"
+                style={isViewerBgDark ? { color: "rgba(255,255,255,0.7)" } : undefined}
+              >Home</div>
               <ul className="grid gap-4">
                 <li key="1">
                   <FolderCard
