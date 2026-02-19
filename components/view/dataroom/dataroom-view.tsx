@@ -285,7 +285,7 @@ export default function DataroomView({
     return (
       <div
         className="bg-white"
-        style={{ backgroundColor: dataroomViewBackgroundColor }}
+        style={{ backgroundColor: dataroomViewBackgroundColor ?? undefined }}
       >
         <DataroomViewer
           accessControls={link.accessControls || group?.accessControls || []}
@@ -317,7 +317,7 @@ export default function DataroomView({
   return (
     <div
       className="bg-white"
-      style={{ backgroundColor: dataroomViewBackgroundColor }}
+      style={{ backgroundColor: dataroomViewBackgroundColor ?? undefined }}
     >
       <div className="flex h-screen items-center justify-center">
         <LoadingSpinner className="h-20 w-20" />

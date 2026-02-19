@@ -141,13 +141,16 @@ export default function CustomFieldsSection({
                       "notranslate flex w-full cursor-text rounded-md border-0 bg-black py-1.5 text-gray-500 shadow-sm ring-1 ring-inset ring-gray-600 placeholder:text-[var(--access-placeholder)] focus:ring-2 focus:ring-inset focus:ring-[var(--access-input-focus)] sm:text-sm sm:leading-6",
                       isLongText && "min-h-[100px] resize-none",
                     )}
-                    style={{
-                      backgroundColor: theme.controlBgColor,
-                      borderColor: theme.controlBorderColor,
-                      "--access-placeholder": theme.controlPlaceholderColor,
-                      "--access-input-focus": theme.controlBorderStrongColor,
-                      color: theme.textColor,
-                    }}
+                    style={
+                      {
+                        backgroundColor: theme.controlBgColor,
+                        borderColor: theme.controlBorderColor,
+                        "--access-placeholder":
+                          theme.controlPlaceholderColor,
+                        "--access-input-focus": theme.controlBorderStrongColor,
+                        color: theme.textColor,
+                      } as React.CSSProperties
+                    }
                     value={value}
                     placeholder={field.placeholder || ""}
                     onChange={(e) => handleInputChange(e, field.identifier!)}
