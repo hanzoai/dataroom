@@ -19,7 +19,6 @@ import * as SheetPrimitive from "@radix-ui/react-dialog";
 import { PanelLeftIcon, XIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { determineTextColor } from "@/lib/utils/determine-text-color";
 import {
   HIERARCHICAL_DISPLAY_STYLE,
   getHierarchicalDisplayName,
@@ -54,6 +53,10 @@ import {
   IntroductionProvider,
 } from "../dataroom/introduction-modal";
 import DataroomNav from "../dataroom/nav-dataroom";
+import {
+  ViewerSurfaceThemeProvider,
+  createViewerSurfaceTheme,
+} from "./viewer-surface-theme";
 
 const ViewerBreadcrumbItem = ({
   folder,
@@ -74,7 +77,10 @@ const ViewerBreadcrumbItem = ({
 
   if (isLast) {
     return (
-      <BreadcrumbPage className="capitalize" style={HIERARCHICAL_DISPLAY_STYLE}>
+      <BreadcrumbPage
+        className="capitalize text-[var(--viewer-text)]"
+        style={HIERARCHICAL_DISPLAY_STYLE}
+      >
         {displayName}
       </BreadcrumbPage>
     );
@@ -83,7 +89,7 @@ const ViewerBreadcrumbItem = ({
   return (
     <BreadcrumbLink
       onClick={() => setFolderId(folder.id)}
-      className="cursor-pointer capitalize"
+      className="cursor-pointer capitalize text-[var(--viewer-muted-text)] hover:text-[var(--viewer-text)]"
       style={HIERARCHICAL_DISPLAY_STYLE}
     >
       {displayName}
@@ -380,10 +386,23 @@ export default function DataroomViewer({
     );
   };
 
-  const viewerBgColor = brand?.accentColor || undefined;
-  const isViewerBgDark = viewerBgColor
-    ? determineTextColor(viewerBgColor) === "white"
-    : false;
+  const viewerSurfaceTheme = useMemo(
+    () =>
+      createViewerSurfaceTheme(
+        (brand as any)?.applyAccentColorToDataroomView
+          ? brand?.accentColor
+          : "#ffffff",
+      ),
+    [brand],
+  );
+  const mobileTreeTheme = useMemo(
+    () => ({
+      ...viewerSurfaceTheme,
+      textTone: "dark" as const,
+      usesLightText: false,
+    }),
+    [viewerSurfaceTheme],
+  );
 
   // Prepare documents for chat context
   const documentsForChat = documents.map((doc) => ({
@@ -419,16 +438,46 @@ export default function DataroomViewer({
         conversationsEnabled={viewData.conversationsEnabled}
         isTeamMember={viewData.isTeamMember}
       />
-      <ViewerChatLayout>
-        <div
-          className="relative flex flex-1 items-center overflow-hidden bg-white dark:bg-black"
-          style={viewerBgColor ? { backgroundColor: viewerBgColor } : undefined}
-        >
-          <div className="relative mx-auto flex h-full w-full items-start justify-center">
+      <ViewerSurfaceThemeProvider value={viewerSurfaceTheme}>
+        <ViewerChatLayout>
+          <div
+            className="relative flex flex-1 items-center overflow-hidden bg-white dark:bg-black"
+            style={
+              viewerSurfaceTheme.palette.backgroundColor
+                ? { backgroundColor: viewerSurfaceTheme.palette.backgroundColor }
+                : undefined
+            }
+          >
+            <div
+              className="relative mx-auto flex h-full w-full items-start justify-center"
+              style={
+                {
+                  "--viewer-text": viewerSurfaceTheme.palette.textColor,
+                  "--viewer-muted-text": viewerSurfaceTheme.palette.mutedTextColor,
+                  "--viewer-subtle-text":
+                    viewerSurfaceTheme.palette.subtleTextColor,
+                  "--viewer-panel-bg": viewerSurfaceTheme.palette.panelBgColor,
+                  "--viewer-panel-bg-hover":
+                    viewerSurfaceTheme.palette.panelHoverBgColor,
+                  "--viewer-panel-border":
+                    viewerSurfaceTheme.palette.panelBorderColor,
+                  "--viewer-panel-border-hover":
+                    viewerSurfaceTheme.palette.panelBorderHoverColor,
+                  "--viewer-control-bg": viewerSurfaceTheme.palette.controlBgColor,
+                  "--viewer-control-border":
+                    viewerSurfaceTheme.palette.controlBorderColor,
+                  "--viewer-control-border-strong":
+                    viewerSurfaceTheme.palette.controlBorderStrongColor,
+                  "--viewer-control-icon":
+                    viewerSurfaceTheme.palette.controlIconColor,
+                  "--viewer-placeholder":
+                    viewerSurfaceTheme.palette.controlPlaceholderColor,
+                } as React.CSSProperties
+              }
+            >
             {/* Tree view */}
             <div
               className="hidden h-full w-1/4 space-y-8 overflow-auto px-3 pb-4 pt-4 md:flex md:px-6 md:pt-6 lg:px-8 lg:pt-9 xl:px-14"
-              style={isViewerBgDark ? { color: "white" } : undefined}
             >
               <ScrollArea showScrollbar className="w-full">
                 <ViewFolderTree
@@ -450,7 +499,6 @@ export default function DataroomViewer({
             >
               <div
                 className="h-full px-3 pb-4 pt-4 md:px-6 md:pt-6 lg:px-8 lg:pt-9 xl:px-14"
-                style={isViewerBgDark ? { color: "white" } : undefined}
               >
                 <div className="flex items-center gap-x-2">
                   {/* sidebar for mobile */}
@@ -459,7 +507,7 @@ export default function DataroomViewer({
                       <SheetTrigger asChild>
                         <button className={cn(
                           "lg:hidden",
-                          isViewerBgDark ? "text-white/70" : "text-muted-foreground",
+                          "text-[var(--viewer-subtle-text)]",
                         )}>
                           <PanelLeftIcon
                             className="h-5 w-5"
@@ -477,13 +525,15 @@ export default function DataroomViewer({
                           )}
                         >
                           <div className="mt-8 h-full space-y-8 overflow-auto px-2 py-3">
-                            <ViewFolderTree
-                              folders={folders}
-                              documents={documents}
-                              setFolderId={setFolderId}
-                              folderId={folderId}
-                              dataroomIndexEnabled={dataroomIndexEnabled}
-                            />
+                            <ViewerSurfaceThemeProvider value={mobileTreeTheme}>
+                              <ViewFolderTree
+                                folders={folders}
+                                documents={documents}
+                                setFolderId={setFolderId}
+                                folderId={folderId}
+                                dataroomIndexEnabled={dataroomIndexEnabled}
+                              />
+                            </ViewerSurfaceThemeProvider>
                           </div>
                           <SheetPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
                             <XIcon className="h-4 w-4" />
@@ -496,14 +546,11 @@ export default function DataroomViewer({
 
                   <div className="flex flex-1 items-center justify-between gap-x-2">
                     <Breadcrumb>
-                      <BreadcrumbList>
+                      <BreadcrumbList className="text-[var(--viewer-muted-text)]">
                         <BreadcrumbItem key={"root"}>
                           <BreadcrumbLink
                             onClick={() => setFolderId(null)}
-                            className={cn(
-                              "cursor-pointer",
-                              isViewerBgDark && "text-white/80 hover:text-white",
-                            )}
+                            className="cursor-pointer text-[var(--viewer-muted-text)] hover:text-[var(--viewer-text)]"
                           >
                             Home
                           </BreadcrumbLink>
@@ -511,7 +558,9 @@ export default function DataroomViewer({
 
                         {breadcrumbFolders.map((folder, index) => (
                           <React.Fragment key={folder.id}>
-                            <BreadcrumbSeparator />
+                            <BreadcrumbSeparator
+                              className="text-[var(--viewer-subtle-text)]"
+                            />
                             <BreadcrumbItem>
                               <ViewerBreadcrumbItem
                                 folder={folder}
@@ -527,7 +576,11 @@ export default function DataroomViewer({
 
                     <div className="flex items-center gap-x-2">
                       <IntroductionInfoButton />
-                      <SearchBoxPersisted inputClassName="h-9" />
+                      <SearchBoxPersisted
+                        inputClassName="h-9 border-[var(--viewer-control-border)] bg-[var(--viewer-control-bg)] text-[var(--viewer-text)] placeholder:text-[var(--viewer-placeholder)] shadow-sm hover:border-[var(--viewer-control-border-strong)] focus:border-[var(--viewer-control-border-strong)]"
+                        leftIconClassName="text-[var(--viewer-control-icon)]"
+                        clearIconClassName="text-[var(--viewer-control-icon)] hover:text-[var(--viewer-text)]"
+                      />
                       {enableIndexFile && viewId && viewerId && (
                         <IndexFileDialog
                           linkId={linkId}
@@ -552,23 +605,12 @@ export default function DataroomViewer({
 
                 {/* Search results banner */}
                 {searchQuery && (
-                  <div className={cn(
-                    "mt-4 rounded-md border px-4 py-3",
-                    isViewerBgDark
-                      ? "border-white/20 bg-white/10"
-                      : "border-muted/50 bg-muted",
-                  )}>
+                  <div className="mt-4 rounded-md border border-[var(--viewer-panel-border)] bg-[var(--viewer-control-bg)] px-4 py-3">
                     <div className="flex items-center gap-2">
-                      <div className={cn(
-                        "text-sm font-medium",
-                        isViewerBgDark ? "text-white/80" : "text-muted-foreground",
-                      )}>
+                      <div className="text-sm font-medium text-[var(--viewer-muted-text)]">
                         Search results for &quot;{searchQuery}&quot;
                       </div>
-                      <div className={cn(
-                        "text-xs",
-                        isViewerBgDark ? "text-white/60" : "text-muted-foreground",
-                      )}>
+                      <div className="text-xs text-[var(--viewer-subtle-text)]">
                         ({mixedItems.length} result
                         {mixedItems.length !== 1 ? "s" : ""} across all folders)
                       </div>
@@ -578,10 +620,7 @@ export default function DataroomViewer({
 
                 <ul role="list" className="-mx-4 space-y-4 overflow-auto p-4">
                   {mixedItems.length === 0 ? (
-                    <li className={cn(
-                      "py-6 text-center",
-                      isViewerBgDark ? "text-white/60" : "text-muted-foreground",
-                    )}>
+                    <li className="py-6 text-center text-[var(--viewer-subtle-text)]">
                       {searchQuery
                         ? "No documents match your search."
                         : "No items available."}
@@ -597,8 +636,9 @@ export default function DataroomViewer({
               <ScrollBar orientation="horizontal" />
             </ScrollArea>
           </div>
-        </div>
-      </ViewerChatLayout>
+          </div>
+        </ViewerChatLayout>
+      </ViewerSurfaceThemeProvider>
 
       {/* AI Chat Components */}
       <ViewerChatPanel />

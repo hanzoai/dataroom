@@ -14,7 +14,7 @@ import { useSafePageViewTracker } from "@/lib/tracking/safe-page-view-tracker";
 import { getTrackingOptions } from "@/lib/tracking/tracking-config";
 import { NotionTheme } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { determineTextColor } from "@/lib/utils/determine-text-color";
+import { createAdaptiveSurfacePalette } from "@/lib/utils/create-adaptive-surface-palette";
 
 import {
   BreadcrumbItem,
@@ -137,6 +137,7 @@ export const NotionPage = ({
   navData: TNavData;
 }) => {
   const { isPreview, linkId, documentId, viewId, brand } = navData;
+  const navPalette = createAdaptiveSurfacePalette(brand?.brandColor);
   const [pageNumber, setPageNumber] = useState<number>(1); // start on first page
   const [loading, setLoading] = useState<boolean>(false);
   const [subPageId, setSubPageId] = useQueryState("pageid", {
@@ -509,7 +510,7 @@ export const NotionPage = ({
               className="cursor-pointer underline underline-offset-4"
               onClick={() => setSubPageId(null)}
               style={{
-                color: determineTextColor(brand?.brandColor),
+                color: navPalette.textColor,
               }}
             >
               {title}
@@ -524,7 +525,7 @@ export const NotionPage = ({
                 <BreadcrumbPage
                   className="font-medium"
                   style={{
-                    color: determineTextColor(brand?.brandColor),
+                    color: navPalette.textColor,
                   }}
                 >
                   {subTitle}
