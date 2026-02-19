@@ -46,6 +46,12 @@ export default async function handle(
         },
         include: {
           links: {
+            where: {
+              link: {
+                deletedAt: null,
+                isArchived: false,
+              },
+            },
             include: {
               link: {
                 select: {
@@ -56,6 +62,18 @@ export default async function handle(
                   isArchived: true,
                   documentId: true,
                   dataroomId: true,
+                  document: {
+                    select: {
+                      id: true,
+                      name: true,
+                    },
+                  },
+                  dataroom: {
+                    select: {
+                      id: true,
+                      name: true,
+                    },
+                  },
                 },
               },
             },
