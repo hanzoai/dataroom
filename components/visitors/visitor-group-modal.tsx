@@ -1,10 +1,18 @@
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 import { useTeam } from "@/context/team-context";
+import { LinkType } from "@prisma/client";
+import {
+  ExternalLinkIcon,
+  FileTextIcon,
+  FolderKanbanIcon,
+} from "lucide-react";
 import { toast } from "sonner";
 import { mutate } from "swr";
+import useSWR from "swr";
 
-import { sanitizeList } from "@/lib/utils";
+import { fetcher, sanitizeList } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -21,6 +29,23 @@ import { Textarea } from "@/components/ui/textarea";
 
 import { VisitorGroupWithCount } from "@/lib/swr/use-visitor-groups";
 
+type VisitorGroupLink = {
+  id: string;
+  link: {
+    id: string;
+    name: string | null;
+    linkType: LinkType;
+    documentId: string | null;
+    dataroomId: string | null;
+    document: { id: string; name: string } | null;
+    dataroom: { id: string; name: string } | null;
+  };
+};
+
+type VisitorGroupDetail = VisitorGroupWithCount & {
+  links: VisitorGroupLink[];
+};
+
 export function VisitorGroupModal({
   open,
   setOpen,
@@ -35,6 +60,14 @@ export function VisitorGroupModal({
   const [loading, setLoading] = useState<boolean>(false);
 
   const teamInfo = useTeam();
+  const teamId = teamInfo?.currentTeam?.id;
+  const { data: existingGroupDetails, isLoading: loadingGroupDetails } =
+    useSWR<VisitorGroupDetail>(
+      open && existingGroup && teamId
+        ? `/api/teams/${teamId}/visitor-groups/${existingGroup.id}`
+        : null,
+      fetcher,
+    );
 
   useEffect(() => {
     if (existingGroup) {
@@ -61,8 +94,8 @@ export function VisitorGroupModal({
 
     try {
       const url = existingGroup
-        ? `/api/teams/${teamInfo?.currentTeam?.id}/visitor-groups/${existingGroup.id}`
-        : `/api/teams/${teamInfo?.currentTeam?.id}/visitor-groups`;
+        ? `/api/teams/${teamId}/visitor-groups/${existingGroup.id}`
+        : `/api/teams/${teamId}/visitor-groups`;
 
       const response = await fetch(url, {
         method: existingGroup ? "PUT" : "POST",
@@ -84,8 +117,11 @@ export function VisitorGroupModal({
       );
 
       mutate(
-        `/api/teams/${teamInfo?.currentTeam?.id}/visitor-groups`,
+        `/api/teams/${teamId}/visitor-groups`,
       );
+      if (existingGroup) {
+        mutate(`/api/teams/${teamId}/visitor-groups/${existingGroup.id}`);
+      }
     } catch (error) {
       toast.error("Error saving visitor group. Please try again.");
     } finally {
@@ -140,6 +176,72 @@ partner@vc.com
                 Use @domain.com to allow all emails from a domain.
               </p>
             </div>
+
+            {existingGroup && (
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+                  Linked Documents & Datarooms
+                </p>
+                {loadingGroupDetails ? (
+                  <p className="mt-1.5 text-xs text-muted-foreground">
+                    Loading...
+                  </p>
+                ) : existingGroupDetails?.links?.length ? (
+                  <div className="mt-1.5 space-y-1">
+                    {existingGroupDetails.links.map((groupLink) => {
+                      const isDataroom =
+                        groupLink.link.linkType === "DATAROOM_LINK";
+                      const entity = isDataroom
+                        ? groupLink.link.dataroom
+                        : groupLink.link.document;
+                      const href = isDataroom
+                        ? groupLink.link.dataroomId
+                          ? `/datarooms/${groupLink.link.dataroomId}/documents`
+                          : null
+                        : groupLink.link.documentId
+                          ? `/documents/${groupLink.link.documentId}`
+                          : null;
+
+                      return (
+                        <div
+                          key={groupLink.id}
+                          className="flex items-center justify-between rounded-md border border-gray-200 px-2.5 py-1.5 dark:border-gray-800"
+                        >
+                          <div className="flex min-w-0 items-center gap-2">
+                            {isDataroom ? (
+                              <FolderKanbanIcon className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                            ) : (
+                              <FileTextIcon className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                            )}
+                            <span className="truncate text-xs font-medium text-foreground">
+                              {entity?.name ||
+                                (isDataroom
+                                  ? "Untitled dataroom"
+                                  : "Untitled document")}
+                            </span>
+                            <span className="shrink-0 text-[10px] text-muted-foreground">
+                              via {groupLink.link.name || "Untitled link"}
+                            </span>
+                          </div>
+                          {href && (
+                            <Link
+                              href={href}
+                              className="ml-2 shrink-0 text-muted-foreground transition-colors hover:text-foreground"
+                            >
+                              <ExternalLinkIcon className="h-3.5 w-3.5" />
+                            </Link>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <p className="mt-1.5 text-xs text-muted-foreground">
+                    Not linked to any documents or datarooms yet.
+                  </p>
+                )}
+              </div>
+            )}
           </div>
           <DialogFooter className="mt-4">
             <Button type="submit" loading={loading} className="h-9 w-full">
