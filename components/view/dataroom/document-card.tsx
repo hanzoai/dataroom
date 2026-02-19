@@ -151,27 +151,22 @@ export default function DocumentCard({
         return "File downloaded successfully";
       }
 
-      // For all other files, use the iframe method
+      // For all other files, use a hidden iframe to trigger the download
       if (contentType?.includes("application/json")) {
         const data = await response.json();
-        const downloadUrl = data.isDirectDownload
-          ? data.downloadUrl
-          : response.url;
 
-        // Create a hidden iframe for download
         const iframe = window.document.createElement("iframe");
         iframe.style.display = "none";
         window.document.body.appendChild(iframe);
-        iframe.src = downloadUrl;
+        iframe.src = data.downloadUrl;
 
-        // Clean up the iframe after a delay
         setTimeout(() => {
-          if (iframe && iframe.parentNode) {
+          if (iframe.parentNode) {
             window.document.body.removeChild(iframe);
           }
         }, 5000);
 
-        return "Download started";
+        return "File downloaded successfully";
       }
 
       throw new Error("Unexpected response format");
