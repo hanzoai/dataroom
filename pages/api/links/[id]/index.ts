@@ -415,6 +415,7 @@ export default async function handle(
             orderBy: {
               viewedAt: "desc",
             },
+            take: 1,
           },
           _count: {
             select: { views: true },

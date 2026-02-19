@@ -46,7 +46,6 @@ export async function POST(request: NextRequest) {
       documentName,
       hasPages,
       ownerId,
-      dataroomVerified,
       linkType,
       dataroomViewId,
       viewType,
@@ -61,7 +60,6 @@ export async function POST(request: NextRequest) {
       documentName: string | undefined;
       hasPages: boolean | undefined;
       ownerId: string | null;
-      dataroomVerified: boolean | undefined;
       linkType: string;
       dataroomViewId?: string;
       viewType: "DATAROOM_VIEW" | "DOCUMENT_VIEW";
@@ -414,7 +412,7 @@ export async function POST(request: NextRequest) {
       // Request OTP Code for email verification if
       // 1) email verification is required and
       // 2) code is not provided or token not provided
-      if (link.emailAuthenticated && !code && !token && !dataroomVerified) {
+      if (link.emailAuthenticated && !code && !token) {
         const ipAddressValue = ipAddress(request);
 
         // Rate limit per email/link combination (1 per 30 seconds) to prevent OTP flooding
@@ -470,7 +468,7 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      if (link.emailAuthenticated && code && !dataroomVerified) {
+      if (link.emailAuthenticated && code) {
         const ipAddressValue = ipAddress(request);
         const { success } = await ratelimit(10, "1 m").limit(
           `verify-otp:${ipAddressValue}`,
@@ -539,7 +537,7 @@ export async function POST(request: NextRequest) {
         isEmailVerified = true;
       }
 
-      if (link.emailAuthenticated && token && !dataroomVerified) {
+      if (link.emailAuthenticated && token) {
         const ipAddressValue = ipAddress(request);
         const { success } = await ratelimit(10, "1 m").limit(
           `verify-email:${ipAddressValue}`,
@@ -589,9 +587,6 @@ export async function POST(request: NextRequest) {
         isEmailVerified = true;
       }
 
-      if (link.emailAuthenticated && dataroomVerified) {
-        isEmailVerified = true;
-      }
     }
 
     let viewer: { id: string; email: string; verified: boolean } | null = null;

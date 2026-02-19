@@ -181,15 +181,16 @@ export default function Nav({
         // Handle JSON response with downloadUrl (non-watermarked files)
         const { downloadUrl } = await response.json();
 
-        const link = document.createElement("a");
-        link.href = downloadUrl;
-        link.rel = "noopener noreferrer";
-        document.body.appendChild(link);
-        link.click();
+        const iframe = document.createElement("iframe");
+        iframe.style.display = "none";
+        document.body.appendChild(iframe);
+        iframe.src = downloadUrl;
 
         setTimeout(() => {
-          document.body.removeChild(link);
-        }, 100);
+          if (iframe.parentNode) {
+            document.body.removeChild(iframe);
+          }
+        }, 5000);
       }
 
       return "File downloaded successfully";
