@@ -5,6 +5,7 @@ import { verifyDataroomSession } from "@/lib/auth/dataroom-auth";
 import { DocumentData } from "@/lib/documents/create-document";
 import prisma from "@/lib/prisma";
 import { sendDataroomUploadNotificationTask } from "@/lib/trigger/dataroom-upload-notification";
+import { sanitizePlainText } from "@/lib/utils/sanitize-html";
 import { supportsAdvancedExcelMode } from "@/lib/utils/get-content-type";
 import { runs } from "@trigger.dev/sdk/v3";
 import { waitUntil } from "@vercel/functions";
@@ -94,9 +95,31 @@ export async function POST(
       );
     }
 
+    if (typeof documentData.name !== "string") {
+      return NextResponse.json(
+        { message: "Document name is required" },
+        { status: 400 },
+      );
+    }
+
+    const sanitizedDocumentName = sanitizePlainText(documentData.name);
+    if (!sanitizedDocumentName) {
+      return NextResponse.json(
+        { message: "Document name is required" },
+        { status: 400 },
+      );
+    }
+
+    if (sanitizedDocumentName.length > 255) {
+      return NextResponse.json(
+        { message: "Document name too long" },
+        { status: 400 },
+      );
+    }
 
     const updatedDocumentData = {
       ...documentData,
+      name: sanitizedDocumentName,
       enableExcelAdvancedMode: documentData.supportedFileType === "sheet" &&
         link.team?.enableExcelAdvancedMode &&
         supportsAdvancedExcelMode(documentData.contentType),
