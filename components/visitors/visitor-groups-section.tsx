@@ -6,13 +6,14 @@ import type { LinkType } from "@prisma/client";
 import {
   ChevronDownIcon,
   ExternalLinkIcon,
-  FolderKanbanIcon,
+  FileIcon,
   GlobeIcon,
   LinkIcon,
   MailIcon,
   MoreVerticalIcon,
   PencilIcon,
   PlusIcon,
+  ServerIcon,
   TrashIcon,
   UsersIcon,
 } from "lucide-react";
@@ -252,7 +253,7 @@ function VisitorGroupCard({
             {hasLinkedItems && (
               <div>
                 <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
-                  Linked Documents (
+                  Links (
                   {documentLinks.length + dataroomLinks.length})
                 </p>
 
@@ -264,13 +265,10 @@ function VisitorGroupCard({
                   <div className="mt-1.5 space-y-1">
                     {documentLinks.map((groupLink) => {
                       const documentId = groupLink.link.documentId;
-                      return (
-                        <div
-                          key={groupLink.id}
-                          className="flex items-center justify-between rounded-md border border-gray-200 bg-white px-2.5 py-1.5 dark:border-gray-700 dark:bg-gray-800/50"
-                        >
+                      const content = (
+                        <>
                           <div className="flex min-w-0 items-center gap-2">
-                            <LinkIcon className="h-3 w-3 shrink-0 text-muted-foreground" />
+                            <FileIcon className="h-3 w-3 shrink-0 text-muted-foreground" />
                             <span className="truncate text-xs font-medium text-foreground">
                               {groupLink.link.document?.name ||
                                 "Untitled document"}
@@ -280,27 +278,33 @@ function VisitorGroupCard({
                               {groupLink.link.name || "Untitled link"}
                             </span>
                           </div>
-                          {documentId && (
-                            <Link
-                              href={`/documents/${documentId}`}
-                              onClick={(e) => e.stopPropagation()}
-                              className="ml-2 shrink-0 text-muted-foreground transition-colors hover:text-foreground"
-                            >
-                              <ExternalLinkIcon className="h-3 w-3" />
-                            </Link>
-                          )}
+                          <ExternalLinkIcon className="ml-2 h-3 w-3 shrink-0 text-muted-foreground transition-colors group-hover/link:text-foreground" />
+                        </>
+                      );
+                      return documentId ? (
+                        <Link
+                          key={groupLink.id}
+                          href={`/documents/${documentId}`}
+                          onClick={(e) => e.stopPropagation()}
+                          className="group/link flex items-center justify-between rounded-md border border-gray-200 bg-white px-2.5 py-1.5 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800/50 dark:hover:bg-gray-800"
+                        >
+                          {content}
+                        </Link>
+                      ) : (
+                        <div
+                          key={groupLink.id}
+                          className="flex items-center justify-between rounded-md border border-gray-200 bg-white px-2.5 py-1.5 dark:border-gray-700 dark:bg-gray-800/50"
+                        >
+                          {content}
                         </div>
                       );
                     })}
                     {dataroomLinks.map((groupLink) => {
                       const dataroomId = groupLink.link.dataroomId;
-                      return (
-                        <div
-                          key={groupLink.id}
-                          className="flex items-center justify-between rounded-md border border-gray-200 bg-white px-2.5 py-1.5 dark:border-gray-700 dark:bg-gray-800/50"
-                        >
+                      const content = (
+                        <>
                           <div className="flex min-w-0 items-center gap-2">
-                            <FolderKanbanIcon className="h-3 w-3 shrink-0 text-muted-foreground" />
+                            <ServerIcon className="h-3 w-3 shrink-0 text-muted-foreground" />
                             <span className="truncate text-xs font-medium text-foreground">
                               {groupLink.link.dataroom?.name ||
                                 "Untitled dataroom"}
@@ -310,15 +314,24 @@ function VisitorGroupCard({
                               {groupLink.link.name || "Untitled link"}
                             </span>
                           </div>
-                          {dataroomId && (
-                            <Link
-                              href={`/datarooms/${dataroomId}/permissions`}
-                              onClick={(e) => e.stopPropagation()}
-                              className="ml-2 shrink-0 text-muted-foreground transition-colors hover:text-foreground"
-                            >
-                              <ExternalLinkIcon className="h-3 w-3" />
-                            </Link>
-                          )}
+                          <ExternalLinkIcon className="ml-2 h-3 w-3 shrink-0 text-muted-foreground transition-colors group-hover/link:text-foreground" />
+                        </>
+                      );
+                      return dataroomId ? (
+                        <Link
+                          key={groupLink.id}
+                          href={`/datarooms/${dataroomId}/permissions`}
+                          onClick={(e) => e.stopPropagation()}
+                          className="group/link flex items-center justify-between rounded-md border border-gray-200 bg-white px-2.5 py-1.5 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800/50 dark:hover:bg-gray-800"
+                        >
+                          {content}
+                        </Link>
+                      ) : (
+                        <div
+                          key={groupLink.id}
+                          className="flex items-center justify-between rounded-md border border-gray-200 bg-white px-2.5 py-1.5 dark:border-gray-700 dark:bg-gray-800/50"
+                        >
+                          {content}
                         </div>
                       );
                     })}
