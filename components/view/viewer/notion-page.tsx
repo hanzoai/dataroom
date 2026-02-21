@@ -128,12 +128,14 @@ export const NotionPage = ({
   versionNumber,
   theme,
   screenshotProtectionEnabled,
+  textSelectionEnabled,
   navData,
 }: {
   recordMap: ExtendedRecordMap;
   versionNumber: number;
   theme?: NotionTheme | null;
   screenshotProtectionEnabled: boolean;
+  textSelectionEnabled: boolean;
   navData: TNavData;
 }) => {
   const { isPreview, linkId, documentId, viewId, brand } = navData;
@@ -544,6 +546,7 @@ export const NotionPage = ({
           !isWindowFocused &&
             screenshotProtectionEnabled &&
             "blur-xl transition-all duration-300",
+          textSelectionEnabled && "notion-text-selection-enabled",
         )}
       >
         <NotionRenderer
