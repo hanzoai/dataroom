@@ -14,11 +14,8 @@ export type ViewerSurfaceTheme = {
   usesLightText: boolean;
 };
 
-const DEFAULT_VIEWER_SURFACE_THEME: ViewerSurfaceTheme = {
-  palette: createAdaptiveSurfacePalette(undefined),
-  textTone: "dark",
-  usesLightText: false,
-};
+const DEFAULT_VIEWER_SURFACE_THEME: ViewerSurfaceTheme =
+  createViewerSurfaceTheme(null);
 
 const ViewerSurfaceThemeContext = createContext<ViewerSurfaceTheme>(
   DEFAULT_VIEWER_SURFACE_THEME,
