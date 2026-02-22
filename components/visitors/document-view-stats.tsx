@@ -1,15 +1,14 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { ChevronRight, DownloadCloudIcon } from "lucide-react";
 
 import BarChartComponent from "@/components/charts/bar-chart";
 import StatsChartSkeleton from "@/components/documents/stats-chart-skeleton";
+import { Gauge } from "@/components/ui/gauge";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { useDataroomDocumentPageStats } from "@/lib/swr/use-dataroom-view-document-stats";
 import { durationFormat } from "@/lib/utils";
-
-import { Gauge } from "@/components/ui/gauge";
 
 export function DocumentViewDuration({
   duration,
@@ -38,9 +37,7 @@ export function DocumentViewCompletion({
   if (loading) {
     return <Skeleton className="h-6 w-6 rounded-full" />;
   }
-  return (
-    <Gauge value={completionRate} size={"small"} showValue={true} />
-  );
+  return <Gauge value={completionRate} size={"small"} showValue={true} />;
 }
 
 export function DocumentPageChart({
@@ -67,13 +64,27 @@ export function DocumentPageChart({
   } | null;
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [fetchEnabled, setFetchEnabled] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout>>();
+
+  useEffect(() => {
+    if (isExpanded) {
+      timerRef.current = setTimeout(() => {
+        setFetchEnabled(true);
+      }, 150);
+    } else {
+      clearTimeout(timerRef.current);
+      setFetchEnabled(false);
+    }
+    return () => clearTimeout(timerRef.current);
+  }, [isExpanded]);
 
   const { duration, loading } = useDataroomDocumentPageStats({
     dataroomId,
     dataroomViewId,
     documentViewId,
     documentId,
-    enabled: isExpanded,
+    enabled: fetchEnabled,
   });
 
   const handleToggle = () => setIsExpanded((prev) => !prev);
@@ -82,7 +93,7 @@ export function DocumentPageChart({
     return (
       <button
         onClick={handleToggle}
-        className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+        className="flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
       >
         <ChevronRight className="h-3 w-3" />
         Show page-by-page
@@ -95,7 +106,7 @@ export function DocumentPageChart({
       <div>
         <button
           onClick={handleToggle}
-          className="mb-1 flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+          className="mb-1 flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
         >
           <ChevronRight className="h-3 w-3 rotate-90 transition-transform" />
           Hide page-by-page
@@ -111,8 +122,8 @@ export function DocumentPageChart({
     let downloadMessage = "";
     if (downloadType === "FOLDER" && downloadMetadata?.folderName) {
       downloadMessage = `Downloaded without viewing via folder "${downloadMetadata.folderName}"`;
-    } else if (downloadType === "BULK" && downloadMetadata?.dataroomName) {
-      downloadMessage = `Downloaded without viewing via bulk download`;
+    } else if (downloadType === "BULK") {
+      downloadMessage = "Downloaded without viewing via bulk download";
     } else if (downloadType === "SINGLE") {
       downloadMessage = "Downloaded without viewing";
     } else {
@@ -123,7 +134,7 @@ export function DocumentPageChart({
       <div>
         <button
           onClick={handleToggle}
-          className="mb-1 flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+          className="mb-1 flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
         >
           <ChevronRight className="h-3 w-3 rotate-90 transition-transform" />
           Hide page-by-page
@@ -142,9 +153,7 @@ export function DocumentPageChart({
   }));
 
   durationData = durationData.map((item) => {
-    const match = duration.data.find(
-      (d) => d.pageNumber === item.pageNumber,
-    );
+    const match = duration.data.find((d) => d.pageNumber === item.pageNumber);
     return match || item;
   });
 
@@ -152,7 +161,7 @@ export function DocumentPageChart({
     <div>
       <button
         onClick={handleToggle}
-        className="mb-1 flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+        className="mb-1 flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
       >
         <ChevronRight className="h-3 w-3 rotate-90 transition-transform" />
         Hide page-by-page
