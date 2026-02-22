@@ -16,7 +16,7 @@ import {
 import { usePlan } from "@/lib/swr/use-billing";
 import { useDataroom } from "@/lib/swr/use-dataroom";
 import { useDataroomVisits } from "@/lib/swr/use-dataroom";
-import { durationFormat, timeAgo } from "@/lib/utils";
+import { timeAgo } from "@/lib/utils";
 
 import ChevronDown from "@/components/shared/icons/chevron-down";
 import { Button } from "@/components/ui/button";
@@ -38,11 +38,10 @@ import { TimestampTooltip } from "@/components/ui/timestamp-tooltip";
 import { BadgeTooltip } from "@/components/ui/tooltip";
 
 import { ExportVisitsModal } from "../datarooms/export-visits-modal";
+import { DataroomViewStats } from "./dataroom-view-stats";
 import DataroomVisitorCustomFields from "./dataroom-visitor-custom-fields";
 import { DataroomVisitorUserAgent } from "./dataroom-visitor-useragent";
-import DataroomVisitHistory from "./dataroom-visitors-history";
 import { VisitorAvatar } from "./visitor-avatar";
-import { DataroomViewStats } from "./dataroom-view-stats";
 
 export default function DataroomVisitorsTable({
   dataroomId,
