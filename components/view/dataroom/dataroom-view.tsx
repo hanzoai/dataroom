@@ -286,7 +286,7 @@ export default function DataroomView({
   if (submitted) {
     return (
       <div
-        className="bg-white"
+        className="min-h-screen bg-white"
         style={{ backgroundColor: dataroomViewBackgroundColor ?? undefined }}
       >
         <DataroomViewer
@@ -318,7 +318,7 @@ export default function DataroomView({
 
   return (
     <div
-      className="bg-white"
+      className="min-h-screen bg-white"
       style={{ backgroundColor: dataroomViewBackgroundColor ?? undefined }}
     >
       <div className="flex h-screen items-center justify-center">
