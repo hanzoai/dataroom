@@ -35,7 +35,7 @@ export default function ViewPage() {
 
   return (
     <div
-      className="bg-white"
+      className="min-h-screen bg-white"
       style={
         dataroomViewBackgroundColor
           ? { backgroundColor: dataroomViewBackgroundColor }
