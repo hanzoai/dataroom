@@ -322,6 +322,23 @@ export default async function handle(
       }
     }
 
+    // Validate visitor group IDs belong to this team
+    if (linkData.visitorGroupIds?.length > 0) {
+      const validGroups = await prisma.visitorGroup.findMany({
+        where: {
+          id: { in: linkData.visitorGroupIds },
+          teamId: teamId,
+        },
+        select: { id: true },
+      });
+
+      if (validGroups.length !== linkData.visitorGroupIds.length) {
+        return res.status(400).json({
+          error: "One or more visitor group IDs do not belong to this team.",
+        });
+      }
+    }
+
     const updatedLink = await prisma.$transaction(async (tx) => {
       const link = await tx.link.update({
         where: { id, teamId },
@@ -487,7 +504,13 @@ export default async function handle(
         },
       });
 
-      return { ...link, tags };
+      // Re-fetch visitor groups to get post-update associations
+      const freshVisitorGroups = await tx.linkVisitorGroup.findMany({
+        where: { linkId: id },
+        select: { visitorGroupId: true },
+      });
+
+      return { ...link, visitorGroups: freshVisitorGroups, tags };
     });
 
     if (!updatedLink) {

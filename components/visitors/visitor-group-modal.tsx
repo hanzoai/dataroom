@@ -106,7 +106,6 @@ export function VisitorGroupModal({
       if (!response.ok) {
         const data = await response.json();
         toast.error(data.error || "Failed to save visitor group.");
-        setLoading(false);
         return;
       }
 
@@ -122,11 +121,11 @@ export function VisitorGroupModal({
       if (existingGroup) {
         mutate(`/api/teams/${teamId}/visitor-groups/${existingGroup.id}`);
       }
+      setOpen(false);
     } catch (error) {
       toast.error("Error saving visitor group. Please try again.");
     } finally {
       setLoading(false);
-      setOpen(false);
     }
   };
 
