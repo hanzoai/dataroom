@@ -1,12 +1,22 @@
 import sanitizeHtml from "sanitize-html";
+import { decodeHTML } from "entities";
 
 const plainTextSanitizeConfig = {
   allowedTags: [],
   allowedAttributes: {},
 };
 
+const controlCharsRegex = /[\u0000-\u001F\u007F-\u009F]/g;
+const invisibleControlRegex = /[\u200B-\u200D\uFEFF\u202A-\u202E\u2066-\u2069]/g;
+
 export function sanitizePlainText(content: string) {
-  return sanitizeHtml(content, plainTextSanitizeConfig).trim();
+  const sanitized = sanitizeHtml(content, plainTextSanitizeConfig);
+  const decoded = decodeHTML(sanitized).normalize("NFC");
+
+  return decoded
+    .replace(controlCharsRegex, " ")
+    .replace(invisibleControlRegex, "")
+    .trim();
 }
 
 export function validateContent(html: string, length: number = 1000) {
