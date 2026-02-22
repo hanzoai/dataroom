@@ -1,5 +1,6 @@
-import { useState } from "react";
 import Link from "next/link";
+
+import { useState } from "react";
 
 import { useTeam } from "@/context/team-context";
 import type { LinkType } from "@prisma/client";
@@ -87,10 +88,7 @@ function VisitorGroupCard({
   const linkCount = groupDetails?._count.links ?? group._count.links;
   const { emailMembers, domainMembers } = splitMembers(members);
   const previewMembers = members.slice(0, 5);
-  const extraMembersCount = Math.max(
-    members.length - previewMembers.length,
-    0,
-  );
+  const extraMembersCount = Math.max(members.length - previewMembers.length, 0);
 
   const links = groupDetails?.links ?? [];
   const documentLinks = links.filter(
@@ -253,8 +251,7 @@ function VisitorGroupCard({
             {hasLinkedItems && (
               <div>
                 <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
-                  Links (
-                  {documentLinks.length + dataroomLinks.length})
+                  Links ({documentLinks.length + dataroomLinks.length})
                 </p>
 
                 {loadingDetails ? (
@@ -263,23 +260,19 @@ function VisitorGroupCard({
                   </p>
                 ) : (
                   <div className="mt-1.5 space-y-1">
-                    {documentLinks.map((groupLink) => {
+                    {documentLinks.map((groupLink: VisitorGroupLink) => {
                       const documentId = groupLink.link.documentId;
                       const content = (
-                        <>
-                          <div className="flex min-w-0 items-center gap-2">
-                            <FileIcon className="h-3 w-3 shrink-0 text-muted-foreground" />
-                            <span className="truncate text-xs font-medium text-foreground">
-                              {groupLink.link.document?.name ||
-                                "Untitled document"}
-                            </span>
-                            <span className="shrink-0 text-[10px] text-muted-foreground">
-                              via{" "}
-                              {groupLink.link.name || "Untitled link"}
-                            </span>
-                          </div>
-                          <ExternalLinkIcon className="ml-2 h-3 w-3 shrink-0 text-muted-foreground transition-colors group-hover/link:text-foreground" />
-                        </>
+                        <div className="flex min-w-0 items-center gap-2">
+                          <FileIcon className="h-3 w-3 shrink-0 text-muted-foreground" />
+                          <span className="truncate text-xs font-medium text-foreground">
+                            {groupLink.link.document?.name ||
+                              "Untitled document"}
+                          </span>
+                          <span className="shrink-0 text-[10px] text-muted-foreground">
+                            via {groupLink.link.name || "Untitled link"}
+                          </span>
+                        </div>
                       );
                       return documentId ? (
                         <Link
@@ -289,6 +282,7 @@ function VisitorGroupCard({
                           className="group/link flex items-center justify-between rounded-md border border-gray-200 bg-white px-2.5 py-1.5 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800/50 dark:hover:bg-gray-800"
                         >
                           {content}
+                          <ExternalLinkIcon className="ml-2 h-3 w-3 shrink-0 text-muted-foreground transition-colors group-hover/link:text-foreground" />
                         </Link>
                       ) : (
                         <div
@@ -310,11 +304,9 @@ function VisitorGroupCard({
                                 "Untitled dataroom"}
                             </span>
                             <span className="shrink-0 text-[10px] text-muted-foreground">
-                              via{" "}
-                              {groupLink.link.name || "Untitled link"}
+                              via {groupLink.link.name || "Untitled link"}
                             </span>
                           </div>
-                          <ExternalLinkIcon className="ml-2 h-3 w-3 shrink-0 text-muted-foreground transition-colors group-hover/link:text-foreground" />
                         </>
                       );
                       return dataroomId ? (
@@ -325,6 +317,7 @@ function VisitorGroupCard({
                           className="group/link flex items-center justify-between rounded-md border border-gray-200 bg-white px-2.5 py-1.5 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800/50 dark:hover:bg-gray-800"
                         >
                           {content}
+                          <ExternalLinkIcon className="ml-2 h-3 w-3 shrink-0 text-muted-foreground transition-colors group-hover/link:text-foreground" />
                         </Link>
                       ) : (
                         <div
