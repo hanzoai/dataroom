@@ -16,7 +16,7 @@ import {
 import { usePlan } from "@/lib/swr/use-billing";
 import { useDataroom } from "@/lib/swr/use-dataroom";
 import { useDataroomVisits } from "@/lib/swr/use-dataroom";
-import { timeAgo } from "@/lib/utils";
+import { durationFormat, timeAgo } from "@/lib/utils";
 
 import ChevronDown from "@/components/shared/icons/chevron-down";
 import { Button } from "@/components/ui/button";
@@ -42,6 +42,7 @@ import DataroomVisitorCustomFields from "./dataroom-visitor-custom-fields";
 import { DataroomVisitorUserAgent } from "./dataroom-visitor-useragent";
 import DataroomVisitHistory from "./dataroom-visitors-history";
 import { VisitorAvatar } from "./visitor-avatar";
+import { DataroomViewStats } from "./dataroom-view-stats";
 
 export default function DataroomVisitorsTable({
   dataroomId,
@@ -61,9 +62,24 @@ export default function DataroomVisitorsTable({
   const { dataroom } = useDataroom();
   const { isPaused } = usePlan();
   const [exportModalOpen, setExportModalOpen] = useState(false);
+  const [expandedViewIds, setExpandedViewIds] = useState<Set<string>>(
+    new Set(),
+  );
 
   const exportVisitCounts = () => {
     setExportModalOpen(true);
+  };
+
+  const handleOpenChange = (viewId: string, open: boolean) => {
+    setExpandedViewIds((prev) => {
+      const next = new Set(prev);
+      if (open) {
+        next.add(viewId);
+      } else {
+        next.delete(viewId);
+      }
+      return next;
+    });
   };
 
   return (
@@ -80,8 +96,6 @@ export default function DataroomVisitorsTable({
           <TableHeader>
             <TableRow className="*:whitespace-nowrap *:font-medium hover:bg-transparent">
               <TableHead>Name</TableHead>
-              {/* <TableHead>Visit Duration</TableHead> */}
-              {/* <TableHead>Last Viewed Document</TableHead> */}
               <TableHead>Last Viewed</TableHead>
               <TableHead className="text-center sm:text-right"></TableHead>
             </TableRow>
@@ -89,7 +103,7 @@ export default function DataroomVisitorsTable({
           <TableBody>
             {views?.length === 0 && hiddenFromPause === 0 && (
               <TableRow>
-                <TableCell colSpan={5}>
+                <TableCell colSpan={3}>
                   <div className="flex h-40 w-full items-center justify-center">
                     <p>No views yet. Try sharing a link.</p>
                   </div>
@@ -124,7 +138,11 @@ export default function DataroomVisitorsTable({
             )}
             {views ? (
               views.map((view) => (
-                <Collapsible key={view.id} asChild>
+                <Collapsible
+                  key={view.id}
+                  asChild
+                  onOpenChange={(open) => handleOpenChange(view.id, open)}
+                >
                   <>
                     <TableRow key={view.id} className="group/row">
                       {/* Name */}
@@ -186,22 +204,6 @@ export default function DataroomVisitorsTable({
                           </div>
                         </div>
                       </TableCell>
-                      {/* Duration */}
-                      {/* <TableCell className="">
-                        <div className="text-sm text-muted-foreground">
-                          {durationFormat(view.totalDuration)}
-                        </div>
-                      </TableCell> */}
-                      {/* Completion */}
-                      {/* <TableCell className="flex justify-start">
-                        <div className="text-sm text-muted-foreground">
-                          <Gauge
-                            value={view.completionRate}
-                            size={"small"}
-                            showValue={true}
-                          />
-                        </div>
-                      </TableCell> */}
                       {/* Last Viewed */}
                       <TableCell className="text-sm text-muted-foreground">
                         <TimestampTooltip
@@ -293,9 +295,10 @@ export default function DataroomVisitorsTable({
                           </TableRow>
                         ) : null}
 
-                        <DataroomVisitHistory
+                        <DataroomViewStats
                           viewId={view.id}
                           dataroomId={dataroomId}
+                          isExpanded={expandedViewIds.has(view.id)}
                         />
                       </>
                     </CollapsibleContent>
@@ -309,9 +312,6 @@ export default function DataroomVisitorsTable({
                 </TableCell>
                 <TableCell className="min-w-[450px]">
                   <Skeleton className="h-6 w-full" />
-                </TableCell>
-                <TableCell>
-                  <Skeleton className="h-6 w-24" />
                 </TableCell>
                 <TableCell>
                   <Skeleton className="h-6 w-24" />
@@ -336,7 +336,6 @@ export default function DataroomVisitorsTable({
   );
 }
 
-// create a component for a blurred view of the visitor
 const VisitorBlurred = () => {
   return (
     <TableRow className="blur-sm">
