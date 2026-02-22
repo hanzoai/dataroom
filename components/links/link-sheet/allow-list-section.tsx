@@ -132,7 +132,7 @@ export default function AllowListSection({
         <LinkItem
           title="Allow specified viewers"
           link="https://www.papermark.com/help/article/allow-list"
-          tooltipContent="Restrict access to a selected group of viewers. Enter allowed emails or domains, or select visitor groups."
+          tooltipContent={`Restrict access to a selected group of viewers. Enter allowed emails or domains${visitorGroups && visitorGroups.length > 0 ? ", or select visitor groups" : ""}.`}
           enabled={enabled}
           isAllowed={isAllowed}
           action={handleEnableAllowList}
