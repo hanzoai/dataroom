@@ -222,6 +222,7 @@ export const documentUploadSchema = z
   .object({
     name: z
       .string()
+      .max(10000, "Document name too long")
       .transform((value) => sanitizePlainText(value))
       .pipe(
         z
