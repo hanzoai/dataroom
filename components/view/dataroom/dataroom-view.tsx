@@ -63,6 +63,7 @@ export default function DataroomView({
   isEmbedded,
   preview,
   dataroomIndexEnabled,
+  textSelectionEnabled,
 }: {
   link: LinkWithDataroom;
   userEmail: string | null | undefined;
@@ -78,6 +79,7 @@ export default function DataroomView({
   preview?: boolean;
   logoOnAccessForm?: boolean;
   dataroomIndexEnabled?: boolean;
+  textSelectionEnabled?: boolean;
 }) {
   useDisablePrint();
   const {
@@ -110,6 +112,11 @@ export default function DataroomView({
 
   const [code, setCode] = useState<string | null>(null);
   const [isInvalidCode, setIsInvalidCode] = useState<boolean>(false);
+  const shouldApplyAccentToDataroomView = !!(brand as any)
+    ?.applyAccentColorToDataroomView;
+  const dataroomViewBackgroundColor = shouldApplyAccentToDataroomView
+    ? brand?.accentColor
+    : "#ffffff";
 
   const handleSubmission = async (): Promise<void> => {
     setIsLoading(true);
@@ -280,7 +287,10 @@ export default function DataroomView({
   if (submitted) {
     return (
       <PendingUploadsProvider>
-        <div className="bg-gray-950">
+        <div
+          className="min-h-screen bg-white"
+          style={{ backgroundColor: dataroomViewBackgroundColor ?? undefined }}
+        >
           <DataroomViewer
             accessControls={link.accessControls || group?.accessControls || []}
             brand={brand!}
@@ -310,7 +320,10 @@ export default function DataroomView({
   }
 
   return (
-    <div className="bg-gray-950">
+    <div
+      className="min-h-screen bg-white"
+      style={{ backgroundColor: dataroomViewBackgroundColor ?? undefined }}
+    >
       <div className="flex h-screen items-center justify-center">
         <LoadingSpinner className="h-20 w-20" />
       </div>
