@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
-import { determineTextColor } from "@/lib/utils/determine-text-color";
+import { createAdaptiveSurfacePalette } from "@/lib/utils/create-adaptive-surface-palette";
 
 import {
   DropdownMenu,
@@ -117,6 +117,7 @@ export default function Nav({
   } = navData;
 
   const [showConversations, setShowConversations] = useState(false);
+  const navColorPalette = createAdaptiveSurfacePalette(brand?.brandColor);
 
   // Extract the dataroom path from the URL
   // This regex captures everything before "/d/" in the path
@@ -181,15 +182,16 @@ export default function Nav({
         // Handle JSON response with downloadUrl (non-watermarked files)
         const { downloadUrl } = await response.json();
 
-        const link = document.createElement("a");
-        link.href = downloadUrl;
-        link.rel = "noopener noreferrer";
-        document.body.appendChild(link);
-        link.click();
+        const iframe = document.createElement("iframe");
+        iframe.style.display = "none";
+        document.body.appendChild(iframe);
+        iframe.src = downloadUrl;
 
         setTimeout(() => {
-          document.body.removeChild(link);
-        }, 100);
+          if (iframe.parentNode) {
+            document.body.removeChild(iframe);
+          }
+        }, 5000);
       }
 
       return "File downloaded successfully";
@@ -271,7 +273,7 @@ export default function Nav({
                       className="cursor-pointer underline underline-offset-4 hover:font-medium"
                       href={`${dataroomPath}${isPreview ? "?previewToken=" + previewToken + "&preview=" + preview : ""}`}
                       style={{
-                        color: determineTextColor(brand?.brandColor),
+                        color: navColorPalette.textColor,
                       }}
                     >
                       Home
