@@ -1,5 +1,3 @@
-"use client";
-
 import { useRouter } from "next/router";
 
 import { useEffect, useState } from "react";
@@ -33,7 +31,6 @@ export function DealflowPopup() {
   const [dealType, setDealType] = useState<string | null>(null);
   const [dealTypeOther, setDealTypeOther] = useState<string>("");
   const [showOtherInput, setShowOtherInput] = useState(false);
-  const [dealSize, setDealSize] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const teamId = teamInfo?.currentTeam?.id;
@@ -43,64 +40,42 @@ export function DealflowPopup() {
   const isOnboarding = router.pathname.startsWith("/welcome");
 
   useEffect(() => {
-    // Don't show on onboarding pages
-    if (isOnboarding) {
-      console.log("[DealflowPopup] Skipping - on onboarding page");
-      return;
-    }
+    if (isOnboarding) return;
+    if (!teamId) return;
 
-    // Don't show if no team context
-    if (!teamId) {
-      console.log("[DealflowPopup] Skipping - no teamId");
-      return;
-    }
-
-    // Check if already dismissed in localStorage for this team
     const dismissed = localStorage.getItem(storageKey);
-    if (dismissed) {
-      console.log("[DealflowPopup] Skipping - dismissed in localStorage:", storageKey);
-      return;
-    }
+    if (dismissed) return;
 
-    // Check if team already has survey data
+    let timeoutId: NodeJS.Timeout;
+
     const checkSurvey = async () => {
       try {
-        console.log("[DealflowPopup] Checking survey for team:", teamId);
         const response = await fetch(`/api/teams/${teamId}/survey`);
         if (response.ok) {
           const data = await response.json();
-          console.log("[DealflowPopup] Survey data:", data);
-          
-          // If dealType is missing → show popup from question 1
+
           if (!data.dealType) {
-            console.log("[DealflowPopup] No dealType - showing popup step 1");
-            setTimeout(() => {
+            timeoutId = setTimeout(() => {
               setStep(1);
               setIsOpen(true);
             }, 2000);
-          }
-          // If dealType exists but dealSize is missing (and not project-management) → show popup from question 2
-          else if (!data.dealSize && data.dealType !== "project-management") {
-            console.log("[DealflowPopup] Has dealType but no dealSize - showing popup step 2");
-            setTimeout(() => {
+          } else if (!data.dealSize && data.dealType !== "project-management") {
+            timeoutId = setTimeout(() => {
               setDealType(data.dealType);
               setDealTypeOther(data.dealTypeOther || "");
               setStep(2);
               setIsOpen(true);
             }, 2000);
-          } else {
-            console.log("[DealflowPopup] Survey complete - not showing popup");
           }
-          // If both are filled → don't show popup
-        } else {
-          console.log("[DealflowPopup] API response not ok:", response.status);
         }
       } catch (error) {
-        console.error("[DealflowPopup] Failed to check survey status:", error);
+        console.error("Failed to check survey status:", error);
       }
     };
 
     checkSurvey();
+
+    return () => clearTimeout(timeoutId);
   }, [teamId, storageKey, isOnboarding]);
 
   const handleDealTypeSelect = (value: string) => {
@@ -123,7 +98,6 @@ export function DealflowPopup() {
   };
 
   const handleDealSizeSelect = async (value: string) => {
-    setDealSize(value);
     await handleSubmit(dealType, value, dealTypeOther || null);
   };
 
@@ -150,7 +124,7 @@ export function DealflowPopup() {
               otherText !== undefined
                 ? otherText
                 : dealTypeOther || null,
-            dealSize: size !== undefined ? size : dealSize,
+            dealSize: size ?? null,
           }),
         },
       );
@@ -258,7 +232,7 @@ export function DealflowPopup() {
               )}
             </div>
 
-            <p className="mt-3  text-xs text-muted-foreground">
+            <p className="mt-3 text-xs text-muted-foreground">
               This will help us tailor your Papermark experience
             </p>
           </>
@@ -319,7 +293,7 @@ export function DealflowPopup() {
                 router.push("/settings/general#team-survey");
                 handleClose();
               }}
-              className="w-full rounded-lg bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+              className="w-full rounded-lg border border-black bg-white px-3 py-2 text-sm font-medium text-black transition-colors hover:bg-gray-50"
             >
               Go to Team Survey
             </button>
