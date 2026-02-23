@@ -5,10 +5,8 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { ArrowLeftIcon, CheckCircleIcon, XIcon } from "lucide-react";
+import { CheckCircleIcon, XIcon } from "lucide-react";
 import { toast } from "sonner";
-
-import Link from "next/link";
 
 const DEAL_TYPE_OPTIONS = [
   { value: "startup-fundraising", label: "Startup Fundraising" },
@@ -180,13 +178,6 @@ export function DealflowPopup() {
     setIsOpen(false);
   };
 
-  const handleBack = () => {
-    setStep(1);
-    setDealType(null);
-    setDealSize(null);
-    setShowOtherInput(false);
-  };
-
   const getDealSizeQuestion = () => {
     switch (dealType) {
       case "startup-fundraising":
@@ -205,7 +196,7 @@ export function DealflowPopup() {
 
   return (
     <div className="fixed bottom-4 right-4 z-50 w-full max-w-sm animate-in fade-in slide-in-from-bottom-4 duration-300">
-      <div className="rounded-lg border bg-background p-4 shadow-lg">
+      <div className="rounded-lg border-2 border-black bg-background p-4 shadow-lg">
         {step === 1 ? (
           <>
             <div className="mb-4 flex items-start justify-between">
@@ -320,10 +311,18 @@ export function DealflowPopup() {
             </div>
 
             <p className="mb-4 text-sm text-muted-foreground">
-              Your next payment will be minus $20.
+              You can find and update your responses in settings.
             </p>
 
-           
+            <button
+              onClick={() => {
+                router.push("/settings/general#team-survey");
+                handleClose();
+              }}
+              className="w-full rounded-lg bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            >
+              Go to Team Survey
+            </button>
           </>
         )}
       </div>

@@ -176,7 +176,7 @@ export function SurveySettings() {
   };
 
   return (
-    <Card>
+    <Card id="team-survey">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
