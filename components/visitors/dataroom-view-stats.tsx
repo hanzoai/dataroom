@@ -1,6 +1,10 @@
 import Link from "next/link";
 
+import { useState } from "react";
+
 import {
+  ArrowUpRightIcon,
+  ChevronRightIcon,
   DownloadCloudIcon,
   FileCheckIcon,
   FileIcon,
@@ -12,9 +16,8 @@ import {
   DocumentViewStats,
   useDataroomViewDocumentStats,
 } from "@/lib/swr/use-dataroom-view-document-stats";
-import { durationFormat, timeAgo } from "@/lib/utils";
+import { cn, durationFormat, timeAgo } from "@/lib/utils";
 
-import { Button } from "@/components/ui/button";
 import { Gauge } from "@/components/ui/gauge";
 import {
   Popover,
@@ -42,12 +45,13 @@ export function DataroomViewStats({
     dataroomId,
   });
 
-  const { documentStats, loading: statsLoading } =
-    useDataroomViewDocumentStats({
+  const { documentStats, loading: statsLoading } = useDataroomViewDocumentStats(
+    {
       dataroomId,
       dataroomViewId: viewId,
       enabled: isExpanded,
-    });
+    },
+  );
 
   const statsMap = new Map<string, DocumentViewStats>();
   documentStats?.forEach((s) => {
@@ -202,13 +206,20 @@ export function DataroomViewStats({
           return null;
         })
       ) : documentViews === undefined ? (
-        <TableRow>
+        <TableRow className="[&>td]:py-3">
           <TableCell>
             <Skeleton className="h-6 w-24" />
           </TableCell>
           <TableCell>
             <Skeleton className="h-6 w-16" />
           </TableCell>
+          <TableCell>
+            <Skeleton className="h-6 w-6 rounded-full" />
+          </TableCell>
+          <TableCell>
+            <Skeleton className="h-6 w-16" />
+          </TableCell>
+          <TableCell />
         </TableRow>
       ) : null}
     </>
@@ -230,48 +241,56 @@ function DocumentViewRow({
   dataroomViewId: string;
   timestamp: Date;
 }) {
+  const [showPageByPage, setShowPageByPage] = useState(false);
+  const hasPages = stats && stats.totalPages > 0;
+
   return (
     <>
-      <TableRow>
+      <TableRow className="[&>td]:py-3">
         <TableCell>
           <div className="flex items-center gap-x-4 overflow-visible">
             <FileCheckIcon className="h-5 w-5 shrink-0 text-[#fb7a00]" />
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-3">
-                <span className="truncate">Viewed {view.document.name}</span>
-                {statsLoading ? (
-                  <div className="flex items-center gap-2">
-                    <Skeleton className="h-4 w-14" />
-                    <Skeleton className="h-6 w-6 rounded-full" />
-                  </div>
-                ) : stats ? (
-                  <div className="flex items-center gap-2">
-                    <span className="shrink-0 text-xs text-muted-foreground">
-                      {durationFormat(stats.totalDuration)}
-                    </span>
-                    <Gauge
-                      value={stats.completionRate}
-                      size={"xs"}
-                      showValue={true}
-                    />
-                  </div>
-                ) : null}
-              </div>
-              {stats && stats.totalPages > 0 && (
-                <div className="mt-1">
-                  <DocumentPageChart
-                    dataroomId={dataroomId}
-                    dataroomViewId={dataroomViewId}
-                    documentViewId={view.id}
-                    documentId={view.document.id}
-                    totalPages={stats.totalPages}
-                    downloadType={view.downloadType}
-                    downloadMetadata={view.downloadMetadata}
-                  />
-                </div>
-              )}
+
+            <div className="flex items-center gap-x-2">
+              <span className="truncate">Viewed {view.document.name}</span>
+              <Link
+                href={`/documents/${view.document.id}`}
+                className="shrink-0 text-muted-foreground transition-colors hover:text-foreground"
+              >
+                <ArrowUpRightIcon className="h-4 w-4" />
+              </Link>
             </div>
+            {hasPages && (
+              <button
+                onClick={() => setShowPageByPage((prev) => !prev)}
+                className="flex shrink-0 items-center gap-0.5 text-xs text-muted-foreground transition-colors hover:text-foreground"
+              >
+                <ChevronRightIcon
+                  className={cn(
+                    "h-3 w-3 transition-transform",
+                    showPageByPage && "rotate-90",
+                  )}
+                />
+                <span className="hidden sm:inline">page-by-page</span>
+              </button>
+            )}
           </div>
+        </TableCell>
+        <TableCell>
+          {statsLoading ? (
+            <Skeleton className="h-4 w-14" />
+          ) : stats ? (
+            <span className="text-sm text-muted-foreground">
+              {durationFormat(stats.totalDuration)}
+            </span>
+          ) : null}
+        </TableCell>
+        <TableCell>
+          {statsLoading ? (
+            <Skeleton className="h-6 w-6 rounded-full" />
+          ) : stats ? (
+            <Gauge value={stats.completionRate} size={"xs"} showValue={true} />
+          ) : null}
         </TableCell>
         <TableCell>
           <TimestampTooltip
@@ -287,33 +306,44 @@ function DocumentViewRow({
             </time>
           </TimestampTooltip>
         </TableCell>
-        <TableCell className="table-cell">
-          <div className="flex items-center justify-end space-x-4">
-            <Button size={"sm"} variant={"link"}>
-              <Link href={`/documents/${view.document.id}`}>See document</Link>
-            </Button>
-          </div>
-        </TableCell>
+        <TableCell />
       </TableRow>
+      {showPageByPage && hasPages && (
+        <TableRow>
+          <TableCell colSpan={5} className="p-0 px-4 pb-3 pt-0">
+            <DocumentPageChart
+              dataroomId={dataroomId}
+              dataroomViewId={dataroomViewId}
+              documentViewId={view.id}
+              documentId={view.document.id}
+              totalPages={stats.totalPages}
+              downloadType={view.downloadType}
+              downloadMetadata={view.downloadMetadata}
+            />
+          </TableCell>
+        </TableRow>
+      )}
     </>
   );
 }
 
-function UploadRow({
-  upload,
-  timestamp,
-}: {
-  upload: any;
-  timestamp: Date;
-}) {
+function UploadRow({ upload, timestamp }: { upload: any; timestamp: Date }) {
   return (
-    <TableRow>
+    <TableRow className="[&>td]:py-3">
       <TableCell>
         <div className="flex items-center gap-x-4 overflow-visible">
           <UploadCloudIcon className="h-5 w-5 text-[#fb7a00]" />
-          Uploaded {upload.originalFilename}
+          <span className="truncate">Uploaded {upload.originalFilename}</span>
+          <Link
+            href={`/documents/${upload.documentId}`}
+            className="shrink-0 text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <ArrowUpRightIcon className="h-4 w-4" />
+          </Link>
         </div>
       </TableCell>
+      <TableCell />
+      <TableCell />
       <TableCell>
         <TimestampTooltip
           timestamp={timestamp}
@@ -328,32 +358,28 @@ function UploadRow({
           </time>
         </TimestampTooltip>
       </TableCell>
-      <TableCell className="table-cell">
-        <div className="flex items-center justify-end space-x-4">
-          <Button size={"sm"} variant={"link"}>
-            <Link href={`/documents/${upload.documentId}`}>See document</Link>
-          </Button>
-        </div>
-      </TableCell>
+      <TableCell />
     </TableRow>
   );
 }
 
-function DownloadRow({
-  view,
-  timestamp,
-}: {
-  view: any;
-  timestamp: Date;
-}) {
+function DownloadRow({ view, timestamp }: { view: any; timestamp: Date }) {
   return (
-    <TableRow>
+    <TableRow className="[&>td]:py-3">
       <TableCell>
         <div className="flex items-center gap-x-4 overflow-visible">
           <DownloadCloudIcon className="h-5 w-5 text-[#fb7a00]" />
-          Downloaded {view.document.name}
+          <span className="truncate">Downloaded {view.document.name}</span>
+          <Link
+            href={`/documents/${view.document.id}`}
+            className="shrink-0 text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <ArrowUpRightIcon className="h-4 w-4" />
+          </Link>
         </div>
       </TableCell>
+      <TableCell />
+      <TableCell />
       <TableCell>
         <TimestampTooltip
           timestamp={timestamp}
@@ -368,13 +394,7 @@ function DownloadRow({
           </time>
         </TimestampTooltip>
       </TableCell>
-      <TableCell className="table-cell">
-        <div className="flex items-center justify-end space-x-4">
-          <Button size={"sm"} variant={"link"}>
-            <Link href={`/documents/${view.document.id}`}>See document</Link>
-          </Button>
-        </div>
-      </TableCell>
+      <TableCell />
     </TableRow>
   );
 }
@@ -392,7 +412,7 @@ function BulkDownloadRow({
     bulkGroup.metadata?.documents && bulkGroup.metadata.documents.length > 0;
 
   return (
-    <TableRow>
+    <TableRow className="[&>td]:py-3">
       <TableCell>
         <div className="flex items-center gap-x-4 overflow-visible">
           <DownloadCloudIcon className="h-5 w-5 text-[#fb7a00]" />
@@ -460,6 +480,8 @@ function BulkDownloadRow({
           </span>
         </div>
       </TableCell>
+      <TableCell />
+      <TableCell />
       <TableCell>
         <TimestampTooltip
           timestamp={timestamp}
@@ -474,7 +496,7 @@ function BulkDownloadRow({
           </time>
         </TimestampTooltip>
       </TableCell>
-      <TableCell className="table-cell"></TableCell>
+      <TableCell />
     </TableRow>
   );
 }

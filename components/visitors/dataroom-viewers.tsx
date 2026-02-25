@@ -60,18 +60,24 @@ export default function DataroomViewersTable({
         <h2 className="mb-2 md:mb-4">All dataroom visitors</h2>
       </div>
       <div className="rounded-md border">
-        <Table>
+        <Table className="table-fixed">
           <TableHeader>
             <TableRow className="*:whitespace-nowrap *:font-medium hover:bg-transparent">
               <TableHead>Name</TableHead>
-              <TableHead>Last Viewed</TableHead>
-              <TableHead className="text-center sm:text-right"></TableHead>
+              <TableHead className="w-[120px]">
+                {expandedViewerIds.size > 0 ? "View Duration" : null}
+              </TableHead>
+              <TableHead className="w-[140px]">
+                {expandedViewerIds.size > 0 ? "View Completion" : null}
+              </TableHead>
+              <TableHead className="w-[120px]">Last Viewed</TableHead>
+              <TableHead className="w-[48px]" />
             </TableRow>
           </TableHeader>
           <TableBody>
             {viewers?.length === 0 && (
               <TableRow>
-                <TableCell colSpan={3}>
+                <TableCell colSpan={5}>
                   <div className="flex h-40 w-full items-center justify-center">
                     <p>No Data Available</p>
                   </div>
@@ -135,6 +141,8 @@ export default function DataroomViewersTable({
                           </div>
                         </div>
                       </TableCell>
+                      <TableCell />
+                      <TableCell />
                       {/* Last Viewed */}
                       <TableCell className="text-sm text-muted-foreground">
                         {viewer.lastViewedAt ? (
@@ -172,14 +180,15 @@ export default function DataroomViewersTable({
                       ? viewer.views.map((view: any) => (
                           <CollapsibleContent asChild key={view.id}>
                             <>
-                              <TableRow key={view.id}>
+                              <TableRow key={view.id} className="[&>td]:py-3">
                                 <TableCell>
                                   <div className="flex items-center gap-x-4 overflow-visible">
                                     <MailOpenIcon className="h-5 w-5 text-[#fb7a00]" />
                                     Accessed {viewer.dataroomName} dataroom
                                   </div>
                                 </TableCell>
-
+                                <TableCell />
+                                <TableCell />
                                 <TableCell>
                                   <TimestampTooltip
                                     timestamp={view.viewedAt}
@@ -196,18 +205,22 @@ export default function DataroomViewersTable({
                                     </time>
                                   </TimestampTooltip>
                                 </TableCell>
-                                <TableCell className="table-cell"></TableCell>
+                                <TableCell />
                               </TableRow>
 
                               {view.downloadedAt ? (
-                                <TableRow key={`download-${view.id}`}>
+                                <TableRow
+                                  key={`download-${view.id}`}
+                                  className="[&>td]:py-3"
+                                >
                                   <TableCell>
                                     <div className="flex items-center gap-x-4 overflow-visible">
                                       <DownloadCloudIcon className="h-5 w-5 text-cyan-500 hover:text-cyan-600" />
                                       Downloaded {viewer.dataroomName} dataroom
                                     </div>
                                   </TableCell>
-
+                                  <TableCell />
+                                  <TableCell />
                                   <TableCell>
                                     <TimestampTooltip
                                       timestamp={view.downloadedAt}
@@ -224,7 +237,7 @@ export default function DataroomViewersTable({
                                       </time>
                                     </TimestampTooltip>
                                   </TableCell>
-                                  <TableCell className="table-cell"></TableCell>
+                                  <TableCell />
                                 </TableRow>
                               ) : null}
 
@@ -245,11 +258,17 @@ export default function DataroomViewersTable({
                 <TableCell className="min-w-[100px]">
                   <Skeleton className="h-6 w-full" />
                 </TableCell>
-                <TableCell className="min-w-[450px]">
-                  <Skeleton className="h-6 w-full" />
+                <TableCell>
+                  <Skeleton className="h-6 w-14" />
                 </TableCell>
                 <TableCell>
+                  <Skeleton className="h-6 w-6 rounded-full" />
+                </TableCell>
+                <TableCell className="min-w-[100px]">
                   <Skeleton className="h-6 w-24" />
+                </TableCell>
+                <TableCell>
+                  <Skeleton className="h-6 w-6" />
                 </TableCell>
               </TableRow>
             )}
