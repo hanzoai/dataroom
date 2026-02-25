@@ -50,8 +50,41 @@ export default async function handle(
         return res.status(403).end("Unauthorized to access this team");
       }
 
+      const dataroom = await prisma.dataroom.findUnique({
+        where: { id: dataroomId, teamId },
+        select: { id: true },
+      });
+
+      if (!dataroom) {
+        return res.status(403).end("Unauthorized to access this dataroom");
+      }
+
+      const view = await prisma.view.findUnique({
+        where: { id: viewId, dataroomId },
+        select: { id: true },
+      });
+
+      if (!view) {
+        return res.status(403).end("Unauthorized to access this view");
+      }
+
       // If documentViewId and documentId are provided, return per-page stats
       if (documentViewId && documentId) {
+        const documentView = await prisma.view.findUnique({
+          where: {
+            id: documentViewId,
+            dataroomId,
+            viewType: "DOCUMENT_VIEW",
+          },
+          select: { id: true },
+        });
+
+        if (!documentView) {
+          return res
+            .status(403)
+            .end("Unauthorized to access this document view");
+        }
+
         const duration = await getViewPageDuration({
           documentId,
           viewId: documentViewId,
