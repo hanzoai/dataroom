@@ -27,7 +27,7 @@ export default function ViewerUploadZone({
   children: React.ReactNode;
   onUploadStart: (uploads: { fileName: string; progress: number }[]) => void;
   onUploadProgress: (index: number, progress: number) => void;
-  onUploadComplete: (documentData: DocumentData) => void;
+  onUploadComplete: (documentData: DocumentData, index: number) => void;
   onUploadRejected: (rejected: { fileName: string; message: string }[]) => void;
   viewerData: {
     id: string;
@@ -134,8 +134,7 @@ export default function ViewerUploadZone({
           numPages: numPages,
         };
 
-        // Complete the upload by calling the provided callback
-        onUploadComplete(documentData);
+        onUploadComplete(documentData, index);
 
         onUploadProgress(index, 100); // Mark upload as complete
 
