@@ -24,8 +24,10 @@ export function useDataroomViewDocumentStats({
   const teamInfo = useTeam();
   const teamId = teamInfo?.currentTeam?.id;
 
+  const canFetch = !!(enabled && teamId && dataroomId && dataroomViewId);
+
   const { data, error } = useSWR<{ documentStats: DocumentViewStats[] }>(
-    enabled && teamId && dataroomId && dataroomViewId
+    canFetch
       ? `/api/teams/${teamId}/datarooms/${dataroomId}/views/${dataroomViewId}/document-stats`
       : null,
     fetcher,
@@ -37,7 +39,7 @@ export function useDataroomViewDocumentStats({
 
   return {
     documentStats: data?.documentStats,
-    loading: enabled ? !error && !data : false,
+    loading: canFetch && !error && !data,
     error,
   };
 }
@@ -63,8 +65,12 @@ export function useDataroomDocumentPageStats({
   const teamInfo = useTeam();
   const teamId = teamInfo?.currentTeam?.id;
 
-  const { data, error } = useSWR<{ duration: { data: PageDurationData[] } }>(
+  const canFetch = !!(
     enabled && teamId && dataroomId && dataroomViewId && documentViewId && documentId
+  );
+
+  const { data, error } = useSWR<{ duration: { data: PageDurationData[] } }>(
+    canFetch
       ? `/api/teams/${teamId}/datarooms/${dataroomId}/views/${dataroomViewId}/document-stats?documentViewId=${documentViewId}&documentId=${documentId}`
       : null,
     fetcher,
@@ -76,7 +82,7 @@ export function useDataroomDocumentPageStats({
 
   return {
     duration: data?.duration,
-    loading: enabled ? !error && !data : false,
+    loading: canFetch && !error && !data,
     error,
   };
 }
