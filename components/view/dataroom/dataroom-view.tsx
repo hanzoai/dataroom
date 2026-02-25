@@ -286,7 +286,7 @@ export default function DataroomView({
 
   if (submitted) {
     return (
-      <PendingUploadsProvider>
+      <PendingUploadsProvider linkId={link.id} dataroomId={dataroom?.id}>
         <div
           className="min-h-screen bg-white"
           style={{ backgroundColor: dataroomViewBackgroundColor ?? undefined }}
