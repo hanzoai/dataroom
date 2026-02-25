@@ -91,18 +91,24 @@ export default function DataroomVisitorsTable({
         </Button>
       </div>
       <div className="rounded-md border">
-        <Table>
+        <Table className="table-fixed">
           <TableHeader>
             <TableRow className="*:whitespace-nowrap *:font-medium hover:bg-transparent">
               <TableHead>Name</TableHead>
-              <TableHead>Last Viewed</TableHead>
-              <TableHead className="text-center sm:text-right"></TableHead>
+              <TableHead className="w-[120px]">
+                {expandedViewIds.size > 0 ? "View Duration" : null}
+              </TableHead>
+              <TableHead className="w-[140px]">
+                {expandedViewIds.size > 0 ? "View Completion" : null}
+              </TableHead>
+              <TableHead className="w-[120px]">Last Viewed</TableHead>
+              <TableHead className="w-[48px]" />
             </TableRow>
           </TableHeader>
           <TableBody>
             {views?.length === 0 && hiddenFromPause === 0 && (
               <TableRow>
-                <TableCell colSpan={3}>
+                <TableCell colSpan={5}>
                   <div className="flex h-40 w-full items-center justify-center">
                     <p>No views yet. Try sharing a link.</p>
                   </div>
@@ -112,7 +118,7 @@ export default function DataroomVisitorsTable({
             {isPaused && hiddenFromPause > 0 && (
               <>
                 <TableRow>
-                  <TableCell colSpan={3} className="text-left sm:text-center">
+                  <TableCell colSpan={5} className="text-left sm:text-center">
                     <div className="flex flex-col items-start justify-center gap-2 sm:flex-row sm:items-center">
                       <span className="flex items-center gap-x-1">
                         <AlertTriangleIcon className="inline-block h-4 w-4 text-orange-500" />
@@ -203,6 +209,8 @@ export default function DataroomVisitorsTable({
                           </div>
                         </div>
                       </TableCell>
+                      <TableCell />
+                      <TableCell />
                       {/* Last Viewed */}
                       <TableCell className="text-sm text-muted-foreground">
                         <TimestampTooltip
@@ -231,7 +239,7 @@ export default function DataroomVisitorsTable({
                     <CollapsibleContent asChild>
                       <>
                         <TableRow>
-                          <TableCell colSpan={3}>
+                          <TableCell colSpan={5}>
                             <DataroomVisitorCustomFields
                               viewId={view.id}
                               teamId={view.teamId!}
@@ -240,14 +248,15 @@ export default function DataroomVisitorsTable({
                             <DataroomVisitorUserAgent viewId={view.id} />
                           </TableCell>
                         </TableRow>
-                        <TableRow key={view.id}>
+                        <TableRow key={view.id} className="[&>td]:py-3">
                           <TableCell>
                             <div className="flex items-center gap-x-4 overflow-visible">
                               <MailOpenIcon className="h-5 w-5 text-[#fb7a00]" />
                               Accessed {view.dataroomName} dataroom
                             </div>
                           </TableCell>
-
+                          <TableCell />
+                          <TableCell />
                           <TableCell>
                             <TimestampTooltip
                               timestamp={view.viewedAt}
@@ -262,18 +271,22 @@ export default function DataroomVisitorsTable({
                               </time>
                             </TimestampTooltip>
                           </TableCell>
-                          <TableCell className="table-cell"></TableCell>
+                          <TableCell />
                         </TableRow>
 
                         {view.downloadedAt ? (
-                          <TableRow key={`download-item-${view.id}`}>
+                          <TableRow
+                            key={`download-item-${view.id}`}
+                            className="[&>td]:py-3"
+                          >
                             <TableCell>
                               <div className="flex items-center gap-x-4 overflow-visible">
                                 <DownloadCloudIcon className="h-5 w-5 text-cyan-500 hover:text-cyan-600" />
                                 Downloaded {view.dataroomName} dataroom
                               </div>
                             </TableCell>
-
+                            <TableCell />
+                            <TableCell />
                             <TableCell>
                               <TimestampTooltip
                                 timestamp={view.downloadedAt}
@@ -290,7 +303,7 @@ export default function DataroomVisitorsTable({
                                 </time>
                               </TimestampTooltip>
                             </TableCell>
-                            <TableCell className="table-cell"></TableCell>
+                            <TableCell />
                           </TableRow>
                         ) : null}
 
@@ -309,11 +322,17 @@ export default function DataroomVisitorsTable({
                 <TableCell className="min-w-[100px]">
                   <Skeleton className="h-6 w-full" />
                 </TableCell>
-                <TableCell className="min-w-[450px]">
-                  <Skeleton className="h-6 w-full" />
+                <TableCell>
+                  <Skeleton className="h-6 w-14" />
                 </TableCell>
                 <TableCell>
+                  <Skeleton className="h-6 w-6 rounded-full" />
+                </TableCell>
+                <TableCell className="min-w-[100px]">
                   <Skeleton className="h-6 w-24" />
+                </TableCell>
+                <TableCell>
+                  <Skeleton className="h-6 w-6" />
                 </TableCell>
               </TableRow>
             )}
@@ -353,6 +372,8 @@ const VisitorBlurred = () => {
           </div>
         </div>
       </TableCell>
+      <TableCell />
+      <TableCell />
       {/* Last Viewed */}
       <TableCell className="text-sm text-muted-foreground">
         <time
