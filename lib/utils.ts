@@ -351,6 +351,20 @@ export const nanoid = customAlphabet(
   7,
 ); // 7-character random string
 
+const nanoidSlug = customAlphabet(
+  "0123456789abcdefghijklmnopqrstuvwxyz",
+  12,
+);
+
+/**
+ * CJK-safe slugify: falls back to a nanoid when @sindresorhus/slugify
+ * strips all characters (e.g. for purely CJK filenames / folder names).
+ */
+export function safeSlugify(input: string): string {
+  const slug = slugify(input);
+  return slug.length > 0 ? slug : nanoidSlug();
+}
+
 export const daysLeft = (
   accountCreationDate: Date,
   maxDays: number,
@@ -635,7 +649,7 @@ export const getBreadcrumbPath = (path: string[]) => {
   return [
     { name: "Home", pathLink: "/documents" },
     ...segments.map((segment, index) => {
-      currentPath += `/${slugify(segment)}`;
+      currentPath += `/${safeSlugify(segment)}`;
       return {
         name: segment,
         pathLink: currentPath,
