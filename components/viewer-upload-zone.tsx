@@ -179,16 +179,14 @@ export default function ViewerUploadZone({
         />
 
         {isDragActive && (
-          <div className="sticky top-1/2 z-50 -translate-y-1/2 px-2">
-            <div className="flex justify-center">
-              <div className="inline-flex flex-col rounded-lg bg-background/95 px-6 py-4 text-center ring-1 ring-gray-900/5 dark:bg-gray-900/95 dark:ring-white/10">
-                <span className="font-medium text-foreground">
-                  Drop your file(s) here
-                </span>
-                <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                  Only *.pdf, *.doc, *.docx, *.xls, *.xlsx, *.csv, *.ods files
-                </p>
-              </div>
+          <div className="flex h-full items-center justify-center">
+            <div className="inline-flex flex-col rounded-lg bg-background/95 px-6 py-4 text-center ring-1 ring-gray-900/5 dark:bg-gray-900/95 dark:ring-white/10">
+              <span className="font-medium text-foreground">
+                Drop your file(s) here
+              </span>
+              <p className="mt-1 text-xs leading-5 text-muted-foreground">
+                Only *.pdf, *.xls, *.xlsx, *.csv, *.tsv, *.ods files
+              </p>
             </div>
           </div>
         )}

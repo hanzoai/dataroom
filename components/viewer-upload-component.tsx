@@ -1,11 +1,14 @@
 import { useRef, useState } from "react";
 
+import { FileUp } from "lucide-react";
 import { toast } from "sonner";
 
 import { usePendingUploads } from "@/context/pending-uploads-context";
 import { DocumentData } from "@/lib/documents/create-document";
 import { newId } from "@/lib/id-helper";
+import { cn } from "@/lib/utils";
 
+import { Progress } from "@/components/ui/progress";
 import ViewerUploadZone from "@/components/viewer-upload-zone";
 
 export function ViewerUploadComponent({
@@ -100,12 +103,20 @@ export function ViewerUploadComponent({
 
       const result = await response.json();
 
+      // Determine if the file needs trigger processing (PDF, docs, slides)
+      // Images and Excel/CSV files are ready immediately after upload
+      const FILE_TYPES_NEEDING_PROCESSING = ["pdf", "docs", "slides"];
+      const needsProcessing =
+        result.document?.fileType &&
+        FILE_TYPES_NEEDING_PROCESSING.includes(result.document.fileType);
+
       // Update pending upload with real document data
       if (pendingId && result.document) {
         updatePendingUpload(pendingId, {
-          status: "processing", // Keep as processing until pages are ready
+          status: needsProcessing ? "processing" : "complete",
           documentId: result.document.id,
           dataroomDocumentId: result.document.dataroomDocumentId,
+          documentVersionId: result.document.documentVersionId,
           fileType: result.document.fileType,
         });
       }
@@ -126,59 +137,79 @@ export function ViewerUploadComponent({
     }
   };
 
+  const isUploading = uploads.length > 0;
+
   return (
-    <div className="p-4">
-      <h1 className="mb-4 text-xl font-bold">Upload Documents</h1>
-
-      <ViewerUploadZone
-        onUploadStart={handleUploadStart}
-        onUploadProgress={handleUploadProgress}
-        onUploadComplete={handleUploadComplete}
-        onUploadRejected={(rejected) => setRejectedFiles(rejected)}
-        viewerData={viewerData}
-        teamId={teamId}
-      >
-        <div className="rounded-lg border-2 border-dashed border-gray-300 p-8 text-center">
-          <p>Drag & drop files here, or click to select files</p>
-          <p className="mt-2 text-sm text-gray-500">
-            Supported file types: PDF, Word, Excel, CSV
-          </p>
-
-          {/* Display current uploads */}
-          {uploads.length > 0 && (
-            <div className="mt-4">
-              <h3 className="font-medium">Uploads</h3>
-              <ul className="mt-2 space-y-2">
-                {uploads.map((upload, index) => (
-                  <li key={index} className="text-sm">
-                    {upload.fileName} - {upload.progress}%
-                    <div className="mt-1 h-1 rounded-full bg-gray-200">
-                      <div
-                        className="h-1 rounded-full bg-blue-500"
-                        style={{ width: `${upload.progress}%` }}
-                      />
-                    </div>
-                  </li>
-                ))}
-              </ul>
+    <ViewerUploadZone
+      onUploadStart={handleUploadStart}
+      onUploadProgress={handleUploadProgress}
+      onUploadComplete={handleUploadComplete}
+      onUploadRejected={(rejected) => setRejectedFiles(rejected)}
+      viewerData={viewerData}
+      teamId={teamId}
+    >
+      {isUploading ? (
+        <div className="space-y-3">
+          {uploads.map((upload, index) => (
+            <div
+              key={index}
+              className="flex items-center gap-3 rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-800"
+            >
+              <FileUp className="h-5 w-5 shrink-0 text-muted-foreground" />
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-medium text-foreground">
+                  {upload.fileName}
+                </p>
+                <div className="mt-1.5 flex items-center gap-2">
+                  <Progress
+                    value={upload.progress}
+                    className="h-1.5 flex-1"
+                  />
+                  <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
+                    {upload.progress}%
+                  </span>
+                </div>
+              </div>
             </div>
-          )}
-
-          {/* Display rejected files */}
-          {rejectedFiles.length > 0 && (
-            <div className="mt-4">
-              <h3 className="font-medium text-red-500">Rejected Files</h3>
-              <ul className="mt-2 space-y-1">
-                {rejectedFiles.map((file, index) => (
-                  <li key={index} className="text-sm text-red-500">
-                    {file.fileName}: {file.message}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          ))}
         </div>
-      </ViewerUploadZone>
-    </div>
+      ) : (
+        <div
+          className={cn(
+            "flex flex-col items-center justify-center rounded-xl border-2 border-dashed px-6 py-10 text-center transition-colors",
+            "border-gray-300 hover:border-gray-400 dark:border-gray-600 dark:hover:border-gray-500",
+          )}
+        >
+          <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
+            <FileUp className="h-5 w-5 text-muted-foreground" />
+          </div>
+          <p className="text-sm font-medium text-foreground">
+            Drag & drop files here, or click to select files
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Supported file types: PDF, Excel, CSV, Images
+          </p>
+        </div>
+      )}
+
+      {/* Display rejected files */}
+      {rejectedFiles.length > 0 && (
+        <div className="mt-3 rounded-lg border border-red-200 bg-red-50 p-3 dark:border-red-800 dark:bg-red-950/30">
+          <p className="text-xs font-medium text-red-600 dark:text-red-400">
+            Some files were rejected:
+          </p>
+          <ul className="mt-1.5 space-y-0.5">
+            {rejectedFiles.map((file, index) => (
+              <li
+                key={index}
+                className="text-xs text-red-500 dark:text-red-400"
+              >
+                {file.fileName}: {file.message}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </ViewerUploadZone>
   );
 }
