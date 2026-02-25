@@ -133,6 +133,11 @@ export const PendingUploadsProvider = ({
           upload.id === id ? { ...upload, ...update } : upload,
         ),
       );
+      setPersistedUploads((prev) =>
+        prev.map((upload) =>
+          upload.id === id ? { ...upload, ...update } : upload,
+        ),
+      );
     },
     [],
   );

@@ -31,18 +31,22 @@ export function ViewerUploadComponent({
 
   const { addPendingUpload, updatePendingUpload } = usePendingUploads();
 
-  // Map file names to their pending upload IDs
-  const pendingUploadIds = useRef<Map<string, string>>(new Map());
+  // Map batch index to pending upload ID (index is stable and unique per batch)
+  const pendingUploadIds = useRef<Map<number, string>>(new Map());
+  const expectedCountRef = useRef(0);
+  const completedCountRef = useRef(0);
 
   const handleUploadStart = (
     newUploads: { fileName: string; progress: number }[],
   ) => {
     setUploads(newUploads);
 
-    // Add each file to pending uploads context
-    newUploads.forEach((upload) => {
+    expectedCountRef.current = newUploads.length;
+    completedCountRef.current = 0;
+
+    newUploads.forEach((upload, index) => {
       const pendingId = newId("pending");
-      pendingUploadIds.current.set(upload.fileName, pendingId);
+      pendingUploadIds.current.set(index, pendingId);
 
       addPendingUpload({
         id: pendingId,
@@ -61,8 +65,7 @@ export function ViewerUploadComponent({
       if (updated[index]) {
         updated[index] = { ...updated[index], progress };
 
-        // Update pending upload progress
-        const pendingId = pendingUploadIds.current.get(updated[index].fileName);
+        const pendingId = pendingUploadIds.current.get(index);
         if (pendingId) {
           updatePendingUpload(pendingId, { progress });
         }
@@ -71,8 +74,11 @@ export function ViewerUploadComponent({
     });
   };
 
-  const handleUploadComplete = async (documentData: DocumentData) => {
-    const pendingId = pendingUploadIds.current.get(documentData.name);
+  const handleUploadComplete = async (
+    documentData: DocumentData,
+    index: number,
+  ) => {
+    const pendingId = pendingUploadIds.current.get(index);
 
     // Update status to processing (file uploaded to S3, now being processed by backend)
     if (pendingId) {
@@ -121,18 +127,24 @@ export function ViewerUploadComponent({
         });
       }
 
-      // Notify parent component of successful upload
-      onUploadSuccess?.();
+      completedCountRef.current += 1;
+      if (completedCountRef.current >= expectedCountRef.current) {
+        onUploadSuccess?.();
+      }
     } catch (error) {
       console.error("Error processing upload:", error);
       toast.error((error as Error).message || "Failed to upload document");
 
-      // Update pending upload with error status
       if (pendingId) {
         updatePendingUpload(pendingId, {
           status: "error",
           errorMessage: (error as Error).message || "Failed to upload document",
         });
+      }
+
+      completedCountRef.current += 1;
+      if (completedCountRef.current >= expectedCountRef.current) {
+        onUploadSuccess?.();
       }
     }
   };
