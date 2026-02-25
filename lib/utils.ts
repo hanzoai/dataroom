@@ -2,6 +2,7 @@ import { NextRouter } from "next/router";
 
 import slugify from "@sindresorhus/slugify";
 import { upload } from "@vercel/blob/client";
+import { transliterate } from "transliteration";
 import bcrypt from "bcryptjs";
 import * as chrono from "chrono-node";
 import { type ClassValue, clsx } from "clsx";
@@ -351,18 +352,15 @@ export const nanoid = customAlphabet(
   7,
 ); // 7-character random string
 
-const nanoidSlug = customAlphabet(
-  "0123456789abcdefghijklmnopqrstuvwxyz",
-  12,
-);
-
 /**
- * CJK-safe slugify: falls back to a nanoid when @sindresorhus/slugify
- * strips all characters (e.g. for purely CJK filenames / folder names).
+ * CJK-safe slugify: transliterates non-Latin characters (CJK, Cyrillic, etc.)
+ * to their romanized equivalents before slugifying, so the same input always
+ * produces the same slug. e.g. "文件报告" → "wen-jian-bao-gao"
  */
 export function safeSlugify(input: string): string {
   const slug = slugify(input);
-  return slug.length > 0 ? slug : nanoidSlug();
+  if (slug.length > 0) return slug;
+  return slugify(transliterate(input)) || nanoid();
 }
 
 export const daysLeft = (
