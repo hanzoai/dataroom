@@ -110,16 +110,19 @@ export function ViewerUploadComponent({
       }
 
       const result = await response.json();
+      if (!result.document) {
+        throw new Error("Upload response missing document metadata");
+      }
 
       // Determine if the file needs trigger processing (PDF, docs, slides)
       // Images and Excel/CSV files are ready immediately after upload
       const FILE_TYPES_NEEDING_PROCESSING = ["pdf", "docs", "slides"];
-      const needsProcessing =
-        result.document?.fileType &&
-        FILE_TYPES_NEEDING_PROCESSING.includes(result.document.fileType);
+      const needsProcessing = FILE_TYPES_NEEDING_PROCESSING.includes(
+        result.document.fileType,
+      );
 
       // Update pending upload with real document data
-      if (pendingId && result.document) {
+      if (pendingId) {
         updatePendingUpload(pendingId, {
           status: needsProcessing ? "processing" : "complete",
           documentId: result.document.id,
