@@ -12,8 +12,13 @@ import { parsePageId } from "notion-utils";
 import z from "zod";
 
 import { fetchLinkDataByDomainSlug } from "@/lib/api/links/link-data";
+import { getFeatureFlags } from "@/lib/featureFlags";
 import notion from "@/lib/notion";
-import { addSignedUrls, fetchMissingPageReferences } from "@/lib/notion/utils";
+import {
+  addSignedUrls,
+  fetchMissingPageReferences,
+  normalizeRecordMap,
+} from "@/lib/notion/utils";
 import { CustomUser, LinkWithDataroomDocument, NotionTheme } from "@/lib/types";
 
 import LoadingSpinner from "@/components/ui/loading-spinner";
@@ -46,6 +51,7 @@ type DataroomDocumentProps = {
   useAdvancedExcelViewer: boolean;
   useCustomAccessForm: boolean;
   logoOnAccessForm: boolean;
+  textSelectionEnabled?: boolean;
   error?: boolean;
 };
 
@@ -58,6 +64,7 @@ export default function DataroomDocumentViewPage({
   useAdvancedExcelViewer,
   useCustomAccessForm,
   logoOnAccessForm,
+  textSelectionEnabled,
   error,
 }: DataroomDocumentProps) {
   const router = useRouter();
@@ -180,6 +187,7 @@ export default function DataroomDocumentViewPage({
         verifiedEmail={verifiedEmail}
         preview={!!preview}
         logoOnAccessForm={logoOnAccessForm}
+        textSelectionEnabled={textSelectionEnabled}
       />
     </>
   );
@@ -246,6 +254,8 @@ export async function getStaticProps(context: GetStaticPropsContext) {
       recordMap = await notion.getPage(pageId, { signFileUrls: false });
       // Fetch missing page references that are embedded in rich text (e.g., table cells with multiple page links)
       await fetchMissingPageReferences(recordMap);
+      // Normalize double-nested block structures from the Notion API
+      normalizeRecordMap(recordMap);
       // TODO: separately sign the file urls until PR merged and published; ref: https://github.com/NotionX/react-notion-x/issues/580#issuecomment-2542823817
       await addSignedUrls({ recordMap });
     }
@@ -254,6 +264,10 @@ export async function getStaticProps(context: GetStaticPropsContext) {
 
     const { advancedExcelEnabled, ...linkDocument } =
       linkData.dataroomDocument.document;
+
+    // Check feature flags
+    const featureFlags = await getFeatureFlags({ teamId: teamId || undefined });
+    const textSelectionEnabled = featureFlags.textSelection;
 
     return {
       props: {
@@ -295,6 +309,7 @@ export async function getStaticProps(context: GetStaticPropsContext) {
           teamId === "cm9ztf0s70005js04i689gefn" ||
           teamId === "cmk2hnmqh0000k304zcoezt6n",
         logoOnAccessForm: teamId === "cm7nlkrhm0000qgh0nvyrrywr",
+        textSelectionEnabled,
       },
       revalidate: brand || recordMap ? 10 : 60,
     };
