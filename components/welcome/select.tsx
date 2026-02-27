@@ -67,10 +67,11 @@ export default function Select() {
   };
 
   const handleDealTypeSelect = (value: string) => {
+    if (isSubmitting) return;
     setDealType(value);
     setShowOtherInput(false);
     if (value === "project-management") {
-      // If project management, proceed immediately (no deal size needed)
+      setIsSubmitting(true);
       saveSurveyAndProceed(value, null, null);
     }
   };
@@ -83,7 +84,9 @@ export default function Select() {
   };
 
   const handleDealSizeSelect = (value: string) => {
+    if (isSubmitting) return;
     setDealSize(value);
+    setIsSubmitting(true);
     saveSurveyAndProceed(dealType, value, dealTypeOther || null);
   };
 
@@ -94,28 +97,35 @@ export default function Select() {
   ) => {
     setIsSubmitting(true);
 
-    // Save survey data if team exists
-    if (teamInfo?.currentTeam?.id && type) {
-      try {
-        await fetch(`/api/teams/${teamInfo.currentTeam.id}/survey`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            dealType: type,
-            dealTypeOther: otherText,
-            dealSize: size,
-          }),
-        });
-      } catch (error) {
-        console.error("Failed to save survey:", error);
-      }
-    }
+    try {
+      if (teamInfo?.currentTeam?.id && type) {
+        const res = await fetch(
+          `/api/teams/${teamInfo.currentTeam.id}/survey`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              dealType: type,
+              dealTypeOther: otherText,
+              dealSize: size,
+            }),
+          },
+        );
 
-    // Navigate to the appropriate upload page
-    router.push({
-      pathname: "/welcome",
-      query: { type: selectedDoc },
-    });
+        if (!res.ok) {
+          throw new Error(`Survey save failed: ${res.status}`);
+        }
+      }
+
+      await router.push({
+        pathname: "/welcome",
+        query: { type: selectedDoc },
+      });
+    } catch (error) {
+      console.error("Failed to save survey:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const getDealSizeQuestion = () => {
