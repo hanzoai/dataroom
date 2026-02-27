@@ -362,6 +362,17 @@ export default function DataroomViewer({
     searchQuery,
   ]);
 
+  const filteredPendingUploads = useMemo(
+    () =>
+      pendingUploadsForFolder.filter((u) => {
+        if (u.status !== "complete") return true;
+        return !mixedItems.some(
+          (item) => "versions" in item && item.id === u.documentId,
+        );
+      }),
+    [pendingUploadsForFolder, mixedItems],
+  );
+
   const renderItem = (item: FolderOrDocument) => {
     if ("versions" in item) {
       const isProcessing =
@@ -702,36 +713,18 @@ export default function DataroomViewer({
                     role="list"
                     className="-mx-4 space-y-4 overflow-auto p-4"
                   >
-                    {/* Show pending uploads at the top of the current folder.
-                        Complete uploads are shown unless the real document
-                        already exists in mixedItems (e.g. after page refresh). */}
                     {!searchQuery &&
-                      pendingUploadsForFolder
-                        .filter((u) => {
-                          if (u.status !== "complete") return true;
-                          // Hide completed uploads whose real document is already in the list
-                          return !mixedItems.some(
-                            (item) =>
-                              "versions" in item && item.id === u.documentId,
-                          );
-                        })
-                        .map((pendingUpload) => (
-                          <li key={pendingUpload.id}>
-                            <PendingDocumentCard
-                              pendingUpload={pendingUpload}
-                              linkId={linkId}
-                            />
-                          </li>
-                        ))}
+                      filteredPendingUploads.map((pendingUpload) => (
+                        <li key={pendingUpload.id}>
+                          <PendingDocumentCard
+                            pendingUpload={pendingUpload}
+                            linkId={linkId}
+                          />
+                        </li>
+                      ))}
 
                     {mixedItems.length === 0 &&
-                    pendingUploadsForFolder.filter((u) => {
-                      if (u.status !== "complete") return true;
-                      return !mixedItems.some(
-                        (item) =>
-                          "versions" in item && item.id === u.documentId,
-                      );
-                    }).length === 0 ? (
+                    filteredPendingUploads.length === 0 ? (
                       <li className="py-6 text-center text-[var(--viewer-subtle-text)]">
                         {searchQuery
                           ? "No documents match your search."
