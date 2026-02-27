@@ -661,14 +661,17 @@ export default function DataroomViewer({
 
                 {/* Tabs: Documents / My Uploads */}
                 {viewData?.enableVisitorUpload && hasUploads && (
-                  <div className="mt-4 flex items-center gap-1 border-b border-gray-200 dark:border-gray-700">
+                  <div
+                    className="mt-4 flex items-center gap-1 border-b"
+                    style={{ borderColor: viewerSurfaceTheme.palette.panelBorderColor }}
+                  >
                     <button
                       onClick={() => setActiveTab("documents")}
                       className={cn(
                         "-mb-px border-b-2 px-3 py-2 text-sm font-medium transition-colors",
                         activeTab === "documents"
-                          ? "border-foreground text-foreground"
-                          : "border-transparent text-muted-foreground hover:border-gray-300 hover:text-foreground",
+                          ? "border-[var(--viewer-text)] text-[var(--viewer-text)]"
+                          : "border-transparent text-[var(--viewer-subtle-text)] hover:border-[var(--viewer-panel-border-hover)] hover:text-[var(--viewer-text)]",
                       )}
                     >
                       Documents
@@ -678,13 +681,19 @@ export default function DataroomViewer({
                       className={cn(
                         "-mb-px flex items-center gap-1.5 border-b-2 px-3 py-2 text-sm font-medium transition-colors",
                         activeTab === "my-uploads"
-                          ? "border-foreground text-foreground"
-                          : "border-transparent text-muted-foreground hover:border-gray-300 hover:text-foreground",
+                          ? "border-[var(--viewer-text)] text-[var(--viewer-text)]"
+                          : "border-transparent text-[var(--viewer-subtle-text)] hover:border-[var(--viewer-panel-border-hover)] hover:text-[var(--viewer-text)]",
                       )}
                     >
                       <UploadIcon className="h-3.5 w-3.5" />
                       My Uploads
-                      <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-muted px-1.5 text-xs font-medium">
+                      <span
+                        className="inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-xs font-medium"
+                        style={{
+                          backgroundColor: viewerSurfaceTheme.palette.controlBgColor,
+                          color: viewerSurfaceTheme.palette.mutedTextColor,
+                        }}
+                      >
                         {allUploads.length}
                       </span>
                     </button>
@@ -713,7 +722,7 @@ export default function DataroomViewer({
                     className="-mx-4 space-y-4 overflow-auto p-4"
                   >
                     {allUploads.length === 0 ? (
-                      <li className="py-6 text-center text-muted-foreground">
+                      <li className="py-6 text-center text-[var(--viewer-subtle-text)]">
                         No uploads yet. Upload documents using the &quot;Add
                         Document&quot; button.
                       </li>
