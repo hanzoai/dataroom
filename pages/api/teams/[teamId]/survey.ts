@@ -6,7 +6,6 @@ import { z } from "zod";
 
 import { errorhandler } from "@/lib/errorHandler";
 import prisma from "@/lib/prisma";
-import { getTeamWithUsersAndDocument } from "@/lib/team/helper";
 import { CustomUser } from "@/lib/types";
 
 // Zod schema for survey data - flexible for future options
@@ -24,11 +23,14 @@ const surveyDataSchema = z.object({
     ])
     .optional()
     .nullable(),
-  dealTypeOther: z.string().max(200).optional().nullable(), // Custom text when "other" is selected
+  dealTypeOther: z.string().max(200).optional().nullable(),
   dealSize: z
     .enum(["0-500k", "500k-5m", "5m-10m", "10m-100m", "100m+"])
     .optional()
     .nullable(),
+  dismissed: z.boolean().optional().nullable(),
+  dismissedAt: z.string().datetime().optional().nullable(),
+  dismissedBy: z.string().optional().nullable(),
 });
 
 export type SurveyData = z.infer<typeof surveyDataSchema>;
@@ -46,13 +48,16 @@ export default async function handler(
   const { teamId } = req.query as { teamId: string };
   const userId = (session.user as CustomUser).id;
 
-  try {
-    await getTeamWithUsersAndDocument({
-      teamId,
-      userId,
-      options: {},
-    });
-  } catch (error) {
+  const teamAccess = await prisma.userTeam.findUnique({
+    where: {
+      userId_teamId: {
+        userId,
+        teamId,
+      },
+    },
+  });
+
+  if (!teamAccess) {
     return res.status(403).json({ error: "Forbidden" });
   }
 
@@ -69,6 +74,9 @@ export default async function handler(
         dealType: surveyData.dealType || null,
         dealTypeOther: surveyData.dealTypeOther || null,
         dealSize: surveyData.dealSize || null,
+        dismissed: surveyData.dismissed || false,
+        dismissedAt: surveyData.dismissedAt || null,
+        dismissedBy: surveyData.dismissedBy || null,
       });
     } catch (error) {
       return errorhandler(error, res);
@@ -84,7 +92,8 @@ export default async function handler(
         });
       }
 
-      const { dealType, dealTypeOther, dealSize } = validationResult.data;
+      const { dealType, dealTypeOther, dealSize, dismissed, dismissedAt } =
+        validationResult.data;
 
       // Get current survey data to merge with new data
       const team = await prisma.team.findUnique({
@@ -94,11 +103,25 @@ export default async function handler(
 
       const currentSurveyData = (team?.surveyData as SurveyData) || {};
 
+      const isSurveyComplete =
+        (dealType ?? currentSurveyData.dealType) &&
+        ((dealType ?? currentSurveyData.dealType) === "project-management" ||
+          (dealSize ?? currentSurveyData.dealSize));
+
       const updatedSurveyData: SurveyData = {
         ...currentSurveyData,
         ...(dealType !== undefined && { dealType }),
         ...(dealTypeOther !== undefined && { dealTypeOther }),
         ...(dealSize !== undefined && { dealSize }),
+        ...(dismissed !== undefined && { dismissed }),
+        ...(dismissedAt !== undefined && { dismissedAt }),
+        ...(dismissed && { dismissedBy: userId }),
+        ...(isSurveyComplete &&
+          currentSurveyData.dismissed && {
+            dismissed: null,
+            dismissedAt: null,
+            dismissedBy: null,
+          }),
       };
 
       await prisma.team.update({
