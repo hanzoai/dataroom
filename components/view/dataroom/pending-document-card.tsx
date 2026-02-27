@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 
 import { useEffect } from "react";
+import type { CSSProperties } from "react";
 
 import {
   AlertCircle,
@@ -23,6 +24,7 @@ import { fileIcon } from "@/lib/utils/get-file-icon";
 import { useDocumentProgressStatus } from "@/lib/utils/use-progress-status";
 
 import { Progress } from "@/components/ui/progress";
+import { useViewerSurfaceTheme } from "@/components/view/viewer/viewer-surface-theme";
 
 type FolderInfo = {
   id: string;
@@ -71,6 +73,7 @@ export default function PendingDocumentCard({
   const { theme, systemTheme } = useTheme();
   const router = useRouter();
   const { updatePendingUpload } = usePendingUploads();
+  const { palette } = useViewerSurfaceTheme();
   const isLight =
     theme === "light" || (theme === "system" && systemTheme === "light");
 
@@ -205,13 +208,25 @@ export default function PendingDocumentCard({
   return (
     <div
       className={cn(
-        "group/row relative flex items-center justify-between rounded-lg border-0 p-3 ring-1 transition-all sm:p-4",
-        isError
-          ? "bg-red-50/50 ring-red-200 dark:bg-red-950/20 dark:ring-red-800"
-          : isComplete
-            ? "ring-gray-200 hover:bg-secondary hover:ring-gray-300 dark:bg-secondary dark:ring-gray-700 hover:dark:ring-gray-500"
-            : "bg-blue-50/50 ring-blue-200 dark:bg-blue-950/20 dark:ring-blue-800",
+        "group/row relative flex items-center justify-between rounded-lg border p-3 transition-all sm:p-4",
+        "bg-[var(--viewer-panel-bg)] hover:bg-[var(--viewer-panel-bg-hover)]",
+        "border-[var(--viewer-panel-border)] hover:border-[var(--viewer-panel-border-hover)]",
+        isError && "border-red-400/40",
+        (isUploading || isProcessing) && "opacity-80",
       )}
+      style={
+        {
+          "--viewer-panel-bg": palette.panelBgColor,
+          "--viewer-panel-bg-hover": palette.panelHoverBgColor,
+          "--viewer-panel-border": palette.panelBorderColor,
+          "--viewer-panel-border-hover": palette.panelBorderHoverColor,
+          "--viewer-text": palette.textColor,
+          "--viewer-muted-text": palette.mutedTextColor,
+          "--viewer-subtle-text": palette.subtleTextColor,
+          "--viewer-control-bg": palette.controlBgColor,
+          "--viewer-control-border": palette.controlBorderColor,
+        } as CSSProperties
+      }
     >
       {/* Clickable overlay for opening documents */}
       {isClickable && (
@@ -237,13 +252,13 @@ export default function PendingDocumentCard({
               isLight,
             })
           ) : (
-            <FileIcon className="h-8 w-8 text-muted-foreground opacity-60" />
+            <FileIcon className="h-8 w-8 opacity-60" style={{ color: palette.mutedTextColor }} />
           )}
         </div>
 
         <div className="min-w-0 flex-1 flex-col">
           <div className="flex items-center gap-2">
-            <h2 className="min-w-0 max-w-[300px] truncate text-sm font-semibold leading-6 text-foreground sm:max-w-lg">
+            <h2 className="min-w-0 max-w-[300px] truncate text-sm font-semibold leading-6 text-[var(--viewer-text)] sm:max-w-lg">
               {pendingUpload.name}
             </h2>
             {getStatusIcon()}
@@ -253,20 +268,22 @@ export default function PendingDocumentCard({
               className={cn(
                 "text-xs leading-5",
                 isError
-                  ? "text-red-600 dark:text-red-400"
+                  ? "text-red-500"
                   : isComplete
-                    ? "text-green-600 dark:text-green-400"
-                    : "text-muted-foreground",
+                    ? "text-green-500"
+                    : "text-[var(--viewer-muted-text)]",
               )}
             >
               {getStatusText()}
             </p>
             {folderPath && isComplete && (
               <>
-                <span className="text-xs text-muted-foreground">·</span>
+                <span className="text-xs text-[var(--viewer-subtle-text)]">
+                  ·
+                </span>
                 <button
                   onClick={handleFolderClick}
-                  className="pointer-events-auto z-10 flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
+                  className="pointer-events-auto z-10 flex items-center gap-1 text-xs text-[var(--viewer-muted-text)] transition-colors hover:text-[var(--viewer-text)]"
                 >
                   <FolderIcon className="h-3 w-3" />
                   <span className="max-w-[200px] truncate sm:max-w-[300px]">
@@ -277,8 +294,10 @@ export default function PendingDocumentCard({
             )}
             {folderPath && !isComplete && (
               <>
-                <span className="text-xs text-muted-foreground">·</span>
-                <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                <span className="text-xs text-[var(--viewer-subtle-text)]">
+                  ·
+                </span>
+                <span className="flex items-center gap-1 text-xs text-[var(--viewer-muted-text)]">
                   <FolderIcon className="h-3 w-3" />
                   <span className="max-w-[200px] truncate sm:max-w-[300px]">
                     {folderPath}
