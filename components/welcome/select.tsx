@@ -23,7 +23,7 @@ const DEAL_SIZE_OPTIONS = [
   { value: "0-500k", label: "$0-500K" },
   { value: "500k-5m", label: "$500K-5M" },
   { value: "5m-10m", label: "$5M-10M" },
-  { value: "10m-100m", label: "$10-100M" },
+  { value: "10m-100m", label: "$10M-100M" },
   { value: "100m+", label: "$100M+" },
 ];
 
