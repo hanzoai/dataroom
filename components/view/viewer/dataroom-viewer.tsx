@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import React from "react";
 
 import { ViewerChatPanel } from "@/ee/features/ai/components/viewer-chat-panel";
@@ -190,8 +190,12 @@ export default function DataroomViewer({
   );
 
   // Get pending uploads (in-flight + persisted from server)
-  const { getPendingUploadsForFolder, getAllUploads, hasUploads } =
-    usePendingUploads();
+  const {
+    getPendingUploadsForFolder,
+    getAllUploads,
+    hasUploads,
+    updatePendingUpload,
+  } = usePendingUploads();
   const pendingUploadsForFolder = getPendingUploadsForFolder(folderId);
   const allUploads = getAllUploads();
 
@@ -365,13 +369,36 @@ export default function DataroomViewer({
   const filteredPendingUploads = useMemo(
     () =>
       pendingUploadsForFolder.filter((u) => {
-        if (u.status !== "complete") return true;
+        if (!u.documentId) return true;
         return !mixedItems.some(
           (item) => "versions" in item && item.id === u.documentId,
         );
       }),
     [pendingUploadsForFolder, mixedItems],
   );
+
+  // Fallback reconciliation: if the document is already visible and ready,
+  // mark its pending upload as complete even if realtime status was missed.
+  useEffect(() => {
+    allUploads.forEach((upload) => {
+      if (upload.status !== "processing" || !upload.documentId) return;
+
+      const matchingDocument = documents.find((doc) => doc.id === upload.documentId);
+      if (!matchingDocument) return;
+
+      const primaryVersion = matchingDocument.versions[0];
+      if (!primaryVersion) return;
+
+      const needsProcessing = ["pdf", "docs", "slides"].includes(
+        primaryVersion.type,
+      );
+      const isReady = !needsProcessing || primaryVersion.hasPages;
+
+      if (isReady) {
+        updatePendingUpload(upload.id, { status: "complete" });
+      }
+    });
+  }, [allUploads, documents, updatePendingUpload]);
 
   const renderItem = (item: FolderOrDocument) => {
     if ("versions" in item) {
