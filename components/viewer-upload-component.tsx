@@ -44,6 +44,7 @@ export function ViewerUploadComponent({
 
     expectedCountRef.current = newUploads.length;
     completedCountRef.current = 0;
+    pendingUploadIds.current.clear();
 
     newUploads.forEach((upload, index) => {
       const pendingId = newId("pending");
@@ -130,6 +131,10 @@ export function ViewerUploadComponent({
 
       completedCountRef.current += 1;
       if (completedCountRef.current >= expectedCountRef.current) {
+        setUploads([]);
+        pendingUploadIds.current.clear();
+        expectedCountRef.current = 0;
+        completedCountRef.current = 0;
         onUploadSuccess?.();
       }
     } catch (error) {
@@ -145,6 +150,10 @@ export function ViewerUploadComponent({
 
       completedCountRef.current += 1;
       if (completedCountRef.current >= expectedCountRef.current) {
+        setUploads([]);
+        pendingUploadIds.current.clear();
+        expectedCountRef.current = 0;
+        completedCountRef.current = 0;
         onUploadSuccess?.();
       }
     }
