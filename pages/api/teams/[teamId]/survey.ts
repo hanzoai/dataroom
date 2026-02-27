@@ -77,14 +77,7 @@ export default async function handler(
 
   if (req.method === "POST") {
     try {
-      const { dealType, dealTypeOther, dealSize } = req.body;
-
-      // Validate with Zod
-      const validationResult = surveyDataSchema.safeParse({
-        dealType,
-        dealTypeOther,
-        dealSize,
-      });
+      const validationResult = surveyDataSchema.safeParse(req.body);
 
       if (!validationResult.success) {
         return res.status(400).json({
@@ -92,6 +85,8 @@ export default async function handler(
           details: validationResult.error.errors,
         });
       }
+
+      const { dealType, dealTypeOther, dealSize } = validationResult.data;
 
       // Get current survey data to merge with new data
       const team = await prisma.team.findUnique({
@@ -101,7 +96,6 @@ export default async function handler(
 
       const currentSurveyData = (team?.surveyData as SurveyData) || {};
 
-      // Merge new data with existing data
       const updatedSurveyData: SurveyData = {
         ...currentSurveyData,
         ...(dealType !== undefined && { dealType }),
