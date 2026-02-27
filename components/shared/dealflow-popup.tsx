@@ -54,6 +54,11 @@ export function DealflowPopup() {
         if (response.ok) {
           const data = await response.json();
 
+          if (data.dismissed) {
+            localStorage.setItem(storageKey, "true");
+            return;
+          }
+
           if (!data.dealType) {
             timeoutId = setTimeout(() => {
               setStep(1);
@@ -147,9 +152,32 @@ export function DealflowPopup() {
     setIsOpen(false);
   };
 
-  const handleDismiss = () => {
+  const handleDismiss = async () => {
     localStorage.setItem(storageKey, "true");
     setIsOpen(false);
+
+    toast("Survey dismissed", {
+      description: "You can complete it anytime from Settings → General.",
+      action: {
+        label: "Go to Settings",
+        onClick: () => router.push("/settings/general#team-survey"),
+      },
+    });
+
+    if (teamId) {
+      try {
+        await fetch(`/api/teams/${teamId}/survey`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            dismissed: true,
+            dismissedAt: new Date().toISOString(),
+          }),
+        });
+      } catch (error) {
+        console.error("Failed to save survey dismissal:", error);
+      }
+    }
   };
 
   const getDealSizeQuestion = () => {
