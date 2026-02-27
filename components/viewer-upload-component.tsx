@@ -23,7 +23,7 @@ export function ViewerUploadComponent({
   onUploadSuccess?: () => void;
 }) {
   const [uploads, setUploads] = useState<
-    { fileName: string; progress: number }[]
+    { uploadId: string; fileName: string; progress: number }[]
   >([]);
   const [rejectedFiles, setRejectedFiles] = useState<
     { fileName: string; message: string }[]
@@ -31,24 +31,35 @@ export function ViewerUploadComponent({
 
   const { addPendingUpload, updatePendingUpload } = usePendingUploads();
 
-  // Map batch index to pending upload ID (index is stable and unique per batch)
-  const pendingUploadIds = useRef<Map<number, string>>(new Map());
-  const expectedCountRef = useRef(0);
-  const completedCountRef = useRef(0);
+  // Map each active upload item to its pending upload record
+  const pendingUploadIds = useRef<Map<string, string>>(new Map());
+  const activeUploadIds = useRef<Set<string>>(new Set());
+  const failedCountRef = useRef(0);
+
+  const finalizeSessionIfIdle = () => {
+    if (activeUploadIds.current.size > 0) return;
+    const hasFailures = failedCountRef.current > 0;
+    failedCountRef.current = 0;
+
+    if (!hasFailures) {
+      onUploadSuccess?.();
+    }
+  };
 
   const handleUploadStart = (
-    newUploads: { fileName: string; progress: number }[],
+    newUploads: { uploadId: string; fileName: string; progress: number }[],
   ) => {
-    setUploads(newUploads);
-    setRejectedFiles([]);
+    const isStartingFreshSession = activeUploadIds.current.size === 0;
+    if (isStartingFreshSession) {
+      failedCountRef.current = 0;
+      setRejectedFiles([]);
+    }
+    setUploads((prev) => [...prev, ...newUploads]);
 
-    expectedCountRef.current = newUploads.length;
-    completedCountRef.current = 0;
-    pendingUploadIds.current.clear();
-
-    newUploads.forEach((upload, index) => {
+    newUploads.forEach((upload) => {
+      activeUploadIds.current.add(upload.uploadId);
       const pendingId = newId("pending");
-      pendingUploadIds.current.set(index, pendingId);
+      pendingUploadIds.current.set(upload.uploadId, pendingId);
 
       addPendingUpload({
         id: pendingId,
@@ -61,26 +72,37 @@ export function ViewerUploadComponent({
     });
   };
 
-  const handleUploadProgress = (index: number, progress: number) => {
+  const handleUploadProgress = (uploadId: string, progress: number) => {
     setUploads((prev) => {
-      const updated = [...prev];
-      if (updated[index]) {
-        updated[index] = { ...updated[index], progress };
+      const updated = prev.map((upload) =>
+        upload.uploadId === uploadId ? { ...upload, progress } : upload,
+      );
 
-        const pendingId = pendingUploadIds.current.get(index);
-        if (pendingId) {
-          updatePendingUpload(pendingId, { progress });
-        }
+      const pendingId = pendingUploadIds.current.get(uploadId);
+      if (pendingId) {
+        updatePendingUpload(pendingId, { progress });
       }
+
       return updated;
     });
   };
 
+  const settleUpload = (uploadId: string, failed: boolean) => {
+    if (failed) {
+      failedCountRef.current += 1;
+    }
+
+    activeUploadIds.current.delete(uploadId);
+    pendingUploadIds.current.delete(uploadId);
+    setUploads((prev) => prev.filter((upload) => upload.uploadId !== uploadId));
+    finalizeSessionIfIdle();
+  };
+
   const handleUploadComplete = async (
     documentData: DocumentData,
-    index: number,
+    uploadId: string,
   ) => {
-    const pendingId = pendingUploadIds.current.get(index);
+    const pendingId = pendingUploadIds.current.get(uploadId);
 
     // Update status to processing (file uploaded to S3, now being processed by backend)
     if (pendingId) {
@@ -132,14 +154,7 @@ export function ViewerUploadComponent({
         });
       }
 
-      completedCountRef.current += 1;
-      if (completedCountRef.current >= expectedCountRef.current) {
-        setUploads([]);
-        pendingUploadIds.current.clear();
-        expectedCountRef.current = 0;
-        completedCountRef.current = 0;
-        onUploadSuccess?.();
-      }
+      settleUpload(uploadId, false);
     } catch (error) {
       console.error("Error processing upload:", error);
       toast.error((error as Error).message || "Failed to upload document");
@@ -151,14 +166,7 @@ export function ViewerUploadComponent({
         });
       }
 
-      completedCountRef.current += 1;
-      if (completedCountRef.current >= expectedCountRef.current) {
-        setUploads([]);
-        pendingUploadIds.current.clear();
-        expectedCountRef.current = 0;
-        completedCountRef.current = 0;
-        onUploadSuccess?.();
-      }
+      settleUpload(uploadId, true);
     }
   };
 
@@ -175,9 +183,9 @@ export function ViewerUploadComponent({
     >
       {isUploading ? (
         <div className="space-y-3">
-          {uploads.map((upload, index) => (
+          {uploads.map((upload) => (
             <div
-              key={index}
+              key={upload.uploadId}
               className="flex items-center gap-3 rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-800"
             >
               <FileUp className="h-5 w-5 shrink-0 text-muted-foreground" />
