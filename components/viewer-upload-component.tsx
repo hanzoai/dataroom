@@ -40,6 +40,7 @@ export function ViewerUploadComponent({
     newUploads: { fileName: string; progress: number }[],
   ) => {
     setUploads(newUploads);
+    setRejectedFiles([]);
 
     expectedCountRef.current = newUploads.length;
     completedCountRef.current = 0;
