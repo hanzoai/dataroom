@@ -1,7 +1,9 @@
 import { logger, task } from "@trigger.dev/sdk/v3";
 
 import { sendDownloadReadyEmail } from "@/lib/emails/send-download-ready-email";
+import prisma from "@/lib/prisma";
 import { downloadJobStore } from "@/lib/redis-download-job-store";
+import { constructLinkUrl } from "@/lib/utils/link-url";
 
 // Maximum files per batch (Lambda payload limit)
 const MAX_FILES_PER_BATCH = 500;
@@ -22,21 +24,22 @@ function generateTimestamp(): string {
 }
 
 /**
- * Generate a zip filename in the format: "Dataroom Name-20260202T131428Z"
- * @param dataroomName - The name of the dataroom
- * @param timestamp - The UTC timestamp (shared across all parts)
- * @param partNumber - The part number (1-indexed) (optional)
- * @returns Formatted zip filename without extension
+ * Generate a zip filename.
+ * Full dataroom: "Dataroom Name-20260202T131428Z[-001]"
+ * Folder download: "Dataroom Name-FolderName-20260202T131428Z[-001]"
  */
 function generateZipFileName(
   dataroomName: string,
   timestamp: string,
   partNumber?: number,
+  folderName?: string,
 ): string {
-  // Zero-pad part number to 3 digits
   const paddedPart = partNumber?.toString().padStart(3, "0") ?? "";
+  const base = folderName
+    ? `${dataroomName}-${folderName}-${timestamp}`
+    : `${dataroomName}-${timestamp}`;
 
-  return `${dataroomName}-${timestamp}${paddedPart ? `-${paddedPart}` : ""}`;
+  return `${base}${paddedPart ? `-${paddedPart}` : ""}`;
 }
 
 export type BulkDownloadPayload = {
@@ -78,6 +81,7 @@ export type BulkDownloadPayload = {
   userId?: string;
   emailNotification?: boolean;
   emailAddress?: string;
+  folderName?: string;
 };
 
 export const bulkDownloadTask = task({
@@ -98,6 +102,7 @@ export const bulkDownloadTask = task({
       viewerEmail,
       emailNotification,
       emailAddress,
+      folderName,
     } = payload;
 
     logger.info("Starting bulk download task", {
@@ -125,7 +130,7 @@ export const bulkDownloadTask = task({
           fileCount: fileKeys.length,
         });
 
-        const downloadUrl = await processDownloadBatch({
+        const result = await processDownloadBatch({
           teamId,
           folderStructure,
           fileKeys,
@@ -134,7 +139,12 @@ export const bulkDownloadTask = task({
           dataroomName,
           zipPartNumber: 1,
           totalParts: 1,
-          zipFileName: generateZipFileName(dataroomName, downloadTimestamp),
+          zipFileName: generateZipFileName(
+            dataroomName,
+            downloadTimestamp,
+            undefined,
+            folderName,
+          ),
         });
 
         // Update job with completed status
@@ -142,14 +152,14 @@ export const bulkDownloadTask = task({
           status: "COMPLETED",
           processedFiles: fileKeys.length,
           progress: 100,
-          downloadUrls: [downloadUrl],
+          downloadUrls: [result.downloadUrl],
+          downloadS3Keys: result.s3KeyInfo ? [result.s3KeyInfo] : undefined,
           completedAt: new Date().toISOString(),
           expiresAt: new Date(
             Date.now() + 3 * 24 * 60 * 60 * 1000,
           ).toISOString(), // 3 days
         });
 
-        // Send email notification if requested
         if (emailNotification && emailAddress && completedJob) {
           await sendEmailNotification({
             emailAddress,
@@ -158,18 +168,19 @@ export const bulkDownloadTask = task({
             teamId,
             dataroomId,
             expiresAt: completedJob.expiresAt,
+            linkId: payload.linkId,
           });
         }
 
         logger.info("Bulk download task completed successfully", {
           jobId,
-          downloadUrls: [downloadUrl],
+          downloadUrls: [result.downloadUrl],
         });
 
         return {
           success: true,
           jobId,
-          downloadUrls: [downloadUrl],
+          downloadUrls: [result.downloadUrl],
         };
       }
 
@@ -185,6 +196,8 @@ export const bulkDownloadTask = task({
       const batches = splitFilesIntoBatches(folderStructure, fileKeys);
       const totalBatches = batches.length;
       const downloadUrls: string[] = [];
+      const downloadS3Keys: { bucket: string; key: string; region: string }[] =
+        [];
 
       logger.info("Created file batches", {
         jobId,
@@ -209,7 +222,7 @@ export const bulkDownloadTask = task({
         });
 
         try {
-          const downloadUrl = await processDownloadBatch({
+          const result = await processDownloadBatch({
             teamId,
             folderStructure: batch.folderStructure,
             fileKeys: batch.fileKeys,
@@ -222,10 +235,14 @@ export const bulkDownloadTask = task({
               dataroomName,
               downloadTimestamp,
               batchNumber,
+              folderName,
             ),
           });
 
-          downloadUrls.push(downloadUrl);
+          downloadUrls.push(result.downloadUrl);
+          if (result.s3KeyInfo) {
+            downloadS3Keys.push(result.s3KeyInfo);
+          }
 
           // Calculate progress
           const processedFiles = batches
@@ -242,7 +259,7 @@ export const bulkDownloadTask = task({
           logger.info(`Batch ${batchNumber} completed`, {
             jobId,
             batchNumber,
-            downloadUrl,
+            downloadUrl: result.downloadUrl,
             progress,
           });
         } catch (batchError) {
@@ -264,11 +281,11 @@ export const bulkDownloadTask = task({
         processedFiles: fileKeys.length,
         progress: 100,
         downloadUrls,
+        downloadS3Keys: downloadS3Keys.length > 0 ? downloadS3Keys : undefined,
         completedAt: new Date().toISOString(),
         expiresAt: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 days
       });
 
-      // Send email notification if requested
       if (emailNotification && emailAddress && completedJob) {
         await sendEmailNotification({
           emailAddress,
@@ -277,6 +294,7 @@ export const bulkDownloadTask = task({
           teamId,
           dataroomId,
           expiresAt: completedJob.expiresAt,
+          linkId: payload.linkId,
         });
       }
 
@@ -321,6 +339,11 @@ interface ProcessDownloadBatchParams {
   expirationHours?: number;
 }
 
+interface ProcessDownloadBatchResult {
+  downloadUrl: string;
+  s3KeyInfo?: { bucket: string; key: string; region: string };
+}
+
 async function processDownloadBatch({
   teamId,
   folderStructure,
@@ -332,7 +355,7 @@ async function processDownloadBatch({
   totalParts,
   zipFileName,
   expirationHours = 72,
-}: ProcessDownloadBatchParams): Promise<string> {
+}: ProcessDownloadBatchParams): Promise<ProcessDownloadBatchResult> {
   const baseUrl = process.env.NEXTAUTH_URL || "https://app.papermark.com";
   const internalApiKey = process.env.INTERNAL_API_KEY;
 
@@ -366,7 +389,7 @@ async function processDownloadBatch({
   }
 
   const data = await response.json();
-  return data.downloadUrl;
+  return { downloadUrl: data.downloadUrl, s3KeyInfo: data.s3KeyInfo };
 }
 
 interface FileBatch {
@@ -501,6 +524,7 @@ async function sendEmailNotification({
   teamId,
   dataroomId,
   expiresAt,
+  linkId,
 }: {
   emailAddress: string;
   dataroomName: string;
@@ -508,17 +532,32 @@ async function sendEmailNotification({
   teamId: string;
   dataroomId: string;
   expiresAt?: string;
+  linkId?: string;
 }): Promise<void> {
   try {
-    // Link to the dataroom documents page where user can see and download their files
-    const baseUrl = process.env.NEXTAUTH_URL || "https://app.papermark.com";
-    const downloadUrl = `${baseUrl}/datarooms/${dataroomId}/documents`;
+    let downloadUrl: string;
+    let isViewer = false;
+
+    if (linkId) {
+      const link = await prisma.link.findUnique({
+        where: { id: linkId },
+        select: { id: true, domainId: true, domainSlug: true, slug: true },
+      });
+      downloadUrl = link
+        ? `${constructLinkUrl(link)}/downloads`
+        : `${process.env.NEXT_PUBLIC_MARKETING_URL || "https://www.papermark.com"}/view/${linkId}/downloads`;
+      isViewer = true;
+    } else {
+      const baseUrl = process.env.NEXTAUTH_URL || "https://app.papermark.com";
+      downloadUrl = `${baseUrl}/datarooms/${dataroomId}/documents`;
+    }
 
     await sendDownloadReadyEmail({
       to: emailAddress,
       dataroomName,
       downloadUrl,
       expiresAt,
+      isViewer,
     });
     logger.info("Download ready email sent", {
       jobId,

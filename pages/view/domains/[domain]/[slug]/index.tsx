@@ -15,7 +15,11 @@ import z from "zod";
 import { fetchLinkDataByDomainSlug } from "@/lib/api/links/link-data";
 import { getFeatureFlags } from "@/lib/featureFlags";
 import notion from "@/lib/notion";
-import { addSignedUrls, fetchMissingPageReferences } from "@/lib/notion/utils";
+import {
+  addSignedUrls,
+  fetchMissingPageReferences,
+  normalizeRecordMap,
+} from "@/lib/notion/utils";
 import {
   CustomUser,
   LinkWithDataroom,
@@ -141,12 +145,18 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
         recordMap = await notion.getPage(pageId, { signFileUrls: false });
         // Fetch missing page references that are embedded in rich text (e.g., table cells with multiple page links)
         await fetchMissingPageReferences(recordMap);
+        // Normalize double-nested block structures from the Notion API
+        normalizeRecordMap(recordMap);
         await addSignedUrls({ recordMap });
       }
 
       const { team, teamId, advancedExcelEnabled, ...linkDocument } =
         link.document;
       const teamPlan = team?.plan || "free";
+
+      // Check feature flags for document links
+      const docFeatureFlags = await getFeatureFlags({ teamId: teamId || undefined });
+      const textSelectionEnabled = docFeatureFlags.textSelection;
 
       return {
         props: {
@@ -186,6 +196,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
           logoOnAccessForm:
             teamId === "cm7nlkrhm0000qgh0nvyrrywr" ||
             teamId === "clup33by90000oewh4rfvp2eg",
+          textSelectionEnabled,
         },
         revalidate: 10,
       };
@@ -219,9 +230,10 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
 
       const { teamId } = link.dataroom;
 
-      // Check if dataroomIndex feature flag is enabled
+      // Check feature flags
       const featureFlags = await getFeatureFlags({ teamId });
       const dataroomIndexEnabled = featureFlags.dataroomIndex;
+      const textSelectionEnabled = featureFlags.textSelection;
 
       const lastUpdatedAt = link.dataroom.documents.reduce(
         (max: number, doc: any) => {
@@ -269,6 +281,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
             teamId === "cm7nlkrhm0000qgh0nvyrrywr" ||
             teamId === "clup33by90000oewh4rfvp2eg",
           dataroomIndexEnabled,
+          textSelectionEnabled,
         },
         revalidate: 10,
       };
@@ -296,6 +309,7 @@ export default function ViewPage({
   useCustomAccessForm,
   logoOnAccessForm,
   dataroomIndexEnabled,
+  textSelectionEnabled,
   error,
 }: {
   linkData: DocumentLinkData | DataroomLinkData | WorkflowLinkData;
@@ -317,6 +331,7 @@ export default function ViewPage({
   useCustomAccessForm: boolean;
   logoOnAccessForm: boolean;
   dataroomIndexEnabled?: boolean;
+  textSelectionEnabled?: boolean;
   error?: boolean;
 }) {
   const router = useRouter();
@@ -463,6 +478,7 @@ export default function ViewPage({
           token={storedToken}
           verifiedEmail={verifiedEmail}
           logoOnAccessForm={logoOnAccessForm}
+          textSelectionEnabled={textSelectionEnabled}
         />
       </>
     );
@@ -543,6 +559,7 @@ export default function ViewPage({
           preview={!!preview}
           logoOnAccessForm={logoOnAccessForm}
           dataroomIndexEnabled={dataroomIndexEnabled}
+          textSelectionEnabled={textSelectionEnabled}
         />
       </>
     );

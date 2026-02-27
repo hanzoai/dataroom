@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import slugify from "@sindresorhus/slugify";
+import { safeSlugify } from "@/lib/utils";
 import { getServerSession } from "next-auth/next";
 
 import prisma from "@/lib/prisma";
@@ -109,7 +109,12 @@ export default async function handle(
     const userId = (session.user as CustomUser).id;
 
     const { teamId } = req.query as { teamId: string };
-    const { name, path } = req.body as { name: string; path: string };
+    const { name, path, icon, color } = req.body as {
+      name: string;
+      path: string;
+      icon?: string;
+      color?: string;
+    };
 
     const parentFolderPath = path ? "/" + path : "/";
 
@@ -147,8 +152,8 @@ export default async function handle(
       const MAX_RETRIES = 50;
 
       let childFolderPath = path
-        ? "/" + path + "/" + slugify(folderName)
-        : "/" + slugify(folderName);
+        ? "/" + path + "/" + safeSlugify(folderName)
+        : "/" + safeSlugify(folderName);
 
       while (counter <= MAX_RETRIES) {
         const existingFolder = await prisma.folder.findUnique({
@@ -164,8 +169,8 @@ export default async function handle(
 
         folderName = `${name} (${counter})`;
         childFolderPath = path
-          ? "/" + path + "/" + slugify(folderName)
-          : "/" + slugify(folderName);
+          ? "/" + path + "/" + safeSlugify(folderName)
+          : "/" + safeSlugify(folderName);
         counter++;
       }
 
@@ -182,6 +187,8 @@ export default async function handle(
           path: childFolderPath,
           parentId: parentFolder?.id ?? null,
           teamId: teamId,
+          icon: icon ?? null,
+          color: color ?? null,
         },
       });
 
