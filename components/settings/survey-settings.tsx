@@ -59,7 +59,7 @@ export function SurveySettings() {
           setDealSize(data.dealSize);
           
           // Set initial step based on existing data
-          if (data.dealType && data.dealSize) {
+          if (data.dealType && (data.dealSize || data.dealType === "project-management")) {
             setStep(3); // Show completed state
           } else if (data.dealType) {
             setEditDealType(data.dealType);
