@@ -15,7 +15,11 @@ import z from "zod";
 import { fetchLinkDataById } from "@/lib/api/links/link-data";
 import { getFeatureFlags } from "@/lib/featureFlags";
 import notion from "@/lib/notion";
-import { addSignedUrls, fetchMissingPageReferences } from "@/lib/notion/utils";
+import {
+  addSignedUrls,
+  fetchMissingPageReferences,
+  normalizeRecordMap,
+} from "@/lib/notion/utils";
 import {
   CustomUser,
   LinkWithDataroom,
@@ -68,6 +72,7 @@ export interface ViewPageProps {
   logoOnAccessForm: boolean;
   dataroomIndexEnabled?: boolean;
   annotationsEnabled?: boolean;
+  textSelectionEnabled?: boolean;
 }
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
@@ -153,6 +158,8 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
           recordMap = await notion.getPage(pageId, { signFileUrls: false });
           // Fetch missing page references that are embedded in rich text (e.g., table cells with multiple page links)
           await fetchMissingPageReferences(recordMap);
+          // Normalize double-nested block structures from the Notion API
+          normalizeRecordMap(recordMap);
           await addSignedUrls({ recordMap });
         } catch (notionError) {
           const message =
@@ -175,6 +182,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
       // Check feature flags for document links
       const featureFlags = await getFeatureFlags({ teamId });
       const annotationsEnabled = featureFlags.annotations;
+      const textSelectionEnabled = featureFlags.textSelection;
 
       return {
         props: {
@@ -216,6 +224,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
             teamId === "cm7nlkrhm0000qgh0nvyrrywr" ||
             teamId === "clup33by90000oewh4rfvp2eg",
           annotationsEnabled,
+          textSelectionEnabled,
         },
         revalidate: brand || recordMap ? 10 : 60,
       };
@@ -253,6 +262,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
       const featureFlags = await getFeatureFlags({ teamId });
       const dataroomIndexEnabled = featureFlags.dataroomIndex;
       const annotationsEnabled = featureFlags.annotations;
+      const textSelectionEnabled = featureFlags.textSelection;
 
       const lastUpdatedAt = link.dataroom.documents.reduce(
         (max: number, doc: any) => {
@@ -301,6 +311,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
             teamId === "clup33by90000oewh4rfvp2eg",
           dataroomIndexEnabled,
           annotationsEnabled,
+          textSelectionEnabled,
         },
         revalidate: 10,
       };
@@ -330,6 +341,7 @@ export default function ViewPage({
   logoOnAccessForm,
   dataroomIndexEnabled,
   annotationsEnabled,
+  textSelectionEnabled,
   error,
   notionError,
 }: ViewPageProps & { error?: boolean; notionError?: boolean }) {
@@ -482,6 +494,7 @@ export default function ViewPage({
           token={storedToken}
           verifiedEmail={verifiedEmail}
           annotationsEnabled={annotationsEnabled}
+          textSelectionEnabled={textSelectionEnabled}
         />
       </>
     );
@@ -562,6 +575,7 @@ export default function ViewPage({
           previewToken={previewToken}
           preview={!!preview}
           dataroomIndexEnabled={dataroomIndexEnabled}
+          textSelectionEnabled={textSelectionEnabled}
         />
       </>
     );

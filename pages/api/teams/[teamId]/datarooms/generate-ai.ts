@@ -4,10 +4,10 @@ import { isTeamPausedById } from "@/ee/features/billing/cancellation/lib/is-team
 import { FolderTemplate } from "@/ee/features/templates/constants/dataroom-templates";
 import { getLimits } from "@/ee/limits/server";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import slugify from "@sindresorhus/slugify";
 import { getServerSession } from "next-auth/next";
 
 import { newId } from "@/lib/id-helper";
+import { safeSlugify } from "@/lib/utils";
 import prisma from "@/lib/prisma";
 import { CustomUser } from "@/lib/types";
 
@@ -49,19 +49,28 @@ export default async function handle(
       });
     }
 
-    // Validate folder structure
+    // Validate folder structure (max 2 levels: top-level + 1 subfolder level)
     const validateFolder = (folder: any, depth = 0): boolean => {
-      if (depth >= 5) return false;
+      if (depth >= 2) return false; // Max 2 levels deep
       if (!folder.name || typeof folder.name !== "string") return false;
       if (folder.name.length > 255) return false;
       if (folder.subfolders) {
         if (!Array.isArray(folder.subfolders)) return false;
+        // Limit subfolders to 5 per folder
+        if (folder.subfolders.length > 5) return false;
         return folder.subfolders.every((sub: any) =>
           validateFolder(sub, depth + 1),
         );
       }
       return true;
     };
+
+    // Limit top-level folders to 8
+    if (folders.length > 8) {
+      return res.status(400).json({
+        message: "Too many top-level folders (maximum 8)",
+      });
+    }
 
     if (!folders.every((folder) => validateFolder(folder))) {
       return res.status(400).json({
@@ -173,7 +182,7 @@ export default async function handle(
           parentId: string | null = null,
         ): Promise<void> => {
           for (const folder of folders) {
-            const folderPath = parentPath + "/" + slugify(folder.name);
+            const folderPath = parentPath + "/" + safeSlugify(folder.name);
 
             // Create the folder
             const createdFolder = await tx.dataroomFolder.create({

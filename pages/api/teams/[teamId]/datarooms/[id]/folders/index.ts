@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { DefaultPermissionStrategy, ItemType } from "@prisma/client";
-import slugify from "@sindresorhus/slugify";
+import { safeSlugify } from "@/lib/utils";
 import { getServerSession } from "next-auth/next";
 
 import prisma from "@/lib/prisma";
@@ -267,6 +267,8 @@ export default async function handle(
             dataroomId: true,
             orderIndex: true,
             hierarchicalIndex: true,
+            icon: true,
+            color: true,
             createdAt: true,
             updatedAt: true,
             _count: {
@@ -309,6 +311,8 @@ export default async function handle(
                 dataroomId: true,
                 orderIndex: true,
                 hierarchicalIndex: true,
+                icon: true,
+                color: true,
                 createdAt: true,
                 updatedAt: true,
                 documents: {
@@ -361,6 +365,8 @@ export default async function handle(
           dataroomId: true,
           orderIndex: true,
           hierarchicalIndex: true,
+          icon: true,
+          color: true,
           createdAt: true,
           updatedAt: true,
           documents: {
@@ -434,7 +440,12 @@ export default async function handle(
       id: string;
     };
 
-    const { name, path } = req.body as { name: string; path?: string };
+    const { name, path, icon, color } = req.body as {
+      name: string;
+      path?: string;
+      icon?: string;
+      color?: string;
+    };
 
     const parentFolderPath = path ? "/" + path : "/";
 
@@ -480,7 +491,7 @@ export default async function handle(
       const basePath =
         pathSegments.length > 0 ? "/" + pathSegments.join("/") + "/" : "/";
 
-      let childFolderPath = basePath + slugify(folderName);
+      let childFolderPath = basePath + safeSlugify(folderName);
 
       while (counter <= MAX_RETRIES) {
         const existingFolder = await prisma.dataroomFolder.findUnique({
@@ -493,7 +504,7 @@ export default async function handle(
         });
         if (!existingFolder) break;
         folderName = `${name} (${counter})`;
-        childFolderPath = basePath + slugify(folderName);
+        childFolderPath = basePath + safeSlugify(folderName);
         counter++;
       }
 
@@ -510,6 +521,8 @@ export default async function handle(
           path: childFolderPath,
           parentId: parentFolder?.id ?? null,
           dataroomId: dataroomId,
+          icon: icon ?? null,
+          color: color ?? null,
         },
       });
 
