@@ -71,11 +71,9 @@ export default async function handler(
         dealSize: surveyData.dealSize || null,
       });
     } catch (error) {
-      errorhandler(error, res);
+      return errorhandler(error, res);
     }
-  }
-
-  if (req.method === "POST") {
+  } else if (req.method === "POST") {
     try {
       const validationResult = surveyDataSchema.safeParse(req.body);
 
@@ -112,9 +110,9 @@ export default async function handler(
 
       return res.status(200).json({ success: true });
     } catch (error) {
-      errorhandler(error, res);
+      return errorhandler(error, res);
     }
+  } else {
+    return res.status(405).json({ error: "Method not allowed" });
   }
-
-  return res.status(405).json({ error: "Method not allowed" });
 }
