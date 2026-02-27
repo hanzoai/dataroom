@@ -310,7 +310,9 @@ export default function Select() {
           {/* Skip option */}
           <button
             onClick={() => saveSurveyAndProceed(dealType, null, dealTypeOther || null)}
-            className="text-xs text-muted-foreground underline-offset-4 hover:underline"
+            disabled={isSubmitting}
+            aria-disabled={isSubmitting}
+            className="text-xs text-muted-foreground underline-offset-4 hover:underline disabled:opacity-50 disabled:pointer-events-none"
           >
             Skip
           </button>
