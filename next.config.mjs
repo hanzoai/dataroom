@@ -92,6 +92,21 @@ const nextConfig = {
         ],
       },
       {
+        source: "/login",
+        has: [
+          {
+            type: "query",
+            key: "next",
+          },
+        ],
+        headers: [
+          {
+            key: "X-Robots-Tag",
+            value: "noindex, nofollow",
+          },
+        ],
+      },
+      {
         // Embed routes - allow iframe embedding
         source: "/view/:path*/embed",
         headers: [
