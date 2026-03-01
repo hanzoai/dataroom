@@ -1,6 +1,6 @@
 import { type Session } from "next-auth";
 
-import hanko from "@/lib/hanko";
+import getHanko from "@/lib/hanko";
 import prisma from "@/lib/prisma";
 import { CustomUser } from "@/lib/types";
 
@@ -18,7 +18,7 @@ export async function startServerPasskeyRegistration({
     select: { id: true, name: true },
   });
 
-  const createOptions = await hanko.registration.initialize({
+  const createOptions = await getHanko().registration.initialize({
     userId: user!.id,
     username: user!.name || user!.id,
   });
@@ -37,7 +37,7 @@ export async function finishServerPasskeyRegistration({
 }) {
   if (!session) throw new Error("Not logged in");
 
-  await hanko.registration.finalize(credential);
+  await getHanko().registration.finalize(credential);
 
   // const sessionUser = session.user as CustomUser;
 

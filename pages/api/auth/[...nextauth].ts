@@ -16,7 +16,7 @@ import { qstash } from "@/lib/cron";
 import { dub } from "@/lib/dub";
 import { isBlacklistedEmail } from "@/lib/edge-config/blacklist";
 import { sendVerificationRequestEmail } from "@/lib/emails/send-verification-request";
-import hanko from "@/lib/hanko";
+import getHanko from "@/lib/hanko";
 import { jackson } from "@/lib/jackson";
 import prisma from "@/lib/prisma";
 import { CustomUser } from "@/lib/types";
@@ -131,7 +131,7 @@ export const authOptions: NextAuthOptions = {
       },
     }),
     PasskeyProvider({
-      tenant: hanko,
+      tenant: getHanko(),
       async authorize({ userId }) {
         const user = await prisma.user.findUnique({ where: { id: userId } });
         if (!user) return null;
