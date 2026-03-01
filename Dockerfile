@@ -6,7 +6,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 COPY prisma ./prisma
 ENV HUSKY=0
-RUN npm ci --legacy-peer-deps
+RUN npm install --legacy-peer-deps
 
 FROM base AS builder
 WORKDIR /app
