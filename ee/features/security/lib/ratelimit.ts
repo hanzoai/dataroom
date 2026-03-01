@@ -1,35 +1,21 @@
-import { Ratelimit } from "@upstash/ratelimit";
-
-import { redis } from "@/lib/redis";
+import { ratelimit } from "@/lib/redis";
 
 /**
  * Simple rate limiters for core endpoints
  */
 export const rateLimiters = {
-  // 3 auth attempts per hour per IP
-  auth: new Ratelimit({
-    redis,
-    limiter: Ratelimit.slidingWindow(10, "20 m"),
-    prefix: "rl:auth",
-    enableProtection: true,
-    analytics: true,
-  }),
+  // 10 auth attempts per 20 minutes per IP
+  auth: ratelimit(10, "20 m"),
 
-  // 5 billing operations per hour per IP
-  billing: new Ratelimit({
-    redis,
-    limiter: Ratelimit.slidingWindow(10, "20 m"),
-    prefix: "rl:billing",
-    enableProtection: true,
-    analytics: true,
-  }),
+  // 10 billing operations per 20 minutes per IP
+  billing: ratelimit(10, "20 m"),
 };
 
 /**
  * Apply rate limiting with error handling
  */
 export async function checkRateLimit(
-  limiter: Ratelimit,
+  limiter: ReturnType<typeof ratelimit>,
   identifier: string,
 ): Promise<{ success: boolean; remaining?: number; error?: string }> {
   try {

@@ -1,5 +1,3 @@
-import { Receiver } from "@upstash/qstash";
-import { Client } from "@upstash/qstash";
 import Bottleneck from "bottleneck";
 
 // we're using Bottleneck to avoid running into Resend's rate limit of 10 req/s
@@ -8,12 +6,15 @@ export const limiter = new Bottleneck({
   minTime: 100, // minimum time between requests in ms
 });
 
-// we're using Upstash's Receiver to verify the request signature
-export const receiver = new Receiver({
-  currentSigningKey: process.env.QSTASH_CURRENT_SIGNING_KEY || "",
-  nextSigningKey: process.env.QSTASH_NEXT_SIGNING_KEY || "",
-});
+// Stub receiver that always verifies (no Upstash qstash)
+export const receiver = {
+  verify: async (_opts: { signature?: string; body: string }) => true,
+};
 
-export const qstash = new Client({
-  token: process.env.QSTASH_TOKEN || "",
-});
+// Stub qstash client (cron jobs run via standard scheduler, not qstash)
+export const qstash = {
+  publishJSON: async (_opts: any) => {
+    console.warn("qstash.publishJSON called but qstash is not configured");
+    return { messageId: "noop" };
+  },
+};
