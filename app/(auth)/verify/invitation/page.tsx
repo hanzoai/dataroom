@@ -49,11 +49,11 @@ export const metadata: Metadata = {
 export default async function VerifyInvitationPage({
   searchParams,
 }: {
-  searchParams: {
+  searchParams: Promise<{
     token?: string;
-  };
+  }>;
 }) {
-  const { token: jwtToken } = searchParams;
+  const { token: jwtToken } = await searchParams;
 
   if (!jwtToken) {
     return <NotFound />;
