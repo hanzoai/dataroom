@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { Suspense } from "react";
 
 import { GTMComponent } from "@/components/gtm-component";
 
@@ -42,7 +43,9 @@ export default function LoginPage() {
   return (
     <>
       <GTMComponent />
-      <LoginClient />
+      <Suspense>
+        <LoginClient />
+      </Suspense>
     </>
   );
 }
