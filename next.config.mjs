@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: process.env.DOCKER_OUTPUT ? "standalone" : undefined,
   reactStrictMode: true,
   pageExtensions: ["js", "jsx", "ts", "tsx", "mdx"],
   transpilePackages: ["@boxyhq/saml-jackson"],
