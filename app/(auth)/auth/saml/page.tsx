@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { Suspense } from "react";
 
 import SAMLCallbackClient from "./page-client";
 
@@ -8,5 +9,9 @@ export const metadata: Metadata = {
 };
 
 export default function SAMLCallbackPage() {
-  return <SAMLCallbackClient />;
+  return (
+    <Suspense>
+      <SAMLCallbackClient />
+    </Suspense>
+  );
 }
