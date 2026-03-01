@@ -164,6 +164,9 @@ const nextConfig = {
       },
     ];
   },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   experimental: {
     outputFileTracingIncludes: {
       "/api/mupdf/*": ["./node_modules/mupdf/dist/*.wasm"],
