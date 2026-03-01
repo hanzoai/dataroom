@@ -1,5 +1,5 @@
 import { ERRORS, Lock, Locker, RequestRelease } from "@tus/utils";
-import { Redis } from "@upstash/redis";
+import type Redis from "ioredis";
 
 /**
  * RedisLocker is an implementation of the Locker interface that manages locks in key-value store using Redis.
@@ -75,21 +75,17 @@ class RedisLock implements Lock {
     }
 
     const lockKey = `tus-lock-${id}`;
-    const lock = await this.locker.redisClient.set(lockKey, "locked", {
-      nx: true,
-      px: this.timeout,
-    });
+    // SET key value NX PX timeout
+    const lock = await this.locker.redisClient.set(lockKey, "locked", "PX", this.timeout, "NX");
 
-    if (lock) {
+    if (lock === "OK") {
       // Register a release request flag in Redis
-      await this.locker.redisClient.set(`requestRelease:${lockKey}`, "true", {
-        px: this.timeout,
-      });
+      await this.locker.redisClient.set(`requestRelease:${lockKey}`, "true", "PX", this.timeout);
       return true;
     }
 
     // Check if the release was requested
-    const releaseRequestStr: string | null = await this.locker.redisClient.get(
+    const releaseRequestStr = await this.locker.redisClient.get(
       `requestRelease:${lockKey}`,
     );
     if (releaseRequestStr === "true") {
