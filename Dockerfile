@@ -14,6 +14,11 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV DOCKER_OUTPUT=1
+# Dummy env vars to prevent module-scope crashes during Next.js build
+# (OpenAI, Hanko, etc. initialize clients at import time)
+ENV OPENAI_API_KEY=build-placeholder
+ENV HANKO_API_KEY=build-placeholder
+ENV NEXT_PUBLIC_HANKO_TENANT_ID=build-placeholder
 RUN npx prisma generate
 RUN npm run build
 
