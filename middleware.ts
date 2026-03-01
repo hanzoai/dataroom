@@ -1,7 +1,6 @@
 import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
 
 import AppMiddleware from "@/lib/middleware/app";
-import DomainMiddleware from "@/lib/middleware/domain";
 
 import { BLOCKED_PATHNAMES } from "./lib/constants";
 import IncomingWebhookMiddleware, {
@@ -10,26 +9,25 @@ import IncomingWebhookMiddleware, {
 import PostHogMiddleware from "./lib/middleware/posthog";
 
 function isAnalyticsPath(path: string) {
-  // Create a regular expression
-  // ^ - asserts position at start of the line
-  // /ingest/ - matches the literal string "/ingest/"
-  // .* - matches any character (except for line terminators) 0 or more times
   const pattern = /^\/ingest\/.*/;
-
   return pattern.test(path);
 }
 
+// App domains that should NOT be treated as custom domains
+const APP_DOMAINS = [
+  "localhost",
+  "papermark.io",
+  "papermark.com",
+  "hanzo.ai",
+  ".vercel.app",
+];
+
 function isCustomDomain(host: string) {
-  return (
-    (process.env.NODE_ENV === "development" &&
-      (host?.includes(".local") || host?.includes("papermark.dev"))) ||
-    (process.env.NODE_ENV !== "development" &&
-      !(
-        host?.includes("localhost") ||
-        host?.includes("papermark.io") ||
-        host?.includes("papermark.com") ||
-        host?.endsWith(".vercel.app")
-      ))
+  if (process.env.NODE_ENV === "development") {
+    return host?.includes(".local") || host?.includes("papermark.dev");
+  }
+  return !APP_DOMAINS.some((d) =>
+    d.startsWith(".") ? host?.endsWith(d) : host?.includes(d),
   );
 }
 
@@ -60,12 +58,17 @@ export default async function middleware(req: NextRequest, ev: NextFetchEvent) {
     return IncomingWebhookMiddleware(req);
   }
 
-  // For custom domains, we need to handle them differently
+  // For custom domains, rewrite to domain viewer routes
+  // NOTE: DomainMiddleware is dynamically imported to avoid pulling ioredis
+  // into the Edge Runtime bundle (Edge Runtime has no TCP/net APIs)
   if (isCustomDomain(host || "")) {
+    const { default: DomainMiddleware } = await import(
+      "@/lib/middleware/domain"
+    );
     return DomainMiddleware(req);
   }
 
-  // Handle standard papermark.com paths
+  // Handle standard app paths
   if (
     !path.startsWith("/view/") &&
     !path.startsWith("/verify") &&
