@@ -48,7 +48,7 @@ const SubscriptionRenewalReminderEmail = ({
               If you need to update your billing details or have any questions,
               please visit your{" "}
               <a
-                href="https://app.papermark.com/settings/billing"
+                href="https://dataroom.hanzo.ai/settings/billing"
                 className="underline"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -60,7 +60,7 @@ const SubscriptionRenewalReminderEmail = ({
             {isOldAccount ? (
               <>
                 <Hr />
-                <Text className="text-gray-400">Papermark Team</Text>
+                <Text className="text-gray-400">Hanzo Dataroom Team</Text>
               </>
             ) : (
               <Footer />

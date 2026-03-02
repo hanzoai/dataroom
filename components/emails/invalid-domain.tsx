@@ -17,7 +17,7 @@ import {
 import { Footer } from "./shared/footer";
 
 export default function InvalidDomain({
-  domain = "papermark.com",
+  domain = "dataroom.hanzo.ai",
   invalidDays = 14,
 }: {
   domain: string;
@@ -47,22 +47,22 @@ export default function InvalidDomain({
             </Text>
             <Text className="text-sm leading-6 text-black">
               If your domain remains unconfigured for 30 days, it will be
-              automatically deleted from Papermark. Please click the link below
+              automatically deleted from Hanzo Dataroom. Please click the link below
               to configure your domain.
             </Text>
             <Section className="my-8 text-center">
               <Button
                 className="rounded bg-black text-center text-xs font-semibold text-white no-underline"
-                href={`https://app.papermark.com/settings/domains`}
+                href={`https://dataroom.hanzo.ai/settings/domains`}
                 style={{ padding: "12px 20px" }}
               >
                 Configure domain
               </Button>
             </Section>
             <Text className="text-sm leading-6 text-black">
-              If you do not want to keep this domain on Papermark, you can{" "}
+              If you do not want to keep this domain on Hanzo Dataroom, you can{" "}
               <Link
-                href={`https://app.papermark.com/settings/domains`}
+                href={`https://dataroom.hanzo.ai/settings/domains`}
                 className="font-medium text-blue-600 no-underline"
               >
                 delete it

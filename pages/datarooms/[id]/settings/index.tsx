@@ -179,7 +179,7 @@ export default function Settings() {
               <CardHeader>
                 <CardTitle>Dataroom ID</CardTitle>
                 <CardDescription>
-                  Unique ID of your dataroom on Papermark.
+                  Unique ID of your dataroom on Hanzo Dataroom.
                 </CardDescription>
               </CardHeader>
               <CardContent>

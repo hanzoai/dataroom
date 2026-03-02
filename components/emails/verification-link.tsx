@@ -56,7 +56,7 @@ const VerificationCodeEmail = ({
             <Hr className="my-6" />
             <Section className="text-gray-400">
               <Text className="text-xs text-neutral-500">
-                Papermark, Inc.
+                Hanzo AI, Inc.
                 <br />
                 1111B S Governors Ave #28117
                 <br />

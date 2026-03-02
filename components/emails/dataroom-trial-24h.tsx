@@ -24,7 +24,7 @@ const DataroomTrial24hReminderEmail = ({ name }: TrialEndReminderEmail) => {
   return (
     <Html>
       <Head />
-      <Preview>Upgrade to Papermark Data Rooms Plan</Preview>
+      <Preview>Upgrade to Hanzo Dataroom Data Rooms Plan</Preview>
       <Tailwind>
         <Body className="mx-auto my-auto bg-white font-sans">
           <Container className="mx-auto my-10 w-[465px] p-5">
@@ -40,7 +40,7 @@ const DataroomTrial24hReminderEmail = ({ name }: TrialEndReminderEmail) => {
             <Text className="text-sm leading-6 text-black">
               Your Papermark Data Room plan trial expires in 24 hours.
               Don&apos;t lose access to these features -{" "}
-              <Link href={`https://app.papermark.com/settings/billing`}>
+              <Link href={`https://dataroom.hanzo.ai/settings/billing`}>
                 upgrade today
               </Link>
               :
@@ -68,7 +68,7 @@ const DataroomTrial24hReminderEmail = ({ name }: TrialEndReminderEmail) => {
             <Section className="mb-[32px] mt-[32px] text-center">
               <Button
                 className="rounded bg-black text-center text-xs font-semibold text-white no-underline"
-                href={`https://app.papermark.com/settings/billing`}
+                href={`https://dataroom.hanzo.ai/settings/billing`}
                 style={{ padding: "12px 20px" }}
               >
                 Upgrade now
@@ -80,7 +80,7 @@ const DataroomTrial24hReminderEmail = ({ name }: TrialEndReminderEmail) => {
               <span className="text-red-500 underline">disabled</span> in 24
               hours.
             </Text>
-            <Text className="text-sm text-gray-400">Marc from Papermark</Text>
+            <Text className="text-sm text-gray-400">Marc from Hanzo Dataroom</Text>
             <Footer />
           </Container>
         </Body>

@@ -62,7 +62,7 @@ export default function ConversationNotification({
             <Hr />
             <Section className="mt-8 text-gray-400">
               <Text className="text-xs">
-                © {new Date().getFullYear()} Papermark, Inc.
+                © {new Date().getFullYear()} Hanzo AI, Inc.
               </Text>
               <Text className="text-xs">
                 You received this email from{" "}

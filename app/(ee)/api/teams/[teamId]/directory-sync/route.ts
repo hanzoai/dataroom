@@ -119,7 +119,7 @@ export async function POST(
     const result = await directorySyncController.directories.create({
       tenant: teamId,
       product: jacksonProduct,
-      name: name || "Papermark SCIM Directory",
+      name: name || "Hanzo Dataroom SCIM Directory",
       type: type || "azure-scim-v2",
     });
 

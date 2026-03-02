@@ -75,15 +75,15 @@ export default async function handle(
 
       // Check if the content is a Papermark URL
       const isPapermarkUrl =
-        agreement.content.includes("papermark.com/view/") ||
-        agreement.content.includes("www.papermark.com/view/");
+        agreement.content.includes("dataroom.hanzo.ai/view/") ||
+        agreement.content.includes("dataroom.hanzo.ai/view/");
 
       let fileContent: string;
       let filename: string;
       let link: any = null;
 
       if (isPapermarkUrl) {
-        // Extract linkId from Papermark URL
+        // Extract linkId from Hanzo Dataroom URL
         const urlParts = agreement.content.split("/view/");
         if (urlParts.length < 2) {
           return res.status(400).json("Invalid Papermark URL format");

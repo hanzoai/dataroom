@@ -60,7 +60,7 @@ export const sendVerificationRequestEmail = async (params: {
     sendEmail({
       to: email as string,
       system: true,
-      subject: "Login for Papermark",
+      subject: "Login for Hanzo Dataroom",
       react: emailTemplate,
       test: process.env.NODE_ENV === "development",
     }).catch((e) => {

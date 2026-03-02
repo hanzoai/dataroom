@@ -341,7 +341,7 @@ export function YearlyRecapModal({
 
 My Papermark Wrapped ${stats?.year}!
 
-#PapermarkWrapped https://www.papermark.com/`;
+#PapermarkWrapped https://dataroom.hanzo.ai/`;
   };
 
   const handleShareLinkedIn = async () => {
@@ -351,7 +351,7 @@ My Papermark Wrapped ${stats?.year}!
     });
     const text = getShareText();
     window.open(
-      `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent("https://www.papermark.com/")}&summary=${encodeURIComponent(text)}`,
+      `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent("https://dataroom.hanzo.ai/")}&summary=${encodeURIComponent(text)}`,
       "_blank",
     );
   };
@@ -464,7 +464,7 @@ My Papermark Wrapped ${stats?.year}!
                         WRAPPED
                       </span>
                     </div>
-                    <p className="mt-1 text-xs text-gray-500">papermark.com</p>
+                    <p className="mt-1 text-xs text-gray-500">dataroom.hanzo.ai</p>
                   </div>
                 </div>
               );
@@ -476,7 +476,7 @@ My Papermark Wrapped ${stats?.year}!
             Share your stats and receive{" "}
             <span className="font-semibold text-orange-600">$50</span> in
             credits on your papermark account, please send confirmation to{" "}
-            <span className="font-medium">support@papermark.com</span> and
+            <span className="font-medium">support@dataroom.hanzo.ai</span> and
             include screenshot or link to your post.
           </p>
 
@@ -736,7 +736,7 @@ function ViewsStatsSlide({ stats }: { stats: YearlyRecapStats }) {
     <div className="flex min-h-[350px] flex-col items-center justify-center sm:min-h-[520px]">
       {/* Header from left */}
       <h2 className="mb-6 text-balance text-center text-xl font-bold text-foreground duration-700 animate-in slide-in-from-left-8 sm:mb-8 sm:text-3xl">
-        Your {stats.year} activity on Papermark
+        Your {stats.year} activity on Hanzo Dataroom
       </h2>
 
       {/* Cards from right */}
@@ -854,7 +854,7 @@ function ShareOfferSlide({ stats }: { stats: YearlyRecapStats }) {
   return (
     <div className="flex min-h-[350px] flex-col items-center justify-center text-center sm:min-h-[520px]">
       <h2 className="mb-4 text-balance text-xl font-bold text-foreground sm:mb-6 sm:text-3xl">
-        Share your stats or experience with Papermark
+        Share your stats or experience with Hanzo Dataroom
       </h2>
 
       <div className="duration-1000 animate-in zoom-in-50">
@@ -866,7 +866,7 @@ function ShareOfferSlide({ stats }: { stats: YearlyRecapStats }) {
       <p className="mt-6 max-w-sm text-balance px-2 text-xs text-muted-foreground sm:mt-8 sm:max-w-none sm:px-0 sm:text-sm">
         You will receive $50 in credits on your papermark account, please send
         confirmation to{" "}
-        <span className="font-medium">support@papermark.com</span> and include
+        <span className="font-medium">support@dataroom.hanzo.ai</span> and include
         screenshot or link to your post.
       </p>
     </div>

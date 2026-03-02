@@ -22,7 +22,7 @@ interface ConfirmEmailChangeProps {
 export function ConfirmEmailChange({
   email = "email@example.com",
   newEmail = "new@example.com",
-  confirmUrl = "https://www.papermark.com",
+  confirmUrl = "https://dataroom.hanzo.ai",
 }: ConfirmEmailChangeProps) {
   return (
     <Html>

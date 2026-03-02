@@ -356,7 +356,7 @@ async function processDownloadBatch({
   zipFileName,
   expirationHours = 72,
 }: ProcessDownloadBatchParams): Promise<ProcessDownloadBatchResult> {
-  const baseUrl = process.env.NEXTAUTH_URL || "https://app.papermark.com";
+  const baseUrl = process.env.NEXTAUTH_URL || "https://dataroom.hanzo.ai";
   const internalApiKey = process.env.INTERNAL_API_KEY;
 
   if (!internalApiKey) {
@@ -545,10 +545,10 @@ async function sendEmailNotification({
       });
       downloadUrl = link
         ? `${constructLinkUrl(link)}/downloads`
-        : `${process.env.NEXT_PUBLIC_MARKETING_URL || "https://www.papermark.com"}/view/${linkId}/downloads`;
+        : `${process.env.NEXT_PUBLIC_MARKETING_URL || "https://dataroom.hanzo.ai"}/view/${linkId}/downloads`;
       isViewer = true;
     } else {
-      const baseUrl = process.env.NEXTAUTH_URL || "https://app.papermark.com";
+      const baseUrl = process.env.NEXTAUTH_URL || "https://dataroom.hanzo.ai";
       downloadUrl = `${baseUrl}/datarooms/${dataroomId}/documents`;
     }
 

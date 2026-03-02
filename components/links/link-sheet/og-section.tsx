@@ -139,7 +139,7 @@ export default function OGSection({
       <LinkItem
         tooltipContent="Customize how your links look when shared."
         title="Custom Link Preview"
-        link="https://www.papermark.com/help/article/change-social-media-cards"
+        link="https://dataroom.hanzo.ai/help/article/change-social-media-cards"
         enabled={enableCustomMetatag}
         action={handleCustomMetatag}
         isAllowed={isAllowed}
@@ -406,7 +406,7 @@ export default function OGSection({
                 id="title"
                 maxLength={120}
                 className="focus:ring-inset"
-                placeholder={`Papermark - open-source document sharing infrastructure.`}
+                placeholder={`Hanzo Dataroom - open-source document sharing infrastructure.`}
                 value={metaTitle || ""}
                 onChange={(e) => {
                   setData({ ...data, metaTitle: e.target.value });

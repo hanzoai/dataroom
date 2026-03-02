@@ -31,7 +31,7 @@ function formatExpirationTime(expiresAt?: string): string {
 
 export default function DownloadReady({
   dataroomName = "Dataroom",
-  downloadUrl = "https://app.papermark.com",
+  downloadUrl = "https://dataroom.hanzo.ai",
   email = "email@example.com",
   expiresAt,
   isViewer = false,
@@ -87,7 +87,7 @@ export default function DownloadReady({
             <Text className="text-sm leading-6 text-black">
               Best,
               <br />
-              The Papermark Team
+              The Hanzo Dataroom Team
             </Text>
             <Footer
               footerText={
