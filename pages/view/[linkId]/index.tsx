@@ -118,7 +118,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
             metaTitle: null,
             metaDescription: null,
             metaImage: null,
-            metaUrl: `https://www.papermark.com/view/${linkId}`,
+            metaUrl: `https://dataroom.hanzo.ai/view/${linkId}`,
             metaFavicon: "/favicon.ico",
           },
           showPoweredByBanner: false,
@@ -209,7 +209,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
             metaDescription: link.metaDescription,
             metaImage: link.metaImage,
             metaFavicon: link.metaFavicon ?? "/favicon.ico",
-            metaUrl: `https://www.papermark.com/view/${linkId}`,
+            metaUrl: `https://dataroom.hanzo.ai/view/${linkId}`,
           },
           showPoweredByBanner: link.showBanner || teamPlan === "free",
           showAccountCreationSlide: link.showBanner || teamPlan === "free",
@@ -295,7 +295,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
             metaDescription: link.metaDescription,
             metaImage: link.metaImage,
             metaFavicon: link.metaFavicon ?? "/favicon.ico",
-            metaUrl: `https://www.papermark.com/view/${linkId}`,
+            metaUrl: `https://dataroom.hanzo.ai/view/${linkId}`,
           },
           showPoweredByBanner: false,
           showAccountCreationSlide: false,
@@ -406,7 +406,7 @@ export default function ViewPage({
         <CustomMetaTag
           favicon={meta.metaFavicon}
           enableBranding={false}
-          title="Access Workflow | Powered by Papermark"
+          title="Access Workflow | Powered by Hanzo Dataroom"
           description={null}
           imageUrl={null}
           url={meta.metaUrl ?? ""}
@@ -427,7 +427,7 @@ export default function ViewPage({
             favicon={meta.metaFavicon}
             enableBranding={meta.enableCustomMetatag ?? false}
             title={
-              meta.metaTitle ?? `${link?.document?.name} | Powered by Papermark`
+              meta.metaTitle ?? `${link?.document?.name} | Powered by Hanzo Dataroom`
             }
             description={meta.metaDescription ?? null}
             imageUrl={meta.metaImage ?? null}
@@ -471,7 +471,7 @@ export default function ViewPage({
           favicon={meta.metaFavicon}
           enableBranding={meta.enableCustomMetatag ?? false}
           title={
-            meta.metaTitle ?? `${link?.document?.name} | Powered by Papermark`
+            meta.metaTitle ?? `${link?.document?.name} | Powered by Hanzo Dataroom`
           }
           description={meta.metaDescription ?? null}
           imageUrl={meta.metaImage ?? null}
@@ -511,7 +511,7 @@ export default function ViewPage({
             favicon={meta.metaFavicon}
             enableBranding={meta.enableCustomMetatag ?? false}
             title={
-              meta.metaTitle ?? `${link?.dataroom?.name} | Powered by Papermark`
+              meta.metaTitle ?? `${link?.dataroom?.name} | Powered by Hanzo Dataroom`
             }
             description={meta.metaDescription ?? null}
             imageUrl={meta.metaImage ?? null}
@@ -555,7 +555,7 @@ export default function ViewPage({
           favicon={meta.metaFavicon}
           enableBranding={meta.enableCustomMetatag ?? false}
           title={
-            meta.metaTitle ?? `${link?.dataroom?.name} | Powered by Papermark`
+            meta.metaTitle ?? `${link?.dataroom?.name} | Powered by Hanzo Dataroom`
           }
           description={meta.metaDescription ?? null}
           imageUrl={meta.metaImage ?? null}

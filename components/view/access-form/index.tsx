@@ -215,7 +215,7 @@ export default function AccessForm({
           >
             This document is securely shared with you using{" "}
             <a
-              href="https://www.papermark.com"
+              href="https://dataroom.hanzo.ai"
               target="_blank"
               rel="noopener noreferrer"
               className="font-medium"

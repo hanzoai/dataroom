@@ -16,7 +16,7 @@ import {
 import { Footer } from "./shared/footer";
 
 export default function DomainDeleted({
-  domain = "papermark.com",
+  domain = "dataroom.hanzo.ai",
 }: {
   domain: string;
 }) {
@@ -36,23 +36,23 @@ export default function DomainDeleted({
             <Text className="text-sm leading-6 text-black">
               Your domain <code className="text-purple-600">{domain}</code> for
               your Papermark account has been invalid for 30 days. As a result,
-              it has been deleted from Papermark.
+              it has been deleted from Hanzo Dataroom.
             </Text>
             <Text className="text-sm leading-6 text-black">
               If you would like to restore the domain, you can easily create it
-              again on Papermark with the link below.
+              again on Hanzo Dataroom with the link below.
             </Text>
             <Section className="my-8 text-center">
               <Button
                 className="rounded bg-black text-center text-xs font-semibold text-white no-underline"
-                href={`https://app.papermark.com/settings/domains`}
+                href={`https://dataroom.hanzo.ai/settings/domains`}
                 style={{ padding: "12px 20px" }}
               >
                 Set up your custom domain
               </Button>
             </Section>
             <Text className="text-sm leading-6 text-black">
-              If you did not want to keep using this domain on Papermark anyway,
+              If you did not want to keep using this domain on Hanzo Dataroom anyway,
               you can simply ignore this email.
             </Text>
             <Footer />

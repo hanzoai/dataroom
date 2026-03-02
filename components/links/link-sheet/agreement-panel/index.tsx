@@ -157,7 +157,7 @@ export default function AgreementSheet({
         const linkId = document.links[0].id;
         setData((prevData) => ({
           ...prevData,
-          link: "https://www.papermark.com/view/" + linkId,
+          link: "https://dataroom.hanzo.ai/view/" + linkId,
         }));
       }
     } catch (error) {
@@ -353,7 +353,7 @@ export default function AgreementSheet({
                       required={data.contentType === "LINK"}
                       autoComplete="off"
                       data-1p-ignore
-                      placeholder="https://www.papermark.com/nda"
+                      placeholder="https://dataroom.hanzo.ai/nda"
                       value={data.link || ""}
                       onChange={(e) => {
                         const newValue = e.target.value;

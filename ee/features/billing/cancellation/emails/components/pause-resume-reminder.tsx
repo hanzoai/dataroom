@@ -22,7 +22,7 @@ interface PauseResumeReminderEmailProps {
   userRole?: string;
 }
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://app.papermark.com";
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://dataroom.hanzo.ai";
 
 export default function PauseResumeReminderEmail({
   teamName = "Your Team",
@@ -96,7 +96,7 @@ export default function PauseResumeReminderEmail({
             <Hr />
             <Section className="mt-8 text-gray-400">
               <Text className="text-xs">
-                © {new Date().getFullYear()} Papermark, Inc.
+                © {new Date().getFullYear()} Hanzo AI, Inc.
               </Text>
               <Text className="text-xs">
                 If you have any feedback or questions about this email, simply

@@ -23,7 +23,7 @@ export default function Preview({
     metaFavicon: favicon,
   } = data;
 
-  const hostname = "papermark.com";
+  const hostname = "dataroom.hanzo.ai";
 
   return (
     <div>

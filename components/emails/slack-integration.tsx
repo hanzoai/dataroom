@@ -57,17 +57,17 @@ const SlackIntegrationEmail = ({ name }: SlackIntegrationEmailProps) => {
               If you have any questions or need help setting it up, just respond
               to this email. I&apos;m always happy to help!
             </Text>
-            <Text className="text-sm text-gray-400">Marc from Papermark</Text>
+            <Text className="text-sm text-gray-400">Marc from Hanzo Dataroom</Text>
             <Hr />
             <Section className="mt-8 text-gray-400">
               <Text className="text-xs">
                 © {new Date().getFullYear()}{" "}
                 <a
-                  href="https://www.papermark.com"
+                  href="https://dataroom.hanzo.ai"
                   className="text-gray-400 no-underline"
                   target="_blank"
                 >
-                  papermark.com
+                  dataroom.hanzo.ai
                 </a>
               </Text>
               <Text className="text-xs">

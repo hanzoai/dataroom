@@ -21,7 +21,7 @@ const SixMonthMilestoneEmail = ({
   return (
     <Html>
       <Head />
-      <Preview>6 months with Papermark</Preview>
+      <Preview>6 months with Hanzo Dataroom</Preview>
       <Tailwind>
         <Body className="font-sans text-sm">
           <Text>Hi {name},</Text>

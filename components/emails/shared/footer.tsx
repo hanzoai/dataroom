@@ -18,13 +18,13 @@ export const Footer = ({
           Don&apos;t want to get these emails?{" "}
           <Link
             className="text-neutral-700 underline"
-            href="https://app.papermark.com/account/general"
+            href="https://dataroom.hanzo.ai/account/general"
           >
             Unsubscribe here.
           </Link>
         </Text>
         <Text className="text-[12px] text-neutral-500">
-          Papermark, Inc.
+          Hanzo AI, Inc.
           <br />
           1111B S Governors Ave #28117
           <br />
@@ -39,7 +39,7 @@ export const Footer = ({
       <Hr />
       <Section className="text-gray-400">
         <Text className="text-xs">
-          © {new Date().getFullYear()} Papermark, Inc. All rights reserved.{" "}
+          © {new Date().getFullYear()} Hanzo AI, Inc. All rights reserved.{" "}
           {withAddress && (
             <>
               <br />
