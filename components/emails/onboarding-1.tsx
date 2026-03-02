@@ -53,7 +53,7 @@ const Onboarding1Email = () => {
             <Section className="my-8 text-center">
               <Button
                 className="rounded bg-black text-center text-xs font-semibold text-white no-underline"
-                href={`https://app.papermark.com/documents?utm_source=onboarding&utm_medium=email&utm_campaign=20240723&utm_content=upload_documents`}
+                href={`https://dataroom.hanzo.ai/documents?utm_source=onboarding&utm_medium=email&utm_campaign=20240723&utm_content=upload_documents`}
                 style={{ padding: "12px 20px" }}
               >
                 Upload my documents
@@ -65,7 +65,7 @@ const Onboarding1Email = () => {
             <Hr />
             <Section className="text-gray-400">
               <Text className="text-xs">
-                © {new Date().getFullYear()} Papermark, Inc. All rights
+                © {new Date().getFullYear()} Hanzo AI, Inc. All rights
                 reserved.
               </Text>
               <Text className="text-xs">

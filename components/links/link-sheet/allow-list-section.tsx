@@ -131,7 +131,7 @@ export default function AllowListSection({
       <div className="flex flex-col space-y-4">
         <LinkItem
           title="Allow specified viewers"
-          link="https://www.papermark.com/help/article/allow-list"
+          link="https://dataroom.hanzo.ai/help/article/allow-list"
           tooltipContent={`Restrict access to a selected group of viewers. Enter allowed emails or domains${visitorGroups && visitorGroups.length > 0 ? ", or select visitor groups" : ""}.`}
           enabled={enabled}
           isAllowed={isAllowed}
@@ -255,7 +255,7 @@ export default function AllowListSection({
               className="focus:ring-inset"
               rows={5}
               placeholder={`Enter allowed emails/domains, one per line, e.g.
-marc@papermark.com
+marc@dataroom.hanzo.ai
 @example.org`}
               value={allowListInput}
               onChange={handleAllowListChange}

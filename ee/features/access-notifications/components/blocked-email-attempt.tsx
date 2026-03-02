@@ -86,7 +86,7 @@ export default function BlockedEmailAttempt({
             <Hr />
             <Section className="mt-8 text-gray-400">
               <Text className="text-xs">
-                © {new Date().getFullYear()} Papermark, Inc.
+                © {new Date().getFullYear()} Hanzo AI, Inc.
               </Text>
               <Text className="text-xs">
                 If you have any feedback or questions about this email, simply
