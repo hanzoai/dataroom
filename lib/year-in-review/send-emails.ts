@@ -145,9 +145,9 @@ export async function processEmailQueue() {
 
                   return {
                     email: {
-                      from: "Papermark <system@papermark.com>",
+                      from: "Papermark <dataroom@hanzo.ai>",
                       to: userTeam.user.email || "delivered@resend.dev",
-                      subject: "2024 in Review: Your Year with Papermark",
+                      subject: "2024 in Review: Your Year with Hanzo Dataroom",
                       react,
                       text: plainText,
                       headers: {

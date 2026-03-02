@@ -368,7 +368,7 @@ export function InviteViewersModal({
                 </p>
                 <p>
                   <span className="font-medium text-foreground">From:</span>{" "}
-                  system@papermark.com
+                  dataroom@hanzo.ai
                 </p>
                 <p>
                   <span className="font-medium text-foreground">To:</span>{" "}
@@ -422,13 +422,13 @@ export function InviteViewersModal({
                   <br />
                   <span className="break-all text-foreground">
                     {selectedLink
-                      ? `https://papermark.com/view/${selectedLink.slug ?? selectedLink.id}`
-                      : "https://papermark.com/view/..."}
+                      ? `https://dataroom.hanzo.ai/view/${selectedLink.slug ?? selectedLink.id}`
+                      : "https://dataroom.hanzo.ai/view/..."}
                   </span>
                 </p>
                 <Separator className="my-2" />
                 <p className="text-xs">
-                  © {new Date().getFullYear()} Papermark, Inc. All rights
+                  © {new Date().getFullYear()} Hanzo AI, Inc. All rights
                   reserved.
                 </p>
                 <p className="text-xs">

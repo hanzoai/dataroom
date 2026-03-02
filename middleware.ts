@@ -16,8 +16,8 @@ function isAnalyticsPath(path: string) {
 // App domains that should NOT be treated as custom domains
 const APP_DOMAINS = [
   "localhost",
-  "papermark.io",
-  "papermark.com",
+  "dataroom.hanzo.ai",
+  "dataroom.hanzo.ai",
   "hanzo.ai",
   ".vercel.app",
 ];

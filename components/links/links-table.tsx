@@ -113,7 +113,7 @@ const getDisplayUrl = (link: LinkWithViews) => {
   if (link.domainId) {
     return `${link.domainSlug}/${link.slug}`;
   }
-  return `papermark.com/view/${link.id}`;
+  return `dataroom.hanzo.ai/view/${link.id}`;
 };
 
 // Link URL cell component - displays URL with click-to-copy hover overlay
