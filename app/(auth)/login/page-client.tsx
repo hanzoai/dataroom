@@ -32,7 +32,7 @@ export default function Login() {
   const isSSORequired = authError === "require-saml-sso";
 
   const [lastUsed, setLastUsed] = useLastUsed();
-  const authMethods = ["google", "email", "linkedin", "passkey"] as const;
+  const authMethods = ["hanzo", "google", "email", "linkedin", "passkey"] as const;
   type AuthMethod = (typeof authMethods)[number];
   const [clickedMethod, setClickedMethod] = useState<AuthMethod | undefined>(
     undefined,
@@ -166,6 +166,30 @@ export default function Login() {
           </form>
           <p className="py-4 text-center">or</p>
           <div className="flex flex-col space-y-2 px-4 sm:px-12">
+            <div className="relative">
+              <Button
+                onClick={() => {
+                  setClickedMethod("hanzo");
+                  setLastUsed("hanzo");
+                  signIn("hanzo-iam", {
+                    ...(next && next.length > 0 ? { callbackUrl: next } : {}),
+                  }).then(() => {
+                    setClickedMethod(undefined);
+                  });
+                }}
+                loading={clickedMethod === "hanzo"}
+                disabled={clickedMethod && clickedMethod !== "hanzo"}
+                className="flex w-full items-center justify-center space-x-2 border border-red-500 bg-red-500 font-normal text-white hover:bg-red-600"
+              >
+                <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                </svg>
+                <span>Continue with Hanzo</span>
+                {clickedMethod !== "hanzo" && lastUsed === "hanzo" && (
+                  <LastUsed />
+                )}
+              </Button>
+            </div>
             <div className="relative">
               <Button
                 onClick={() => {
