@@ -257,13 +257,13 @@ export function SAMLConfigModal({ teamId }: SAMLConfigModalProps) {
                   <span className="font-medium">Entity ID:</span>
                   <div className="flex items-center space-x-1">
                     <code className="rounded bg-muted px-1.5 py-0.5 text-[10px]">
-                      {issuer || "https://saml.papermark.com"}
+                      {issuer || "https://saml.dataroom.hanzo.ai"}
                     </code>
                     <button
                       type="button"
                       onClick={() =>
                         copyToClipboard(
-                          issuer || "https://saml.papermark.com",
+                          issuer || "https://saml.dataroom.hanzo.ai",
                           "Entity ID copied to clipboard",
                         )
                       }

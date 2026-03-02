@@ -60,7 +60,7 @@ function getMainDomainUrl(): string {
   if (process.env.NODE_ENV === "development") {
     return process.env.NEXTAUTH_URL || "http://localhost:3000";
   }
-  return process.env.NEXTAUTH_URL || "https://app.papermark.com";
+  return process.env.NEXTAUTH_URL || "https://app.dataroom.hanzo.ai";
 }
 
 // This function can run for a maximum of 180 seconds
@@ -247,7 +247,7 @@ export const authOptions: NextAuthOptions = {
         httpOnly: true,
         sameSite: "lax",
         path: "/",
-        domain: VERCEL_DEPLOYMENT ? ".papermark.com" : undefined,
+        domain: VERCEL_DEPLOYMENT ? ".dataroom.hanzo.ai" : undefined,
         secure: VERCEL_DEPLOYMENT,
       },
     },

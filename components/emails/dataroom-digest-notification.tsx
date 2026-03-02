@@ -25,8 +25,8 @@ export default function DataroomDigestNotification({
     { documentName: "Document C" },
   ],
   senderEmail = "example@example.com",
-  url = "https://app.papermark.com/datarooms/123",
-  preferencesUrl = "https://app.papermark.com/notification-preferences?token=abc",
+  url = "https://dataroom.hanzo.ai/datarooms/123",
+  preferencesUrl = "https://dataroom.hanzo.ai/notification-preferences?token=abc",
   frequency = "daily",
 }: {
   dataroomName: string;
@@ -87,7 +87,7 @@ export default function DataroomDigestNotification({
             <Hr />
             <Section className="text-gray-400">
               <Text className="text-xs">
-                © {new Date().getFullYear()} Papermark, Inc. All rights
+                © {new Date().getFullYear()} Hanzo AI, Inc. All rights
                 reserved.
               </Text>
               <Text className="text-xs">

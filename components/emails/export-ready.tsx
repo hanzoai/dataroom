@@ -15,7 +15,7 @@ import { Footer } from "./shared/footer";
 
 export default function ExportReady({
   resourceName = "Export",
-  downloadUrl = "https://app.papermark.com/datarooms/123",
+  downloadUrl = "https://dataroom.hanzo.ai/datarooms/123",
   email = "email@example.com",
 }: {
   resourceName?: string;
@@ -58,7 +58,7 @@ export default function ExportReady({
             <Text className="text-sm leading-6 text-black">
               Best,
               <br />
-              The Papermark Team
+              The Hanzo Dataroom Team
             </Text>
             <Footer
               footerText={

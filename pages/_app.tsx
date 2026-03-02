@@ -46,19 +46,19 @@ export default function App({
         />
         <meta
           property="og:image"
-          content="https://www.papermark.com/_static/meta-image.png"
+          content="https://dataroom.hanzo.ai/_static/meta-image.png"
           key="og-image"
         />
         <meta
           property="og:url"
-          content="https://www.papermark.com"
+          content="https://dataroom.hanzo.ai"
           key="og-url"
         />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:site" content="@papermarkio" />
-        <meta name="twitter:creator" content="@papermarkio" />
-        <meta name="twitter:title" content="Papermark" key="tw-title" />
+        <meta name="twitter:site" content="@hanzoai" />
+        <meta name="twitter:creator" content="@hanzoai" />
+        <meta name="twitter:title" content="Hanzo Dataroom" key="tw-title" />
         <meta
           name="twitter:description"
           content="Papermark is an open-source document sharing alternative to DocSend with built-in analytics."
@@ -66,7 +66,7 @@ export default function App({
         />
         <meta
           name="twitter:image"
-          content="https://www.papermark.com/_static/meta-image.png"
+          content="https://dataroom.hanzo.ai/_static/meta-image.png"
           key="tw-image"
         />
         <link rel="icon" href="/favicon.ico" key="favicon" />

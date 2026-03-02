@@ -1,4 +1,4 @@
-export default function PapermarkSparkle({
+export default function Hanzo DataroomSparkle({
   className,
 }: {
   className?: string;

@@ -49,7 +49,7 @@ export default function SlackIntegrationNotification({
             </Text>
             <Text className="text-sm leading-6 text-black">
               The <strong>{integration.name}</strong> integration has been added
-              to your team {team.name} on Papermark.
+              to your team {team.name} on Hanzo Dataroom.
             </Text>
             <Text className="text-sm leading-6 text-black">
               You can now receive notifications about document views, dataroom

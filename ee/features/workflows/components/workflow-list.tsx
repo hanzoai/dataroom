@@ -30,7 +30,7 @@ export function WorkflowList({ workflows }: WorkflowListProps) {
     if (workflow.entryLink.domainSlug && workflow.entryLink.slug) {
       return `https://${workflow.entryLink.domainSlug}/${workflow.entryLink.slug}`;
     }
-    return `${process.env.NEXT_PUBLIC_MARKETING_URL || "https://www.papermark.com"}/view/${workflow.entryLink.id}`;
+    return `${process.env.NEXT_PUBLIC_MARKETING_URL || "https://dataroom.hanzo.ai"}/view/${workflow.entryLink.id}`;
   };
 
   return (

@@ -17,8 +17,8 @@ export default function DataroomNotification({
   dataroomName = "Example Data Room",
   documentName = "Example Document",
   senderEmail = "example@example.com",
-  url = "https://app.papermark.com/datarooms/123",
-  unsubscribeUrl = "https://app.papermark.com/datarooms/123/unsubscribe",
+  url = "https://dataroom.hanzo.ai/datarooms/123",
+  unsubscribeUrl = "https://dataroom.hanzo.ai/datarooms/123/unsubscribe",
 }: {
   dataroomName: string;
   documentName: string | undefined;
@@ -43,7 +43,7 @@ export default function DataroomNotification({
               A new document{" "}
               <span className="font-semibold">{documentName}</span> has been
               added to <span className="font-semibold">{dataroomName}</span>{" "}
-              dataroom on Papermark.
+              dataroom on Hanzo Dataroom.
             </Text>
             <Section className="my-8 text-center">
               <Button
@@ -63,7 +63,7 @@ export default function DataroomNotification({
             <Hr />
             <Section className="text-gray-400">
               <Text className="text-xs">
-                © {new Date().getFullYear()} Papermark, Inc. All rights
+                © {new Date().getFullYear()} Hanzo AI, Inc. All rights
                 reserved.
               </Text>
               <Text className="text-xs">

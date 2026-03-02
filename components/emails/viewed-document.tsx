@@ -57,12 +57,12 @@ export default function ViewedDocument({
             </Text>
             <Text className="text-sm leading-6 text-black">
               You can get the detailed engagement insights like time-spent per
-              page and total duration for this document on Papermark.
+              page and total duration for this document on Hanzo Dataroom.
             </Text>
             <Section className="my-8 text-center">
               <Button
                 className="rounded bg-black text-center text-xs font-semibold text-white no-underline"
-                href={`https://app.papermark.com/documents/${documentId}`}
+                href={`https://dataroom.hanzo.ai/documents/${documentId}`}
                 style={{ padding: "12px 20px" }}
               >
                 See my document insights
