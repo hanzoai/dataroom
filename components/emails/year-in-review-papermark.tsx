@@ -32,7 +32,7 @@ interface PapermarkYearInReviewEmailProps {
   unsubscribeUrl: string;
 }
 
-export default function Hanzo DataroomYearInReviewEmail({
+export default function DataroomYearInReviewEmail({
   year = 2024,
   minutesSpentOnDocs = 1234,
   uploadedDocuments = 25,
