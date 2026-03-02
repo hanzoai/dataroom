@@ -82,14 +82,14 @@ const UpgradePlanEmail = ({
               <span className="font-bold tracking-tighter">Papermark</span>
             </Text>
             <Text className="font-seminbold mx-0 mb-8 mt-4 p-0 text-center text-xl">
-              Thanks for upgrading to Papermark {planTypeText}!
+              Thanks for upgrading to Hanzo Dataroom {planTypeText}!
             </Text>
             <Text className="text-sm leading-6 text-black">
               Hey{name && ` ${name}`}!
             </Text>
             <Text className="text-sm">
               Marc is here. I wanted to personally reach out to thank you for
-              upgrading to Papermark {planTypeText}!
+              upgrading to Hanzo Dataroom {planTypeText}!
             </Text>
 
             <Text className="text-sm leading-6 text-black">
@@ -120,7 +120,7 @@ const UpgradePlanEmail = ({
                 Let me know if you have any questions or feedback. I&apos;m
                 always happy to help!
               </Text>
-              <Text className="text-sm text-gray-400">Marc from Papermark</Text>
+              <Text className="text-sm text-gray-400">Marc from Hanzo Dataroom</Text>
             </Section>
             <Footer />
           </Container>

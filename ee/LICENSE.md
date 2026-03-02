@@ -1,20 +1,20 @@
-The Papermark Commercial License (the “Commercial License”)
-Copyright (c) 2023-present Papermark, Inc.
+The Hanzo Dataroom Commercial License (the “Commercial License”)
+Copyright (c) 2023-present Hanzo AI, Inc.
 
-With regard to the Papermark Software:
+With regard to the Hanzo Dataroom Software:
 
 This software and associated documentation files (the "Software") may only be
 used in production, if you (and any entity that you represent) have agreed to,
 and are in compliance with, an agreement governing
-the use of the Software, as mutually agreed by you and Papermark, Inc. ("Papermark"),
-and otherwise have a valid Papermark Enterprise Edition subscription ("Commercial Subscription").
+the use of the Software, as mutually agreed by you and Hanzo AI, Inc. ("Hanzo Dataroom"),
+and otherwise have a valid Hanzo Dataroom Enterprise Edition subscription ("Commercial Subscription").
 Subject to the foregoing sentence, you are free to modify this Software and publish patches to the Software.
-You agree that Papermark and/or its licensors (as applicable) retain all right, title and interest in
+You agree that Hanzo Dataroom and/or its licensors (as applicable) retain all right, title and interest in
 and to all such modifications and/or patches, and all such modifications and/or
 patches may only be used, copied, modified, displayed, distributed, or otherwise
 exploited with a valid Commercial Subscription for the correct number of hosts.
 Notwithstanding the foregoing, you may copy and modify the Software for development
-and testing purposes, without requiring a subscription. You agree that Papermark and/or
+and testing purposes, without requiring a subscription. You agree that Hanzo Dataroom and/or
 its licensors (as applicable) retain all right, title and interest in and to all such
 modifications. You are not granted any other rights beyond what is expressly stated herein.
 Subject to the foregoing, it is forbidden to copy, merge, publish, distribute, sublicense,
@@ -35,6 +35,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-For all third party components incorporated into the Papermark Software, those
+For all third party components incorporated into the Hanzo Dataroom Software, those
 components are licensed under the original license provided by the owner of the
 applicable component.

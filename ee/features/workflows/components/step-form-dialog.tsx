@@ -327,7 +327,7 @@ export function StepFormDialog({
                     )}
                     {!link.domainSlug && link.slug && (
                       <span className="font-mono text-xs text-muted-foreground">
-                        papermark.com/{link.slug}
+                        dataroom.hanzo.ai/{link.slug}
                       </span>
                     )}
                     <span className="font-mono text-xs text-muted-foreground">

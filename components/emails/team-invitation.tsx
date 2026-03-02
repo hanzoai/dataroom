@@ -19,7 +19,7 @@ export default function TeamInvitation({
   senderName,
   senderEmail,
   teamName,
-  url = "https://app.papermark.com",
+  url = "https://dataroom.hanzo.ai",
 }: {
   senderName: string;
   senderEmail: string;
@@ -29,7 +29,7 @@ export default function TeamInvitation({
   return (
     <Html>
       <Head />
-      <Preview>Join the team on Papermark</Preview>
+      <Preview>Join the team on Hanzo Dataroom</Preview>
       <Tailwind>
         <Body className="mx-auto my-auto bg-white font-sans">
           <Container className="mx-auto my-10 w-[465px] p-5">
@@ -37,7 +37,7 @@ export default function TeamInvitation({
               <span className="font-bold tracking-tighter">Papermark</span>
             </Text>
             <Text className="font-seminbold mx-0 mb-8 mt-4 p-0 text-center text-xl">
-              {`Join ${teamName} on Papermark`}
+              {`Join ${teamName} on Hanzo Dataroom`}
             </Text>
             <Text className="text-sm leading-6 text-black">Hey!</Text>
             <Text className="text-sm leading-6 text-black">
