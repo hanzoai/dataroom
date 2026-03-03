@@ -1,22 +1,23 @@
 import { Metadata } from "next";
 
+import { APP_NAME, APP_URL } from "@/lib/branding";
 import RegisterClient from "./page-client";
 
 const data = {
-  description: "Signup to Hanzo Dataroom",
-  title: "Sign up | Hanzo Dataroom",
+  description: `Signup to ${APP_NAME}`,
+  title: `Sign up | ${APP_NAME}`,
   url: "/register",
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://dataroom.hanzo.ai"),
+  metadataBase: new URL(APP_URL),
   title: data.title,
   description: data.description,
   openGraph: {
     title: data.title,
     description: data.description,
     url: data.url,
-    siteName: "Hanzo Dataroom",
+    siteName: APP_NAME,
     images: [
       {
         url: "/_static/meta-image.png",

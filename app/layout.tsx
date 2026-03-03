@@ -5,22 +5,23 @@ import "@/styles/globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
+import { APP_DESCRIPTION, APP_NAME, APP_URL } from "@/lib/branding";
+
 const data = {
-  description:
-    "Hanzo Dataroom — Secure data room infrastructure for document sharing with real-time analytics.",
-  title: "Hanzo Dataroom | Secure Data Room Infrastructure",
+  description: APP_DESCRIPTION,
+  title: `${APP_NAME} | Secure Data Room Infrastructure`,
   url: "/",
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://dataroom.hanzo.ai"),
+  metadataBase: new URL(APP_URL),
   title: data.title,
   description: data.description,
   openGraph: {
     title: data.title,
     description: data.description,
     url: data.url,
-    siteName: "Hanzo Dataroom",
+    siteName: APP_NAME,
     images: [
       {
         url: "/_static/meta-image.png",

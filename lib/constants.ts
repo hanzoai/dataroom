@@ -14,10 +14,10 @@ export const STAGGER_CHILD_VARIANTS = {
   },
 };
 
+const _appName = process.env.NEXT_PUBLIC_APP_NAME || "Hanzo Dataroom";
 export const PAPERMARK_HEADERS = {
   headers: {
-    "x-powered-by":
-      "Hanzo Dataroom - Secure Data Room Infrastructure",
+    "x-powered-by": `${_appName} - Secure Data Room Infrastructure`,
   },
 };
 
