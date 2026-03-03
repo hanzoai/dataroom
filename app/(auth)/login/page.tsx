@@ -1,25 +1,26 @@
 import { Metadata } from "next";
 import { Suspense } from "react";
 
+import { APP_NAME, APP_URL } from "@/lib/branding";
 import { GTMComponent } from "@/components/gtm-component";
 
 import LoginClient from "./page-client";
 
 const data = {
-  description: "Login to Hanzo Dataroom",
-  title: "Login | Hanzo Dataroom",
+  description: `Login to ${APP_NAME}`,
+  title: `Login | ${APP_NAME}`,
   url: "/login",
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://dataroom.hanzo.ai"),
+  metadataBase: new URL(APP_URL),
   title: data.title,
   description: data.description,
   openGraph: {
     title: data.title,
     description: data.description,
     url: data.url,
-    siteName: "Hanzo Dataroom",
+    siteName: APP_NAME,
     images: [
       {
         url: "/_static/meta-image.png",

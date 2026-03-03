@@ -45,17 +45,17 @@ export const sendEmail = async ({
   const html = await render(react);
   const plainText = toPlainText(html);
 
+  const appName = process.env.NEXT_PUBLIC_APP_NAME || "Hanzo Dataroom";
+  const defaultFrom = process.env.EMAIL_FROM || `${appName} <noreply@dataroom.hanzo.ai>`;
   const fromAddress =
     from ??
     (marketing
-      ? "Marc from Hanzo Dataroom <marc@updates.dataroom.hanzo.ai>"
+      ? process.env.EMAIL_FROM_MARKETING || defaultFrom
       : system
-        ? "Papermark <dataroom@hanzo.ai>"
+        ? process.env.EMAIL_FROM_SYSTEM || defaultFrom
         : verify
-          ? "Papermark <system@verify.dataroom.hanzo.ai>"
-          : !!scheduledAt
-            ? "Marc Seitz <marc@dataroom.hanzo.ai>"
-            : "Marc from Hanzo Dataroom <marc@dataroom.hanzo.ai>");
+          ? process.env.EMAIL_FROM_VERIFY || defaultFrom
+          : defaultFrom);
 
   try {
     const { data, error } = await resend.emails.send({
