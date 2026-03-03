@@ -8,6 +8,13 @@ import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { LogoCloud } from "@/components/shared/logo-cloud";
 
+const APP_NAME =
+  process.env.NEXT_PUBLIC_APP_NAME || "Hanzo Dataroom";
+const IAM_PROVIDER_NAME =
+  process.env.NEXT_PUBLIC_IAM_PROVIDER_NAME || "Hanzo";
+const MARKETING_URL =
+  process.env.NEXT_PUBLIC_MARKETING_URL || "";
+
 export default function Login() {
   const { next } = useParams as { next?: string };
 
@@ -21,16 +28,16 @@ export default function Login() {
         ></div>
         <div className="z-10 mx-5 mt-[calc(1vh)] h-fit w-full max-w-md overflow-hidden rounded-lg sm:mx-0 sm:mt-[calc(2vh)] md:mt-[calc(3vh)]">
           <div className="items-left flex flex-col space-y-3 px-4 py-6 pt-8 sm:px-12">
-            <Link href="https://dataroom.hanzo.ai" target="_blank">
+            <Link href="/" target="_blank">
               <img
                 src="/_static/papermark-logo.svg"
-                alt="Hanzo Dataroom Logo"
+                alt={`${APP_NAME} Logo`}
                 className="md:mb-48s -mt-8 mb-36 h-7 w-auto self-start sm:mb-32"
               />
             </Link>
             <Link href="/">
               <span className="text-balance text-3xl font-semibold text-gray-900">
-                Welcome to Hanzo Dataroom
+                Welcome to {APP_NAME}
               </span>
             </Link>
             <h3 className="text-balance text-sm text-gray-800">
@@ -46,21 +53,17 @@ export default function Login() {
               }}
               className="flex w-full items-center justify-center space-x-2 border border-red-500 bg-red-500 font-normal text-white hover:bg-red-600"
             >
-              <svg className="h-5 w-5" viewBox="0 0 67 67" fill="currentColor">
-                <path d="M22.21 67V44.6369H0V67H22.21Z" />
-                <path d="M66.7038 22.3184H22.2534L0.0878906 44.6367H44.4634L66.7038 22.3184Z" />
-                <path d="M22.21 0H0V22.3184H22.21V0Z" />
-                <path d="M66.7198 0H44.5098V22.3184H66.7198V0Z" />
-                <path d="M66.7198 67V44.6369H44.5098V67H66.7198Z" />
-              </svg>
-              <span>Sign in with Hanzo</span>
+              <span>
+                Sign in with{" "}
+                <span className="font-bold">{IAM_PROVIDER_NAME}</span>
+              </span>
             </Button>
           </div>
           <p className="mt-10 w-full max-w-md px-4 text-xs text-muted-foreground sm:px-12">
             By clicking continue, you acknowledge that you have read and agree
-            to Hanzo Dataroom&apos;s{" "}
+            to {APP_NAME}&apos;s{" "}
             <a
-              href={`${process.env.NEXT_PUBLIC_MARKETING_URL}/terms`}
+              href={`${MARKETING_URL}/terms`}
               target="_blank"
               className="underline"
             >
@@ -68,7 +71,7 @@ export default function Login() {
             </a>{" "}
             and{" "}
             <a
-              href={`${process.env.NEXT_PUBLIC_MARKETING_URL}/privacy`}
+              href={`${MARKETING_URL}/privacy`}
               target="_blank"
               className="underline"
             >
@@ -101,7 +104,7 @@ export default function Login() {
               <div className="max-w-xl text-center">
                 <blockquote className="text-balance font-normal leading-8 text-white sm:text-xl sm:leading-9">
                   <p>
-                    &quot;We raised our &euro;30M Fund with Hanzo Dataroom Data Rooms.
+                    &quot;We raised our &euro;30M Fund with {APP_NAME} Data Rooms.
                     Love the customization, security and ease of use.&quot;
                   </p>
                 </blockquote>
