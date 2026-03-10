@@ -35,6 +35,7 @@ function HanzoIAMProvider(): OAuthConfig<any> {
           profile.preferred_username,
         email: profile.email,
         image: profile.avatar || profile.picture,
+        organization: profile.owner || profile.organization || profile.org,
       };
     },
     allowDangerousEmailAccountLinking: true,
@@ -68,6 +69,10 @@ export const authOptions: NextAuthOptions = {
       }
       if (user) {
         token.user = user;
+        // Persist IAM organization claim from initial sign-in
+        if ((user as any).organization) {
+          token.organization = (user as any).organization;
+        }
       }
       // refresh the user data
       if (trigger === "update") {
@@ -96,6 +101,7 @@ export const authOptions: NextAuthOptions = {
         id: token.sub,
         // @ts-ignore
         ...(token || session).user,
+        organization: token.organization as string | undefined,
       };
       return session;
     },
