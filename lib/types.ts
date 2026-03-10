@@ -14,7 +14,7 @@ import {
 import { User as NextAuthUser } from "next-auth";
 import { z } from "zod";
 
-export type CustomUser = NextAuthUser & PrismaUser;
+export type CustomUser = NextAuthUser & PrismaUser & { organization?: string };
 
 export interface CreateUserEmailProps {
   user: {
