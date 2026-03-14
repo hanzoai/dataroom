@@ -1,34 +1,34 @@
 import { getSession } from "next-auth/react";
-import posthog from "@hanzo/insights";
+import insights from "@hanzo/insights";
 // import { useEffect } from "react";
 // import { useRouter } from "next/router";
-import { PostHogProvider } from "@hanzo/insights/react";
+import { InsightsProvider } from "@hanzo/insights/react";
 
-import { getPostHogConfig } from "@/lib/posthog";
+import { getInsightsConfig } from "@/lib/insights";
 import { CustomUser } from "@/lib/types";
 
-export const PostHogCustomProvider = ({
+export const InsightsCustomProvider = ({
   children,
 }: {
   children: React.ReactNode;
 }) => {
-  const posthogConfig = getPostHogConfig();
+  const insightsConfig = getInsightsConfig();
   // const router = useRouter();
 
-  // Check that PostHog is client-side
-  if (typeof window !== "undefined" && posthogConfig) {
-    posthog.init(posthogConfig.key, {
-      api_host: posthogConfig.host,
-      ui_host: "https://eu.posthog.com",
+  // Check that Insights is client-side
+  if (typeof window !== "undefined" && insightsConfig) {
+    insights.init(insightsConfig.key, {
+      api_host: insightsConfig.host,
+      ui_host: "https://insights.hanzo.ai",
       disable_session_recording: true,
       autocapture: false,
       // Enable debug mode in development
-      loaded: (posthog) => {
-        if (process.env.NODE_ENV === "development") posthog.debug();
+      loaded: (insights) => {
+        if (process.env.NODE_ENV === "development") insights.debug();
         getSession()
           .then((session) => {
             if (session) {
-              posthog.identify(
+              insights.identify(
                 (session.user as CustomUser).email ??
                   (session.user as CustomUser).id,
                 {
@@ -37,7 +37,7 @@ export const PostHogCustomProvider = ({
                 },
               );
             } else {
-              posthog.reset();
+              insights.reset();
             }
           })
           .catch(() => {
@@ -49,7 +49,7 @@ export const PostHogCustomProvider = ({
 
   // useEffect(() => {
   //   // Track page views
-  //   const handleRouteChange = () => posthog?.capture("$pageview");
+  //   const handleRouteChange = () => insights?.capture("$pageview");
   //   router.events.on("routeChangeComplete", handleRouteChange);
 
   //   return () => {
@@ -57,5 +57,5 @@ export const PostHogCustomProvider = ({
   //   };
   // }, []);
 
-  return <PostHogProvider client={posthog}>{children}</PostHogProvider>;
+  return <InsightsProvider client={insights}>{children}</InsightsProvider>;
 };
