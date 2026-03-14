@@ -1,5 +1,5 @@
 import { emptyAnalytics, jitsuAnalytics } from "@jitsu/js";
-import { posthog } from "posthog-js";
+import { posthog } from "@hanzo/insights";
 
 import { getPostHogConfig } from "@/lib/posthog";
 import { AnalyticsEvents } from "@/lib/types";
