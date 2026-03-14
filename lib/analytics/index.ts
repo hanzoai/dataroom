@@ -1,11 +1,11 @@
 import { emptyAnalytics, jitsuAnalytics } from "@jitsu/js";
-import { posthog } from "@hanzo/insights";
+import { posthog as insights } from "@hanzo/insights";
 
-import { getPostHogConfig } from "@/lib/posthog";
+import { getInsightsConfig } from "@/lib/insights";
 import { AnalyticsEvents } from "@/lib/types";
 
 export function useAnalytics() {
-  const isPostHogEnabled = getPostHogConfig();
+  const isInsightsEnabled = getInsightsConfig();
 
   /**
    * Capture an analytic event.
@@ -14,22 +14,22 @@ export function useAnalytics() {
    * @param properties Properties to attach to the event.
    */
   const capture = (event: string, properties?: Record<string, unknown>) => {
-    if (!isPostHogEnabled) {
+    if (!isInsightsEnabled) {
       return;
     }
 
-    posthog.capture(event, properties);
+    insights.capture(event, properties);
   };
 
   const identify = (
     distinctId?: string,
     properties?: Record<string, unknown>,
   ) => {
-    if (!isPostHogEnabled) {
+    if (!isInsightsEnabled) {
       return;
     }
 
-    posthog.identify(distinctId, properties);
+    insights.identify(distinctId, properties);
   };
 
   return {

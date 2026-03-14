@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export default async function PostHogMiddleware(req: NextRequest) {
+export default async function InsightsMiddleware(req: NextRequest) {
   let url = req.nextUrl.clone();
   const hostname = url.pathname.startsWith("/ingest/static/")
     ? "eu-assets.i.posthog.com"
@@ -16,7 +16,7 @@ export default async function PostHogMiddleware(req: NextRequest) {
   // Create clean headers object with only necessary headers
   const forwardHeaders = new Headers();
 
-  // Headers that PostHog needs
+  // Headers that the analytics proxy needs
   const allowedHeaders = [
     "accept",
     "accept-encoding",
@@ -32,7 +32,7 @@ export default async function PostHogMiddleware(req: NextRequest) {
     "x-forwarded-host",
     "x-forwarded-proto",
     "x-real-ip",
-    // PostHog specific headers
+    // Analytics-specific headers
     "x-posthog-*",
   ];
 
@@ -52,7 +52,7 @@ export default async function PostHogMiddleware(req: NextRequest) {
     }
   }
 
-  // Set the correct host for PostHog
+  // Set the correct host for the analytics backend
   forwardHeaders.set("host", hostname);
 
   url.protocol = "https";

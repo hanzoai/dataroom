@@ -97,7 +97,7 @@ export async function handleRoute(req: NextApiRequest, res: NextApiResponse) {
 
       return res.status(200).json({
         success: true,
-        feedbackData, // Return this for PostHog tracking in the frontend
+        feedbackData, // Return this for Insights tracking in the frontend
       });
     } catch (error) {
       console.error("Error submitting cancellation feedback:", error);
