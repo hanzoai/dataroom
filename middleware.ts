@@ -6,7 +6,7 @@ import { BLOCKED_PATHNAMES } from "./lib/constants";
 import IncomingWebhookMiddleware, {
   isWebhookPath,
 } from "./lib/middleware/incoming-webhooks";
-import PostHogMiddleware from "./lib/middleware/posthog";
+import InsightsMiddleware from "./lib/middleware/insights";
 
 function isAnalyticsPath(path: string) {
   const pattern = /^\/ingest\/.*/;
@@ -50,7 +50,7 @@ export default async function middleware(req: NextRequest, ev: NextFetchEvent) {
   const host = req.headers.get("host");
 
   if (isAnalyticsPath(path)) {
-    return PostHogMiddleware(req);
+    return InsightsMiddleware(req);
   }
 
   // Handle incoming webhooks

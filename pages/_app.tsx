@@ -9,7 +9,7 @@ import { NuqsAdapter } from "nuqs/adapters/next/pages";
 
 import { EXCLUDED_PATHS } from "@/lib/constants";
 
-import { PostHogCustomProvider } from "@/components/providers/posthog-provider";
+import { InsightsCustomProvider } from "@/components/providers/insights-provider";
 import { DealflowPopup } from "@/components/shared/dealflow-popup";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
@@ -72,7 +72,7 @@ export default function App({
         <link rel="icon" href="/favicon.ico" key="favicon" />
       </Head>
       <SessionProvider session={session}>
-        <PostHogCustomProvider>
+        <InsightsCustomProvider>
           <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
             <NuqsAdapter>
               <main className={inter.className}>
@@ -90,7 +90,7 @@ export default function App({
               </main>
             </NuqsAdapter>
           </ThemeProvider>
-        </PostHogCustomProvider>
+        </InsightsCustomProvider>
       </SessionProvider>
     </>
   );
