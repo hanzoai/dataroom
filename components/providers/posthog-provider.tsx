@@ -1,8 +1,8 @@
 import { getSession } from "next-auth/react";
-import posthog from "posthog-js";
+import posthog from "@hanzo/insights";
 // import { useEffect } from "react";
 // import { useRouter } from "next/router";
-import { PostHogProvider } from "posthog-js/react";
+import { PostHogProvider } from "@hanzo/insights/react";
 
 import { getPostHogConfig } from "@/lib/posthog";
 import { CustomUser } from "@/lib/types";
