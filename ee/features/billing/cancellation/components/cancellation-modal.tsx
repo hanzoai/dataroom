@@ -154,7 +154,7 @@ export function CancellationModal({
       if (response.ok) {
         const data = await response.json();
 
-        // Track in PostHog
+        // Track in Insights
         analytics.capture("Cancellation Feedback Submitted", {
           teamId: currentTeamId,
           reason: selectedReason,
