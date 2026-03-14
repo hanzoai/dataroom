@@ -1,5 +1,5 @@
 import { emptyAnalytics, jitsuAnalytics } from "@jitsu/js";
-import { posthog as insights } from "@hanzo/insights";
+import { insights } from "@hanzo/insights";
 
 import { getInsightsConfig } from "@/lib/insights";
 import { AnalyticsEvents } from "@/lib/types";
