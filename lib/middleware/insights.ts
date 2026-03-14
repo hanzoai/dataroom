@@ -33,7 +33,7 @@ export default async function InsightsMiddleware(req: NextRequest) {
     "x-forwarded-proto",
     "x-real-ip",
     // Analytics-specific headers
-    "x-posthog-*",
+    "x-insights-*",
   ];
 
   // Copy allowed headers from the original request
