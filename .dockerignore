@@ -1,0 +1,13 @@
+node_modules
+**/node_modules
+**/.next
+.git
+.env*
+.vscode/
+.idea/
+coverage/
+*.test.ts
+*.spec.ts
+.DS_Store
+*.md
+docs/
