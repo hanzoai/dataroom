@@ -1,7 +1,9 @@
 # LLM.md - Hanzo Dataroom
 
 ## Overview
-Hanzo dataroom service
+Hanzo dataroom service.
+
+**Upstream**: [Papermark](https://github.com/mfts/papermark) (AGPL-3.0). LICENSE retains "Copyright (c) 2023-present Papermark, Inc." Open-source DocSend alternative.
 
 ## Tech Stack
 - **Language**: TypeScript/JavaScript
