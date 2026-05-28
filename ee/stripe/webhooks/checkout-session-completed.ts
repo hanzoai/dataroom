@@ -7,7 +7,7 @@ import {
 } from "@/ee/limits/constants";
 import { stripeInstance } from "@/ee/stripe";
 import { waitUntil } from "@vercel/functions";
-import Stripe from "stripe";
+import type { CommerceTypes } from "@/lib/commerce";
 
 import { sendUpgradePersonalEmail } from "@/lib/emails/send-upgrade-personal-welcome";
 import { sendUpgradePlanEmail } from "@/lib/emails/send-upgrade-plan";
@@ -18,10 +18,10 @@ import { log } from "@/lib/utils";
 import { getPlanFromPriceId } from "../utils";
 
 export async function checkoutSessionCompleted(
-  event: Stripe.Event,
+  event: CommerceTypes.Event,
   isOldAccount: boolean = false,
 ) {
-  const checkoutSession = event.data.object as Stripe.Checkout.Session;
+  const checkoutSession = event.data.object as CommerceTypes.Checkout.Session;
 
   if (
     checkoutSession.client_reference_id === null ||

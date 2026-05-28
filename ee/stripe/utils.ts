@@ -1,4 +1,11 @@
-import Stripe from "stripe";
+import type { CommerceTypes } from "@/lib/commerce";
+
+// TODO(stripe-rip): the priceIds embedded in PLANS below are still the
+// legacy Stripe price IDs. They MUST be re-keyed to Hanzo Commerce plan
+// IDs before the Commerce backend is the source of truth for billing in
+// dataroom. Until that happens, plan-tier resolution will fail on any
+// new Commerce-issued subscription. Coordinate with Commerce admin to
+// create matching plan IDs and replace below.
 
 // Historical price IDs that are no longer in the main PLANS configuration
 // but still need to be supported for existing subscriptions
@@ -67,9 +74,9 @@ export function getPlanFromPriceId(
   return plan;
 }
 
-// custom type coercion because Stripe's types are wrong
+// custom type coercion because the legacy Stripe types were wrong
 export function isNewCustomer(
-  previousAttributes: Partial<Stripe.Subscription> | undefined,
+  previousAttributes: Partial<CommerceTypes.Subscription> | undefined,
 ) {
   let isNewCustomer = false;
   try {
@@ -86,7 +93,7 @@ export function isNewCustomer(
 }
 
 export function isUpgradedCustomer(
-  previousAttributes: Partial<Stripe.Subscription> | undefined,
+  previousAttributes: Partial<CommerceTypes.Subscription> | undefined,
 ) {
   let isUpgradedUser = false;
   try {

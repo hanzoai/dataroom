@@ -53,7 +53,7 @@ export async function handleRoute(req: NextApiRequest, res: NextApiResponse) {
       }
 
       if (!team.stripeId) {
-        return res.status(400).json({ error: "No Stripe customer ID" });
+        return res.status(400).json({ error: "No billing customer ID" });
       }
 
       if (!team.subscriptionId) {
