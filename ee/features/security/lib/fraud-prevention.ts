@@ -1,10 +1,18 @@
 import { NextApiResponse } from "next";
 
-import { stripeInstance } from "@/ee/stripe";
 import { get } from "@vercel/edge-config";
-import { Stripe } from "stripe";
 
+import type { CommerceTypes } from "@/lib/commerce";
 import { log } from "@/lib/utils";
+
+// CommerceTypes.PaymentIntent does not yet exist; payment-failure events
+// carry the same shape via Commerce, so we declare the minimal subset we
+// need locally. TODO(stripe-rip): promote into CommerceTypes once the
+// Commerce webhook schema for payment-intent failures is finalised.
+interface PaymentIntentLike {
+  receipt_email: string | null;
+  last_payment_error?: { decline_code?: string } | null;
+}
 
 /**
  * High-risk decline codes that indicate potential fraud
@@ -18,28 +26,21 @@ const FRAUD_DECLINE_CODES = [
 ];
 
 /**
- * Add email to Stripe Radar value list for blocking
+ * Add email to the fraud blocklist.
+ *
+ * TODO(stripe-rip): the legacy implementation called Stripe Radar's value
+ * lists API. Hanzo Commerce handles fraud signals at the gateway layer and
+ * does not expose a Radar-equivalent endpoint yet. Until the Commerce
+ * fraud-blocklist API ships, the Edge Config blocklist below remains the
+ * effective blocking surface; this function is a no-op so the caller's
+ * Promise.allSettled keeps its arity stable.
  */
 export async function addEmailToStripeRadar(email: string): Promise<boolean> {
-  try {
-    const stripeClient = stripeInstance();
-    await stripeClient.radar.valueListItems.create({
-      value_list: process.env.STRIPE_LIST_ID!,
-      value: email,
-    });
-
-    log({
-      message: `Added email ${email} to Stripe Radar blocklist`,
-      type: "info",
-    });
-    return true;
-  } catch (error) {
-    log({
-      message: `Failed to add email ${email} to Stripe Radar: ${error}`,
-      type: "error",
-    });
-    return false;
-  }
+  log({
+    message: `(commerce migration) skipping Radar blocklist add for ${email}; rely on Edge Config blocklist`,
+    type: "info",
+  });
+  return false;
 }
 
 /**
@@ -107,9 +108,9 @@ export async function addEmailToEdgeConfig(email: string): Promise<boolean> {
  * Process Stripe payment failure for fraud indicators
  */
 export async function processPaymentFailure(
-  event: Stripe.Event,
+  event: CommerceTypes.Event,
 ): Promise<void> {
-  const paymentFailure = event.data.object as Stripe.PaymentIntent;
+  const paymentFailure = event.data.object as PaymentIntentLike;
   const email = paymentFailure.receipt_email;
   const declineCode = paymentFailure.last_payment_error?.decline_code;
 
@@ -124,24 +125,12 @@ export async function processPaymentFailure(
       type: "info",
     });
 
-    // Add to both Stripe Radar and Edge Config in parallel
-    const [stripeResult, edgeConfigResult] = await Promise.allSettled([
+    // Add to Edge Config blocklist (Radar add is a no-op during the
+    // stripe-rip migration; see addEmailToStripeRadar above).
+    const [, edgeConfigResult] = await Promise.allSettled([
       addEmailToStripeRadar(email),
       addEmailToEdgeConfig(email),
     ]);
-
-    // Log results
-    if (stripeResult.status === "fulfilled" && stripeResult.value) {
-      log({
-        message: `Successfully added ${email} to Stripe Radar`,
-        type: "info",
-      });
-    } else {
-      log({
-        message: `Failed to add ${email} to Stripe Radar:`,
-        type: "error",
-      });
-    }
 
     if (edgeConfigResult.status === "fulfilled" && edgeConfigResult.value) {
       log({

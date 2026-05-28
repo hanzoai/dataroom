@@ -1,16 +1,16 @@
 import { NextApiResponse } from "next";
 
 import { sendSubscriptionRenewalReminderEmail } from "@/ee/features/billing/renewal-reminder/lib/send-subscription-renewal-reminder";
-import Stripe from "stripe";
+import type { CommerceTypes } from "@/lib/commerce";
 
 import { log } from "@/lib/utils";
 
 export async function invoiceUpcoming(
-  event: Stripe.Event,
+  event: CommerceTypes.Event,
   res: NextApiResponse,
   isOldAccount: boolean = false,
 ) {
-  const invoice = event.data.object as Stripe.Invoice;
+  const invoice = event.data.object as CommerceTypes.Invoice;
 
   // Only process invoices for yearly renewals
   const lineItems = invoice.lines.data;
