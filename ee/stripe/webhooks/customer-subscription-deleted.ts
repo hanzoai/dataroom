@@ -2,17 +2,17 @@ import { NextApiResponse } from "next";
 
 import { FREE_PLAN_LIMITS } from "@/ee/limits/constants";
 import { Prisma } from "@prisma/client";
-import Stripe from "stripe";
+import type { CommerceTypes } from "@/lib/commerce";
 
 import { clearTeamDomainRedirects } from "@/lib/api/domains/clear-team-redirects";
 import prisma from "@/lib/prisma";
 import { log } from "@/lib/utils";
 
 export async function customerSubscriptionDeleted(
-  event: Stripe.Event,
+  event: CommerceTypes.Event,
   res: NextApiResponse,
 ) {
-  const subscriptionDeleted = event.data.object as Stripe.Subscription;
+  const subscriptionDeleted = event.data.object as CommerceTypes.Subscription;
 
   const stripeId = subscriptionDeleted.customer.toString();
   const subscriptionId = subscriptionDeleted.id;

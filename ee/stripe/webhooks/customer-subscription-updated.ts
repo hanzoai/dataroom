@@ -7,7 +7,7 @@ import {
   DATAROOMS_PREMIUM_PLAN_LIMITS,
   PRO_PLAN_LIMITS,
 } from "@/ee/limits/constants";
-import Stripe from "stripe";
+import type { CommerceTypes } from "@/lib/commerce";
 
 import { clearTeamDomainRedirects } from "@/lib/api/domains/clear-team-redirects";
 import { planSupportsRedirects } from "@/lib/api/domains/redis";
@@ -17,11 +17,11 @@ import { log } from "@/lib/utils";
 import { getPlanFromPriceId } from "../utils";
 
 export async function customerSubsciptionUpdated(
-  event: Stripe.Event,
+  event: CommerceTypes.Event,
   res: NextApiResponse,
   isOldAccount: boolean = false,
 ) {
-  const subscriptionUpdated = event.data.object as Stripe.Subscription;
+  const subscriptionUpdated = event.data.object as CommerceTypes.Subscription;
   const priceId = subscriptionUpdated.items.data[0].price.id;
 
   const plan = getPlanFromPriceId(priceId, isOldAccount);

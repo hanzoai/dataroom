@@ -1,56 +1,41 @@
-import Stripe from "stripe";
+/**
+ * Compatibility shim — re-exports the Hanzo Commerce client under the legacy
+ * `stripeInstance()` and `cancelSubscription()` names so existing call sites
+ * compile during the rip-stripe migration.
+ *
+ * TODO(stripe-rip): rename `stripeInstance` -> `commerce` at every call site
+ * and delete this file. Once that is done, also rename the `ee/stripe/`
+ * directory to `ee/commerce/`. The actual implementation lives in
+ * `lib/commerce.ts`.
+ */
 
-const stripeOld = new Stripe(
-  process.env.STRIPE_SECRET_KEY_LIVE_OLD ??
-    process.env.STRIPE_SECRET_KEY_OLD ??
-    "",
-  {
-    apiVersion: "2024-06-20",
-    appInfo: {
-      name: "Papermark.io",
-      version: "0.1.0",
-    },
-    typescript: true,
-  },
-);
+import { commerce, type CommerceInstance } from "@/lib/commerce";
 
-const stripeNew = new Stripe(
-  process.env.STRIPE_SECRET_KEY_LIVE ?? process.env.STRIPE_SECRET_KEY ?? "",
-  {
-    apiVersion: "2024-06-20",
-    appInfo: {
-      name: "Papermark.io",
-      version: "0.1.0",
-    },
-    typescript: true,
-  },
-);
+export type StripeLike = CommerceInstance;
 
-export const stripeInstance = (account: boolean = false) => {
-  return account ? stripeOld : stripeNew;
+/** Returns a Commerce client. `account=true` selects the legacy tenant key. */
+export const stripeInstance = (account: boolean = false): CommerceInstance => {
+  return commerce(account);
 };
 
+/** Cancel the customer's first subscription at period end. */
 export async function cancelSubscription(
   customer?: string,
   isOldAccount: boolean = false,
 ) {
   if (!customer) return;
-
   try {
-    const stripe = stripeInstance(isOldAccount);
-    const subscriptionId = await stripe.subscriptions
-      .list({
-        customer,
-      })
-      .then((res) => res.data[0].id);
-
-    return await stripe.subscriptions.update(subscriptionId, {
+    const c = commerce(isOldAccount);
+    const list = await c.subscriptions.list({ customer });
+    const subscriptionId = list.data[0]?.id;
+    if (!subscriptionId) return;
+    return await c.subscriptions.update(subscriptionId, {
       cancel_at_period_end: true,
       cancellation_details: {
-        comment: "Customer deleted their Papermark instance.",
+        comment: "Customer deleted their dataroom instance.",
       },
     });
-  } catch (error) {
+  } catch {
     return;
   }
 }
