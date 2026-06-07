@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { motion } from "motion/react";
 
-import HanzoLogo from "@/public/_static/papermark-logo.svg";
+import HanzoLogo from "@/public/_static/hanzo-dataroom-logo.svg";
 
 import { Button } from "@/components/ui/button";
 
@@ -326,7 +326,7 @@ export default function NotificationPreferencesPage({
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Papermark
+                Hanzo Dataroom
               </a>
             </p>
           </motion.div>

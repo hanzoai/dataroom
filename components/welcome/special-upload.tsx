@@ -265,12 +265,12 @@ export default function DeckGeneratorUpload() {
                   className="px-0 text-xs font-normal text-muted-foreground underline hover:text-gray-700"
                   onClick={async () => {
                     const response = await fetch(
-                      "/_example/papermark-example-document.pdf",
+                      "/_example/hanzo-dataroom-example-document.pdf",
                     );
                     const blob = await response.blob();
                     const file = new File(
                       [blob],
-                      "papermark-example-document.pdf",
+                      "hanzo-dataroom-example-document.pdf",
                       {
                         type: "application/pdf",
                       },

@@ -38,7 +38,7 @@ export function ProBannerSection({
       <LinkItem
         title="Show Secured by Hanzo Dataroom"
         tooltipContent="Display 'Secured by Hanzo Dataroom' branding on your shared documents"
-        link="https://dataroom.hanzo.ai/help/article/remove-papermark-branding"
+        link="https://dataroom.hanzo.ai/help/article/remove-branding"
         enabled={enabled}
         action={handleShowBanner}
         isAllowed={isAllowed}

@@ -3,7 +3,7 @@
 ## Overview
 Hanzo dataroom service.
 
-**Upstream**: [Papermark](https://github.com/mfts/papermark) (AGPL-3.0). LICENSE retains "Copyright (c) 2023-present Papermark, Inc." Open-source DocSend alternative.
+**Upstream**: [Papermark](https://github.com/mfts/papermark) (AGPL-3.0). LICENSE retains "Copyright (c) 2023-present Papermark, Inc." Open-source DocSend alternative. This fork is Hanzo Dataroom — single-license AGPL, no `ee/` commercial directory.
 
 ## Tech Stack
 - **Language**: TypeScript/JavaScript
@@ -29,7 +29,7 @@ dataroom/
   components/
   components.json
   context/
-  ee/
+  features/
   lib/
   middleware.ts
 ```

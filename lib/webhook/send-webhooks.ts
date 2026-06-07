@@ -50,7 +50,7 @@ const publishWebhookEventToQStash = async ({
     url: webhook.url,
     body: payload,
     headers: {
-      "X-Papermark-Signature": signature,
+      "X-Hanzo Dataroom-Signature": signature,
       "Upstash-Hide-Headers": "true",
     },
     callback: callbackUrl.href,

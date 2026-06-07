@@ -55,7 +55,7 @@ export const sendOnboardingEmail = async (
     await sendEmail({
       to: email as string,
       subject,
-      replyTo: "Papermark <support@dataroom.hanzo.ai>",
+      replyTo: "Hanzo Dataroom <support@dataroom.hanzo.ai>",
       react: emailTemplate,
       test: process.env.NODE_ENV === "development",
     });

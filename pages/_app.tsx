@@ -27,21 +27,21 @@ export default function App({
   return (
     <>
       <Head>
-        <title>Papermark | The Open Source DocSend Alternative</title>
+        <title>Hanzo Dataroom | The Open Source DocSend Alternative</title>
         <meta name="theme-color" content="#000000" />
         <meta
           name="description"
-          content="Papermark is an open-source document sharing alternative to DocSend with built-in analytics."
+          content="Hanzo Dataroom is an open-source document sharing alternative to DocSend with built-in analytics."
           key="description"
         />
         <meta
           property="og:title"
-          content="Papermark | The Open Source DocSend Alternative"
+          content="Hanzo Dataroom | The Open Source DocSend Alternative"
           key="og-title"
         />
         <meta
           property="og:description"
-          content="Papermark is an open-source document sharing alternative to DocSend with built-in analytics."
+          content="Hanzo Dataroom is an open-source document sharing alternative to DocSend with built-in analytics."
           key="og-description"
         />
         <meta
@@ -61,7 +61,7 @@ export default function App({
         <meta name="twitter:title" content="Hanzo Dataroom" key="tw-title" />
         <meta
           name="twitter:description"
-          content="Papermark is an open-source document sharing alternative to DocSend with built-in analytics."
+          content="Hanzo Dataroom is an open-source document sharing alternative to DocSend with built-in analytics."
           key="tw-description"
         />
         <meta

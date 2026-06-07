@@ -191,7 +191,7 @@ export default async function VerifyInvitationPage({
                   <blockquote className="text-l text-balance leading-8 text-gray-100 sm:text-xl sm:leading-9">
                     <p>
                       True builders listen to their users and build what they
-                      need. Thanks Papermark team for solving a big pain point.
+                      need. Thanks Hanzo Dataroom team for solving a big pain point.
                       DocSend monopoly will end soon!
                     </p>
                   </blockquote>
