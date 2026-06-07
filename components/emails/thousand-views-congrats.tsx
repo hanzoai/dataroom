@@ -25,7 +25,7 @@ const ThousandViewsCongratsEmail = ({
         <Body className="font-sans text-sm">
           <Text>Hi{name && ` ${name}`},</Text>
           <Text>
-            I&apos;m Marc, founder of Papermark. Congrats on 1000 views on your
+            From the Hanzo Dataroom team — congrats on 1000 views on your
             documents.
           </Text>
           <Text>How is your experience so far?</Text>
@@ -33,17 +33,7 @@ const ThousandViewsCongratsEmail = ({
           <Text>
             Thanks so much,
             <br />
-            Marc
-          </Text>
-          <Text>
-            <Link
-              href="https://www.g2.com/products/papermark/reviews"
-              target="_blank"
-              className="text-blue-500 underline"
-              rel="noopener noreferrer"
-            >
-              Leave us a G2 review
-            </Link>
+            The Hanzo Dataroom Team
           </Text>
         </Body>
       </Tailwind>

@@ -34,7 +34,7 @@ export default function TeamInvitation({
         <Body className="mx-auto my-auto bg-white font-sans">
           <Container className="mx-auto my-10 w-[465px] p-5">
             <Text className="mx-0 mb-8 mt-4 p-0 text-center text-2xl font-normal">
-              <span className="font-bold tracking-tighter">Papermark</span>
+              <span className="font-bold tracking-tighter">Hanzo Dataroom</span>
             </Text>
             <Text className="font-seminbold mx-0 mb-8 mt-4 p-0 text-center text-xl">
               {`Join ${teamName} on Hanzo Dataroom`}
@@ -44,7 +44,7 @@ export default function TeamInvitation({
               <span className="font-semibold">{senderName}</span> ({senderEmail}
               ) has invited you to the{" "}
               <span className="font-semibold">{teamName}</span> team on{" "}
-              <span className="font-semibold">Papermark</span>.
+              <span className="font-semibold">Hanzo Dataroom</span>.
             </Text>
             <Section className="my-8 text-center">
               <Button

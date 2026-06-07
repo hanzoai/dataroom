@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
   return new ImageResponse(
     (
       <div tw="flex flex-col items-center justify-between w-full h-full bg-white text-black p-12">
-        <div tw="text-[32px] flex items-center tracking-tighter">Papermark</div>
+        <div tw="text-[32px] flex items-center tracking-tighter">Hanzo Dataroom</div>
         <div tw="text-[42px] text-center">{title}</div>
         <div tw="text-[32px] flex items-center">
           Open-Source Document Sharing

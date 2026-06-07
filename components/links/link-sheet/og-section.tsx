@@ -437,7 +437,7 @@ export default function OGSection({
                 rows={3}
                 maxLength={240}
                 className="focus:ring-inset"
-                placeholder={`Papermark is an open-source document sharing infrastructure for modern teams.`}
+                placeholder={`Hanzo Dataroom is an open-source document sharing infrastructure for modern teams.`}
                 value={metaDescription || ""}
                 onChange={(e) => {
                   setData({

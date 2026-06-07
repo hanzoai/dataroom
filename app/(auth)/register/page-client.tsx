@@ -6,7 +6,7 @@ import { useParams } from "next/navigation";
 
 import { useState } from "react";
 
-import HanzoLogo from "@/public/_static/papermark-logo.svg";
+import HanzoLogo from "@/public/_static/hanzo-dataroom-logo.svg";
 import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 
@@ -40,7 +40,7 @@ export default function Register() {
               src={HanzoLogo}
               width={119}
               height={32}
-              alt="Papermark Logo"
+              alt="Hanzo Dataroom Logo"
             />
           </Link>
           <h3 className="text-2xl font-medium text-foreground">

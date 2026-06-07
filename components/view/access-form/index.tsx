@@ -221,7 +221,7 @@ export default function AccessForm({
               className="font-medium"
               style={{ color: accessFormTheme.mutedTextColor }}
             >
-              Papermark
+              Hanzo Dataroom
             </a>
             .
           </p>

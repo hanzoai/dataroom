@@ -29,7 +29,7 @@ const DataroomTrial24hReminderEmail = ({ name }: TrialEndReminderEmail) => {
         <Body className="mx-auto my-auto bg-white font-sans">
           <Container className="mx-auto my-10 w-[465px] p-5">
             <Text className="mx-0 mb-8 mt-4 p-0 text-center text-2xl font-normal">
-              <span className="font-bold tracking-tighter">Papermark</span>
+              <span className="font-bold tracking-tighter">Hanzo Dataroom</span>
             </Text>
             <Text className="font-seminbold mx-0 mb-8 mt-4 p-0 text-center text-xl">
               Your Data Room plan trial expires in 24 hours
@@ -38,7 +38,7 @@ const DataroomTrial24hReminderEmail = ({ name }: TrialEndReminderEmail) => {
               Hey{name && ` ${name}`}!
             </Text>
             <Text className="text-sm leading-6 text-black">
-              Your Papermark Data Room plan trial expires in 24 hours.
+              Your Hanzo Dataroom Data Room plan trial expires in 24 hours.
               Don&apos;t lose access to these features -{" "}
               <Link href={`https://dataroom.hanzo.ai/settings/billing`}>
                 upgrade today

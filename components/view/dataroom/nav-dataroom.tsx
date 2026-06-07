@@ -20,7 +20,7 @@ import { Button } from "../../ui/button";
 import { ConversationSidebar } from "../conversations/sidebar";
 import { ViewerDownloadProgressModal } from "./viewer-download-progress-modal";
 
-const DEFAULT_BANNER_IMAGE = "/_static/papermark-banner.png";
+const DEFAULT_BANNER_IMAGE = "/_static/hanzo-dataroom-banner.png";
 
 export default function DataroomNav({
   allowDownload,
@@ -141,11 +141,11 @@ export default function DataroomNav({
                 />
               ) : (
                 <Link
-                  href={`https://dataroom.hanzo.ai?utm_campaign=navbar&utm_medium=navbar&utm_source=papermark-${linkId}`}
+                  href={`https://dataroom.hanzo.ai?utm_campaign=navbar&utm_medium=navbar&utm_source=dataroom-${linkId}`}
                   target="_blank"
                   className="text-2xl font-bold tracking-tighter text-white"
                 >
-                  Papermark
+                  Hanzo Dataroom
                 </Link>
               )}
             </div>

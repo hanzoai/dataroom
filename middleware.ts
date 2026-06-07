@@ -17,14 +17,13 @@ function isAnalyticsPath(path: string) {
 const APP_DOMAINS = [
   "localhost",
   "dataroom.hanzo.ai",
-  "dataroom.hanzo.ai",
   "hanzo.ai",
   ".vercel.app",
 ];
 
 function isCustomDomain(host: string) {
   if (process.env.NODE_ENV === "development") {
-    return host?.includes(".local") || host?.includes("papermark.dev");
+    return host?.includes(".local") || host?.includes("dataroom.hanzo.dev");
   }
   return !APP_DOMAINS.some((d) =>
     d.startsWith(".") ? host?.endsWith(d) : host?.includes(d),
