@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { getLimits } from "@/ee/limits/server";
+import { getLimits } from "@/lib/billing/limits/server";
 import { getServerSession } from "next-auth";
 
 import { hashToken } from "@/lib/api/auth/token";

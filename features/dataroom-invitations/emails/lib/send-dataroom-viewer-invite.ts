@@ -1,6 +1,6 @@
 import { sendEmail } from "@/lib/resend";
 
-import DataroomViewerInvitation from "@/ee/features/dataroom-invitations/emails/components/dataroom-viewer-invitation";
+import DataroomViewerInvitation from "@/features/dataroom-invitations/emails/components/dataroom-viewer-invitation";
 
 export const sendDataroomViewerInvite = async ({
   dataroomName,

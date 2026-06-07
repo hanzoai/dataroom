@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { useUninvitedMembers } from "@/ee/features/dataroom-invitations/lib/swr/use-dataroom-invitations";
+import { useUninvitedMembers } from "@/features/dataroom-invitations/lib/swr/use-dataroom-invitations";
 import {
   MailCheckIcon,
   MoreHorizontalIcon,
@@ -40,7 +40,7 @@ import {
 import { TimestampTooltip } from "@/components/ui/timestamp-tooltip";
 import { VisitorAvatar } from "@/components/visitors/visitor-avatar";
 
-import { InviteViewersModal } from "../../../ee/features/dataroom-invitations/components/invite-viewers-modal";
+import { InviteViewersModal } from "@/features/dataroom-invitations/components/invite-viewers-modal";
 import { AddGroupMemberModal } from "./add-member-modal";
 
 export default function GroupMemberTable({

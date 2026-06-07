@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { cancelSubscription } from "@/ee/stripe";
-import { isOldAccount } from "@/ee/stripe/utils";
+import { cancelSubscription } from "@/lib/billing/legacy";
+import { isOldAccount } from "@/lib/billing/legacy/utils";
 import { DocumentStorageType } from "@prisma/client";
 import { getServerSession } from "next-auth";
 

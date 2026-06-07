@@ -1,6 +1,6 @@
 import React from "react";
 
-import { PlanEnum } from "@/ee/stripe/constants";
+import { PlanEnum } from "@/lib/billing/legacy/constants";
 import { LockIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";

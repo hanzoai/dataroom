@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { sendConversationNotification } from "@/ee/features/conversations/emails/lib/send-conversation-notification";
+import { sendConversationNotification } from "@/features/conversations/emails/lib/send-conversation-notification";
 
 import prisma from "@/lib/prisma";
 import { log } from "@/lib/utils";

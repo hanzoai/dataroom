@@ -1,1 +1,1 @@
-export { default } from "@/ee/features/conversations/pages/faq-overview";
+export { default } from "@/features/conversations/pages/faq-overview";

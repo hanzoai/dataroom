@@ -1,8 +1,8 @@
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
-import { WorkflowEngine } from "@/ee/features/workflows/lib/engine";
-import { AccessRequestSchema } from "@/ee/features/workflows/lib/types";
+import { WorkflowEngine } from "@/features/workflows/lib/engine";
+import { AccessRequestSchema } from "@/features/workflows/lib/types";
 import { ipAddress } from "@vercel/functions";
 import { z } from "zod";
 

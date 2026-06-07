@@ -1,5 +1,5 @@
-import { vertex } from "@/ee/features/ai/lib/models/google";
-import { openai } from "@/ee/features/ai/lib/models/openai";
+import { vertex } from "@/features/ai/lib/models/google";
+import { openai } from "@/features/ai/lib/models/openai";
 import { logger, metadata, task } from "@trigger.dev/sdk/v3";
 import { generateText } from "ai";
 import path from "path";

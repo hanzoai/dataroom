@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import { isTeamPausedById } from "@/ee/features/billing/cancellation/lib/is-team-paused";
-import { getLimits } from "@/ee/limits/server";
-import { MultiRegionS3Store } from "@/ee/features/storage/s3-store";
+import { isTeamPausedById } from "@/lib/billing/paused";
+import { getLimits } from "@/lib/billing/limits/server";
+import { MultiRegionS3Store } from "@/features/storage/s3-store";
 import { CopyObjectCommand } from "@aws-sdk/client-s3";
 import { Server } from "@tus/server";
 import { getServerSession } from "next-auth/next";

@@ -5,9 +5,9 @@ import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useState } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { PlanEnum, getPlanFeatures } from "@/ee/stripe/constants";
-import { getPriceIdFromPlan } from "@/ee/stripe/functions/get-price-id-from-plan";
-import { PLANS } from "@/ee/stripe/utils";
+import { PlanEnum, getPlanFeatures } from "@/lib/billing/legacy/constants";
+import { getPriceIdFromPlan } from "@/lib/billing/legacy/functions/get-price-id-from-plan";
+import { PLANS } from "@/lib/billing/legacy/utils";
 import Cookies from "js-cookie";
 import { CheckIcon, Sparkles, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";

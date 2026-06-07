@@ -1,2 +1,2 @@
 // Re-export from ee folder
-export { default } from "@/ee/features/templates/api/datarooms/generate";
+export { default } from "@/features/templates/api/datarooms/generate";

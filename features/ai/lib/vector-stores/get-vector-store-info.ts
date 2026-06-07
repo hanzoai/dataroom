@@ -1,4 +1,4 @@
-import { openai } from "@/ee/features/ai/lib/models/openai";
+import { openai } from "@/features/ai/lib/models/openai";
 import { type OpenAI } from "openai";
 
 /**

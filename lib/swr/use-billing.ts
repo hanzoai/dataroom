@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { PLAN_NAME_MAP } from "@/ee/stripe/constants";
-import { SubscriptionDiscount } from "@/ee/stripe/functions/get-subscription-item";
+import { PLAN_NAME_MAP } from "@/lib/billing/legacy/constants";
+import { SubscriptionDiscount } from "@/lib/billing/legacy/functions/get-subscription-item";
 import useSWR from "swr";
 
 import { fetcher } from "@/lib/utils";

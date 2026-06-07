@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { AgentsSettingsCard } from "@/ee/features/ai/components/agents-settings-card";
+import { AgentsSettingsCard } from "@/features/ai/components/agents-settings-card";
 import { Check, Copy } from "lucide-react";
 import { toast } from "sonner";
 import { mutate } from "swr";

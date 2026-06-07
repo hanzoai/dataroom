@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { handleRoute } from "@/ee/features/conversations/api/conversations-route";
+import { handleRoute } from "@/features/conversations/api/conversations-route";
 
 export default async function handler(
   req: NextApiRequest,

@@ -4,7 +4,7 @@ import {
   addFileToVectorStoreTask,
   processDocumentForAITask,
   SUPPORTED_AI_CONTENT_TYPES,
-} from "@/ee/features/ai/lib/trigger";
+} from "@/features/ai/lib/trigger";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { waitUntil } from "@vercel/functions";
 import { getServerSession } from "next-auth/next";

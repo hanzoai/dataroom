@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import {
   faqParamSchema,
   publishFAQFormSchema,
-} from "@/ee/features/conversations/lib/schemas/faq";
+} from "@/features/conversations/lib/schemas/faq";
 import { BookOpen, Check, FileText, Link2 } from "lucide-react";
 import { toast } from "sonner";
 

@@ -6,7 +6,7 @@ import {
   DATAROOMS_PLUS_PLAN_LIMITS,
   DATAROOMS_PREMIUM_PLAN_LIMITS,
   PRO_PLAN_LIMITS,
-} from "@/ee/limits/constants";
+} from "@/lib/billing/limits/constants";
 import type { CommerceTypes } from "@/lib/commerce";
 
 import { clearTeamDomainRedirects } from "@/lib/api/domains/clear-team-redirects";
