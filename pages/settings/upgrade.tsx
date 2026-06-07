@@ -664,11 +664,11 @@ export default function UpgradePage() {
           analytics.
         </a>
         <a
-          href="https://cal.com/marcseitz/papermark"
+          href="https://dataroom.hanzo.ai/contact"
           target="_blank"
           className="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
         >
-          Looking for Papermark Enterprise?
+          Looking for Hanzo Dataroom Enterprise?
         </a>
       </div>
     </div>

@@ -53,7 +53,7 @@ export function UpgradePlanModal({
         "Custom branding",
         "Folder organization",
         "Require email verification",
-        "Papermark branding removed",
+        "Hanzo Dataroom branding removed",
         "1-year analytics retention",
       ];
     }
@@ -287,11 +287,11 @@ export function UpgradePlanModal({
               </DataroomTrialModal>
             ) : (
               <a
-                href="https://cal.com/marcseitz/papermark"
+                href="https://dataroom.hanzo.ai/contact"
                 target="_blank"
                 className="underline-offset-4 transition-all hover:text-gray-800 hover:underline hover:dark:text-muted-foreground/80"
               >
-                Looking for Papermark Enterprise?
+                Looking for Hanzo Dataroom Enterprise?
               </a>
             )}
           </div>

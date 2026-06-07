@@ -314,7 +314,7 @@ export function YearlyRecapModal({
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = `papermark-wrapped-${stats?.year || 2025}.png`;
+        a.download = `hanzo-dataroom-wrapped-${stats?.year || 2025}.png`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -339,9 +339,9 @@ export function YearlyRecapModal({
 · ${stats?.totalViews?.toLocaleString()} views
 · ${countriesCount} countries
 
-My Papermark Wrapped ${stats?.year}!
+My Hanzo Dataroom Wrapped ${stats?.year}!
 
-#PapermarkWrapped https://dataroom.hanzo.ai/`;
+#HanzoDataroomWrapped https://dataroom.hanzo.ai/`;
   };
 
   const handleShareLinkedIn = async () => {
@@ -458,7 +458,7 @@ My Papermark Wrapped ${stats?.year}!
                   <div className="mt-4 text-center sm:mt-6">
                     <div className="inline-flex items-center gap-2">
                       <span className="text-base font-bold text-gray-900 sm:text-lg">
-                        Papermark
+                        Hanzo Dataroom
                       </span>
                       <span className="text-base font-black text-gray-900 sm:text-lg">
                         WRAPPED
@@ -475,7 +475,7 @@ My Papermark Wrapped ${stats?.year}!
           <p className="mb-4 px-4 text-center text-xs text-muted-foreground sm:px-6 sm:text-sm">
             Share your stats and receive{" "}
             <span className="font-semibold text-orange-600">$50</span> in
-            credits on your papermark account, please send confirmation to{" "}
+            credits on your Hanzo Dataroom account, please send confirmation to{" "}
             <span className="font-medium">support@dataroom.hanzo.ai</span> and
             include screenshot or link to your post.
           </p>
@@ -628,7 +628,7 @@ function IntroSlide({
     <div className="relative flex min-h-[350px] flex-col items-center justify-center text-center sm:min-h-[520px]">
       <h1 className="relative z-10 mb-4 text-balance text-3xl font-semibold text-foreground sm:text-6xl">
         Your {stats.year} with{" "}
-        <span className="text-orange-500">Papermark</span>
+        <span className="text-orange-500">Hanzo Dataroom</span>
       </h1>
       <p className="relative z-10 mb-10 max-w-xl px-2 text-xs text-gray-500 sm:mb-14 sm:px-0 sm:text-sm">
         This review is personalised to your platform usage and contains your
@@ -864,7 +864,7 @@ function ShareOfferSlide({ stats }: { stats: YearlyRecapStats }) {
       </div>
 
       <p className="mt-6 max-w-sm text-balance px-2 text-xs text-muted-foreground sm:mt-8 sm:max-w-none sm:px-0 sm:text-sm">
-        You will receive $50 in credits on your papermark account, please send
+        You will receive $50 in credits on your Hanzo Dataroom account, please send
         confirmation to{" "}
         <span className="font-medium">support@dataroom.hanzo.ai</span> and include
         screenshot or link to your post.

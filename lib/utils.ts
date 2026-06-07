@@ -391,8 +391,8 @@ export const calculateDaysLeft = (accountCreationDate: Date): number => {
 };
 
 export function constructMetadata({
-  title = "Papermark | The Open Source DocSend Alternative",
-  description = "Papermark is an open-source document sharing alternative to DocSend with built-in engagement analytics and 100% white-labeling.",
+  title = "Hanzo Dataroom | The Open Source DocSend Alternative",
+  description = "Hanzo Dataroom is an open-source document sharing alternative to DocSend with built-in engagement analytics and 100% white-labeling.",
   image = "https://dataroom.hanzo.ai/_static/meta-image.png",
   favicon = "/favicon.ico",
   noIndex = false,

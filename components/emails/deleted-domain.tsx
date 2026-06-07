@@ -28,14 +28,14 @@ export default function DomainDeleted({
         <Body className="mx-auto my-auto bg-white font-sans">
           <Container className="mx-auto my-10 w-[465px] p-5">
             <Text className="mx-0 mb-8 mt-4 p-0 text-center text-2xl font-normal">
-              <span className="font-bold tracking-tighter">Papermark</span>
+              <span className="font-bold tracking-tighter">Hanzo Dataroom</span>
             </Text>
             <Text className="font-seminbold mx-0 mb-8 mt-4 p-0 text-center text-xl">
               Domain Deleted
             </Text>
             <Text className="text-sm leading-6 text-black">
               Your domain <code className="text-purple-600">{domain}</code> for
-              your Papermark account has been invalid for 30 days. As a result,
+              your Hanzo Dataroom account has been invalid for 30 days. As a result,
               it has been deleted from Hanzo Dataroom.
             </Text>
             <Text className="text-sm leading-6 text-black">

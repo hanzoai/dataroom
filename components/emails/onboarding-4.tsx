@@ -24,7 +24,7 @@ const Onboarding4Email = () => {
         <Body className="mx-auto my-auto bg-white font-sans">
           <Container className="mx-auto my-10 w-[465px] p-5">
             <Text className="mx-0 mb-8 mt-4 p-0 text-center text-2xl font-normal">
-              <span className="font-bold tracking-tighter">Papermark</span>
+              <span className="font-bold tracking-tighter">Hanzo Dataroom</span>
             </Text>
             <Text className="mx-0 mb-8 mt-4 p-0 text-center text-2xl font-normal">
               Custom domains and branding
@@ -32,7 +32,7 @@ const Onboarding4Email = () => {
             <Text className="text-sm">
               Look professional with custom branding!
             </Text>
-            <Text className="text-sm">With Papermark you can:</Text>
+            <Text className="text-sm">With Hanzo Dataroom you can:</Text>
             <ul className="list-inside list-disc text-sm">
               <li>
                 Share documnets with your <strong>custom domain💫</strong>{" "}
@@ -60,7 +60,7 @@ const Onboarding4Email = () => {
             <Text className="text-sm">
               If you are looking for full white-labelling just{" "}
               <a
-                href="https://cal.com/marcseitz/papermark"
+                href="https://dataroom.hanzo.ai/contact"
                 className="text-blue-500 underline"
               >
                 book a call

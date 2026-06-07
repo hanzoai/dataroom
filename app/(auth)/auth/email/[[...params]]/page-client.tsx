@@ -117,8 +117,8 @@ export default function EmailVerificationClient() {
             <div className="items-left flex flex-col space-y-3 px-4 py-6 pt-8 sm:px-12">
               <Link href="https://dataroom.hanzo.ai" target="_blank">
                 <img
-                  src="/_static/papermark-logo.svg"
-                  alt="Papermark Logo"
+                  src="/_static/hanzo-dataroom-logo.svg"
+                  alt="Hanzo Dataroom Logo"
                   className="-mt-8 mb-36 h-7 w-auto self-start sm:mb-32 md:mb-48"
                 />
               </Link>
@@ -155,8 +155,8 @@ export default function EmailVerificationClient() {
           <div className="items-left flex flex-col space-y-3 px-4 py-6 pt-8 sm:px-12">
             <Link href="https://dataroom.hanzo.ai" target="_blank">
               <img
-                src="/_static/papermark-logo.svg"
-                alt="Papermark Logo"
+                src="/_static/hanzo-dataroom-logo.svg"
+                alt="Hanzo Dataroom Logo"
                 className="-mt-8 mb-36 h-7 w-auto self-start sm:mb-32 md:mb-48"
               />
             </Link>

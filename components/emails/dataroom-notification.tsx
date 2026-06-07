@@ -34,7 +34,7 @@ export default function DataroomNotification({
         <Body className="mx-auto my-auto bg-white font-sans">
           <Container className="mx-auto my-10 w-[465px] p-5">
             <Text className="mb-8 mt-4 text-center text-2xl font-normal">
-              <span className="font-bold tracking-tighter">Papermark</span>
+              <span className="font-bold tracking-tighter">Hanzo Dataroom</span>
             </Text>
             <Text className="font-seminbold mb-8 mt-4 text-center text-xl">
               {`New document available for ${dataroomName}`}
@@ -58,7 +58,7 @@ export default function DataroomNotification({
               or copy and paste this URL into your browser: <br />
               {`${url}`}
             </Text>
-            <Text className="text-sm text-gray-400">Papermark</Text>
+            <Text className="text-sm text-gray-400">Hanzo Dataroom</Text>
 
             <Hr />
             <Section className="text-gray-400">
@@ -71,7 +71,7 @@ export default function DataroomNotification({
                 <span className="font-semibold">{senderEmail}</span> because you
                 viewed the dataroom{" "}
                 <span className="font-semibold">{dataroomName}</span> on
-                Papermark. If you have any feedback or questions about this
+                Hanzo Dataroom. If you have any feedback or questions about this
                 email, simply reply to it.{" "}
                 <a
                   href={unsubscribeUrl}

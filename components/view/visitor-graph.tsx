@@ -80,7 +80,7 @@ export default function ViewDurationSummary({
             Thanks for creating an account!
           </h1>
           <p className="max-w-lg text-balance text-white">
-            We sent you an email confirmation with a link to your Papermark
+            We sent you an email confirmation with a link to your Hanzo Dataroom
             account.
           </p>
         </motion.div>

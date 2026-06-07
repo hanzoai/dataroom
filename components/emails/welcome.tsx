@@ -30,14 +30,14 @@ const WelcomeEmail = ({ name }: WelcomeEmailProps) => {
           <Container className="mx-auto my-10 max-w-[600px] rounded border border-solid border-neutral-200 px-10 py-5">
             <Section className="mt-8">
               <Text className="text-2xl font-bold tracking-tighter">
-                Papermark
+                Hanzo Dataroom
               </Text>
             </Section>
             <Heading className="mx-0 my-7 p-0 text-xl font-semibold text-black">
               Welcome {name ? name : "to Hanzo Dataroom"}!
             </Heading>
             <Text className="mb-8 text-sm leading-6 text-gray-600">
-              Thank you for signing up for Papermark! You can now start sharing
+              Thank you for signing up for Hanzo Dataroom! You can now start sharing
               documents securely, create data rooms, and track engagement in
               real-time.
             </Text>
