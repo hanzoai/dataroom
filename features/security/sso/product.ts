@@ -3,4 +3,4 @@
  * Used as the `product` parameter when creating SAML connections
  * and when initiating SSO login.
  */
-export const JACKSON_PRODUCT = "papermark";
+export const JACKSON_PRODUCT = "hanzo-dataroom";

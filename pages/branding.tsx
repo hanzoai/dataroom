@@ -267,7 +267,7 @@ export default function Branding() {
                 Global Branding
               </h1>
               <p className="text-xs text-muted-foreground sm:text-sm">
-                Customize how your brand appears globally across Papermark
+                Customize how your brand appears globally across Hanzo Dataroom
                 documents and data rooms your visitors see.
               </p>
             </div>

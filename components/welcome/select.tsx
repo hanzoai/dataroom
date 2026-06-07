@@ -170,7 +170,7 @@ export default function Select() {
         className="flex flex-col items-center space-y-10 text-center"
       >
         <p className="text-2xl font-bold tracking-tighter text-foreground">
-          Papermark
+          Hanzo Dataroom
         </p>
         <h1 className="font-display max-w-md text-3xl font-semibold transition-colors sm:text-4xl">
           Which document do you want to share today?
@@ -241,7 +241,7 @@ export default function Select() {
           {showDealTypeOptions && (
             <div className="space-y-3">
               <p className="text-sm font-medium text-muted-foreground">
-                What do you use Papermark for?
+                What do you use Hanzo Dataroom for?
               </p>
               <div className="flex flex-wrap justify-center gap-2">
                 {DEAL_TYPE_OPTIONS.map((option) => (
@@ -269,7 +269,7 @@ export default function Select() {
           {showOtherInput && !dealType && (
             <div className="space-y-3">
               <p className="text-sm font-medium text-muted-foreground">
-                What do you use Papermark for?
+                What do you use Hanzo Dataroom for?
               </p>
               <div className="flex items-center justify-center gap-2">
                 <input

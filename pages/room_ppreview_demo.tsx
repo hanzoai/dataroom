@@ -8,7 +8,7 @@ import {
   createViewerSurfaceTheme,
 } from "@/components/view/viewer/viewer-surface-theme";
 
-const DEFAULT_BANNER_IMAGE = "/_static/papermark-banner.png";
+const DEFAULT_BANNER_IMAGE = "/_static/hanzo-dataroom-banner.png";
 
 export default function ViewPage() {
   const router = useRouter();
@@ -61,7 +61,7 @@ export default function ViewPage() {
                   />
                 ) : (
                   <div className="text-2xl font-bold tracking-tighter text-white">
-                    Papermark
+                    Hanzo Dataroom
                   </div>
                 )}
               </div>

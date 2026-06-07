@@ -399,7 +399,7 @@ export function InviteViewersModal({
                   </span>{" "}
                   dataroom on{" "}
                   <span className="font-semibold text-foreground">
-                    Papermark
+                    Hanzo Dataroom
                   </span>
                   .
                   <br />
