@@ -402,7 +402,7 @@ export default function DataroomTrial() {
                 highlightItem={["datarooms"]}
                 trigger="dataroom_trial_form"
               >
-                <button className="underline">Hanzo Dataroom Data Rooms</button>
+                <button className="underline">Hanzo Dataroom</button>
               </UpgradePlanModal>{" "}
               to continue using data rooms.
             </div>

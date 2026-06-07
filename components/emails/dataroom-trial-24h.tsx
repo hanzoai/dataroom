@@ -24,7 +24,7 @@ const DataroomTrial24hReminderEmail = ({ name }: TrialEndReminderEmail) => {
   return (
     <Html>
       <Head />
-      <Preview>Upgrade to Hanzo Dataroom Data Rooms Plan</Preview>
+      <Preview>Upgrade to Hanzo Dataroom Plan</Preview>
       <Tailwind>
         <Body className="mx-auto my-auto bg-white font-sans">
           <Container className="mx-auto my-10 w-[465px] p-5">
