@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { reportDeniedAccessAttempt } from "@/ee/features/access-notifications";
-import { getTeamStorageConfigById } from "@/ee/features/storage/config";
+import { reportDeniedAccessAttempt } from "@/features/access-notifications";
+import { getTeamStorageConfigById } from "@/features/storage/config";
 // Import authOptions directly from the source
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { ipAddress, waitUntil } from "@vercel/functions";

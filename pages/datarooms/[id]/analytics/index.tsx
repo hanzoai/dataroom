@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { PlanEnum } from "@/ee/stripe/constants";
+import { PlanEnum } from "@/lib/billing/legacy/constants";
 import { ChartNoAxesColumnIcon, LogsIcon } from "lucide-react";
 
 import { usePlan } from "@/lib/swr/use-billing";

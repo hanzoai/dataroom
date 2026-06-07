@@ -1,12 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import { isTeamPausedById } from "@/ee/features/billing/cancellation/lib/is-team-paused";
+import { isTeamPausedById } from "@/lib/billing/paused";
 import {
   DATAROOM_TEMPLATES,
   FolderTemplate,
-} from "@/ee/features/templates/constants/dataroom-templates";
-import { generateDataroomSchema } from "@/ee/features/templates/schemas/dataroom-templates";
-import { getLimits } from "@/ee/limits/server";
+} from "@/features/templates/constants/dataroom-templates";
+import { generateDataroomSchema } from "@/features/templates/schemas/dataroom-templates";
+import { getLimits } from "@/lib/billing/limits/server";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { getServerSession } from "next-auth/next";
 

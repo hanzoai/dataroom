@@ -1,10 +1,10 @@
 import { NextRequest } from "next/server";
 
-import { generateChatTitle } from "@/ee/features/ai/lib/chat/generate-chat-title";
-import { getFilteredDataroomDocumentIds } from "@/ee/features/ai/lib/chat/get-filtered-dataroom-document-ids";
-import { sendMessage } from "@/ee/features/ai/lib/chat/send-message";
-import { validateChatAccess } from "@/ee/features/ai/lib/permissions/validate-chat-access";
-import { sendMessageSchema } from "@/ee/features/ai/schemas/chat";
+import { generateChatTitle } from "@/features/ai/lib/chat/generate-chat-title";
+import { getFilteredDataroomDocumentIds } from "@/features/ai/lib/chat/get-filtered-dataroom-document-ids";
+import { sendMessage } from "@/features/ai/lib/chat/send-message";
+import { validateChatAccess } from "@/features/ai/lib/permissions/validate-chat-access";
+import { sendMessageSchema } from "@/features/ai/schemas/chat";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { getServerSession } from "next-auth";
 

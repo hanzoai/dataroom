@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { PlanEnum } from "@/ee/stripe/constants";
+import { PlanEnum } from "@/lib/billing/legacy/constants";
 import { differenceInDays, format, startOfDay, subDays } from "date-fns";
 import { CalendarIcon, ChevronDown, CrownIcon } from "lucide-react";
 import { DateRange } from "react-day-picker";

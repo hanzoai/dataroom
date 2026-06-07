@@ -1,4 +1,4 @@
-import { openai } from "@/ee/features/ai/lib/models/openai";
+import { openai } from "@/features/ai/lib/models/openai";
 import { logger, metadata, task } from "@trigger.dev/sdk/v3";
 import path from "path";
 import * as XLSX from "xlsx";

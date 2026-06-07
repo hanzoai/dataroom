@@ -1,10 +1,10 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { isTeamPaused } from "@/ee/features/billing/cancellation/lib/is-team-paused";
+import { isTeamPaused } from "@/lib/billing/paused";
 import getSubscriptionItem, {
   SubscriptionDiscount,
-} from "@/ee/stripe/functions/get-subscription-item";
-import { isOldAccount } from "@/ee/stripe/utils";
+} from "@/lib/billing/legacy/functions/get-subscription-item";
+import { isOldAccount } from "@/lib/billing/legacy/utils";
 import { getServerSession } from "next-auth/next";
 
 import { errorhandler } from "@/lib/errorHandler";

@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { invitationEmailSchema } from "@/ee/features/dataroom-invitations/lib/schema/dataroom-invitations";
-import { useUninvitedMembers } from "@/ee/features/dataroom-invitations/lib/swr/use-dataroom-invitations";
+import { invitationEmailSchema } from "@/features/dataroom-invitations/lib/schema/dataroom-invitations";
+import { useUninvitedMembers } from "@/features/dataroom-invitations/lib/swr/use-dataroom-invitations";
 import { Link } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";

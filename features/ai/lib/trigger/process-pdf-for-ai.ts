@@ -1,7 +1,7 @@
 import { logger, metadata, task } from "@trigger.dev/sdk/v3";
 import path from "path";
 
-import { openai } from "@/ee/features/ai/lib/models/openai";
+import { openai } from "@/features/ai/lib/models/openai";
 import { getFile } from "@/lib/files/get-file";
 import prisma from "@/lib/prisma";
 

@@ -4,8 +4,8 @@ import {
   SUPPORTED_AI_CONTENT_TYPES,
   addFileToVectorStoreTask,
   processDocumentForAITask,
-} from "@/ee/features/ai/lib/trigger";
-import { createDataroomVectorStore } from "@/ee/features/ai/lib/vector-stores/create-dataroom-vector-store";
+} from "@/features/ai/lib/trigger";
+import { createDataroomVectorStore } from "@/features/ai/lib/vector-stores/create-dataroom-vector-store";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { getServerSession } from "next-auth";
 

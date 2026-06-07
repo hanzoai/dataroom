@@ -1,4 +1,8 @@
-// INFO: for numeric values,`null` means unlimited
+// INFO: for numeric values, `null` means unlimited.
+//
+// Hanzo Dataroom is AGPL with no commercial-tier paywall — every limit is
+// effectively unlimited. The named constants are kept so existing call sites
+// compile, but every shape resolves to the same unlimited profile.
 
 export type TPlanLimits = {
   users: number;
@@ -13,95 +17,37 @@ export type TPlanLimits = {
   agreementOnBusiness?: boolean | null;
 };
 
-export const FREE_PLAN_LIMITS = {
-  users: 1,
-  links: 50,
-  documents: 50,
-  domains: 0,
-  datarooms: 0,
-  customDomainOnPro: false,
-  customDomainInDataroom: false,
-  advancedLinkControlsOnPro: false,
-};
-
-export const PRO_PLAN_LIMITS = {
-  users: 1,
-  links: null,
-  documents: 300,
-  domains: 0,
-  datarooms: 0,
-  customDomainOnPro: false,
-  customDomainInDataroom: false,
-  advancedLinkControlsOnPro: false,
-};
-
-export const BUSINESS_PLAN_LIMITS = {
-  users: 3,
-  links: null,
-  documents: null,
-  domains: 5,
-  datarooms: 100,
-  customDomainOnPro: true,
-  customDomainInDataroom: false,
-  advancedLinkControlsOnPro: false,
-  fileSizeLimits: {
-    maxFiles: 500,
-  },
-};
-
-export const DATAROOMS_PLAN_LIMITS = {
-  users: 3,
-  links: null,
-  documents: null,
-  domains: 10,
-  datarooms: 100,
-  customDomainOnPro: true,
-  customDomainInDataroom: true,
-  advancedLinkControlsOnPro: false,
-  fileSizeLimits: {
-    maxFiles: 1000,
-  },
-};
-
-export const DATAROOMS_PLUS_PLAN_LIMITS = {
-  users: 5,
+const UNLIMITED: TPlanLimits & {
+  conversationsInDataroom: boolean;
+  fileSizeLimits: { maxFiles?: number; maxPages?: number };
+} = {
+  users: Number.MAX_SAFE_INTEGER,
   links: null,
   documents: null,
   domains: 1000,
   datarooms: 1000,
   customDomainOnPro: true,
   customDomainInDataroom: true,
+  advancedLinkControlsOnPro: true,
+  watermarkOnBusiness: true,
+  agreementOnBusiness: true,
   conversationsInDataroom: true,
-  advancedLinkControlsOnPro: false,
-  fileSizeLimits: {
-    maxFiles: 5000,
-    maxPages: 1000,
-  },
+  fileSizeLimits: {},
 };
 
-export const DATAROOMS_PREMIUM_PLAN_LIMITS = {
-  users: 10,
-  links: null,
-  documents: null,
-  domains: 1000,
-  datarooms: 1000,
-  customDomainOnPro: true,
-  customDomainInDataroom: true,
-  conversationsInDataroom: true,
-  advancedLinkControlsOnPro: false,
-  fileSizeLimits: {
-    maxFiles: 5000,
-    maxPages: 1000,
-  },
-};
+export const FREE_PLAN_LIMITS = UNLIMITED;
+export const PRO_PLAN_LIMITS = UNLIMITED;
+export const BUSINESS_PLAN_LIMITS = UNLIMITED;
+export const DATAROOMS_PLAN_LIMITS = UNLIMITED;
+export const DATAROOMS_PLUS_PLAN_LIMITS = UNLIMITED;
+export const DATAROOMS_PREMIUM_PLAN_LIMITS = UNLIMITED;
 
 export const PAUSED_PLAN_LIMITS = {
-  // During pause: keep all data accessible but restrict new creations and views
-  canCreateLinks: false,
-  canReceiveViews: false,
-  canCreateDocuments: false,
-  canCreateDatarooms: false,
-  // Keep existing access
+  // No paywall pause state — every action remains permitted.
+  canCreateLinks: true,
+  canReceiveViews: true,
+  canCreateDocuments: true,
+  canCreateDatarooms: true,
   canViewAnalytics: true,
   canAccessExistingContent: true,
 };

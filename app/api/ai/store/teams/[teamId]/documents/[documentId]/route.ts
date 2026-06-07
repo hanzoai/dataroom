@@ -4,9 +4,9 @@ import {
   addFileToVectorStoreTask,
   processDocumentForAITask,
   SUPPORTED_AI_CONTENT_TYPES,
-} from "@/ee/features/ai/lib/trigger";
-import { createTeamVectorStore } from "@/ee/features/ai/lib/vector-stores/create-team-vector-store";
-import { removeFileFromVectorStore } from "@/ee/features/ai/lib/vector-stores/remove-file-from-vector-store";
+} from "@/features/ai/lib/trigger";
+import { createTeamVectorStore } from "@/features/ai/lib/vector-stores/create-team-vector-store";
+import { removeFileFromVectorStore } from "@/features/ai/lib/vector-stores/remove-file-from-vector-store";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { getServerSession } from "next-auth";
 

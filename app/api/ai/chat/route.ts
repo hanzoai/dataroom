@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { createChat } from "@/ee/features/ai/lib/chat/create-chat";
-import { createChatSchema } from "@/ee/features/ai/schemas/chat";
+import { createChat } from "@/features/ai/lib/chat/create-chat";
+import { createChatSchema } from "@/features/ai/schemas/chat";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { getServerSession } from "next-auth";
 import { z } from "zod";

@@ -9,7 +9,7 @@ import {
 } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { PlanEnum } from "@/ee/stripe/constants";
+import { PlanEnum } from "@/lib/billing/legacy/constants";
 import { Domain, LinkType } from "@prisma/client";
 import { ShuffleIcon } from "lucide-react";
 import { customAlphabet } from "nanoid";

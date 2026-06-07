@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 
-import { PlanEnum } from "@/ee/stripe/constants";
+import { PlanEnum } from "@/lib/billing/legacy/constants";
 import Cookies from "js-cookie";
 
 import X from "@/components/shared/icons/x";

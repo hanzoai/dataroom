@@ -4,8 +4,8 @@ import {
   SUPPORTED_AI_CONTENT_TYPES,
   addFileToVectorStoreTask,
   processDocumentForAITask,
-} from "@/ee/features/ai/lib/trigger";
-import { isTeamPausedById } from "@/ee/features/billing/cancellation/lib/is-team-paused";
+} from "@/features/ai/lib/trigger";
+import { isTeamPausedById } from "@/lib/billing/paused";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { runs } from "@trigger.dev/sdk/v3";
 import { waitUntil } from "@vercel/functions";

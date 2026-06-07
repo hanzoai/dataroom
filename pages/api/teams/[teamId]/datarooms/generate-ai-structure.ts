@@ -1,10 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import { isTeamPausedById } from "@/ee/features/billing/cancellation/lib/is-team-paused";
+import { isTeamPausedById } from "@/lib/billing/paused";
 import {
   getDataroomSystemPrompt,
   getDataroomUserPrompt,
-} from "@/ee/features/templates/lib/prompts";
+} from "@/features/templates/lib/prompts";
 import { openai } from "@ai-sdk/openai";
 import { generateObject } from "ai";
 import { getServerSession } from "next-auth/next";

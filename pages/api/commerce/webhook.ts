@@ -17,12 +17,12 @@
 
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { processPaymentFailure } from "@/ee/features/security";
-import { stripeInstance } from "@/ee/stripe";
-import { checkoutSessionCompleted } from "@/ee/stripe/webhooks/checkout-session-completed";
-import { customerSubscriptionDeleted } from "@/ee/stripe/webhooks/customer-subscription-deleted";
-import { customerSubsciptionUpdated } from "@/ee/stripe/webhooks/customer-subscription-updated";
-import { invoiceUpcoming } from "@/ee/stripe/webhooks/invoice-upcoming";
+import { processPaymentFailure } from "@/features/security";
+import { stripeInstance } from "@/lib/billing/legacy";
+import { checkoutSessionCompleted } from "@/lib/billing/legacy/webhooks/checkout-session-completed";
+import { customerSubscriptionDeleted } from "@/lib/billing/legacy/webhooks/customer-subscription-deleted";
+import { customerSubsciptionUpdated } from "@/lib/billing/legacy/webhooks/customer-subscription-updated";
+import { invoiceUpcoming } from "@/lib/billing/legacy/webhooks/invoice-upcoming";
 import { Readable } from "node:stream";
 
 import { COMMERCE_WEBHOOK_SECRET } from "@/lib/commerce";

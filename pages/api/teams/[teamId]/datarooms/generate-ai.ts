@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import { isTeamPausedById } from "@/ee/features/billing/cancellation/lib/is-team-paused";
-import { FolderTemplate } from "@/ee/features/templates/constants/dataroom-templates";
-import { getLimits } from "@/ee/limits/server";
+import { isTeamPausedById } from "@/lib/billing/paused";
+import { FolderTemplate } from "@/features/templates/constants/dataroom-templates";
+import { getLimits } from "@/lib/billing/limits/server";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { getServerSession } from "next-auth/next";
 

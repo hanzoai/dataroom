@@ -1,11 +1,11 @@
 import dynamic from "next/dynamic";
 
-import { ViewerChatPanel } from "@/ee/features/ai/components/viewer-chat-panel";
+import { ViewerChatPanel } from "@/features/ai/components/viewer-chat-panel";
 import {
   ViewerChatLayout,
   ViewerChatProvider,
-} from "@/ee/features/ai/components/viewer-chat-provider";
-import { ViewerChatToggle } from "@/ee/features/ai/components/viewer-chat-toggle";
+} from "@/features/ai/components/viewer-chat-provider";
+import { ViewerChatToggle } from "@/features/ai/components/viewer-chat-toggle";
 import {
   Brand,
   DataroomBrand,

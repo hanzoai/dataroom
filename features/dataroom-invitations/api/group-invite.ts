@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { SendGroupInvitationSchema } from "@/ee/features/dataroom-invitations/lib/schema/dataroom-invitations";
+import { SendGroupInvitationSchema } from "@/features/dataroom-invitations/lib/schema/dataroom-invitations";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { LinkAudienceType, LinkType } from "@prisma/client";
 import { getServerSession } from "next-auth/next";

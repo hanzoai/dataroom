@@ -3,8 +3,8 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import {
   DATAROOM_TEMPLATES,
   FolderTemplate,
-} from "@/ee/features/templates/constants/dataroom-templates";
-import { applyTemplateSchema } from "@/ee/features/templates/schemas/dataroom-templates";
+} from "@/features/templates/constants/dataroom-templates";
+import { applyTemplateSchema } from "@/features/templates/schemas/dataroom-templates";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { getServerSession } from "next-auth/next";
 

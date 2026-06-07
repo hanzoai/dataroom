@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import {
   UpdateWorkflowRequestSchema,
   formatZodError,
-} from "@/ee/features/workflows/lib/validation";
+} from "@/features/workflows/lib/validation";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { customAlphabet } from "nanoid";
 import { getServerSession } from "next-auth";

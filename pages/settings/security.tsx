@@ -8,7 +8,7 @@ import {
   DirectorySyncConfigModal,
   SAMLConfigModal,
   SSOEnforcementToggle,
-} from "@/ee/features/security/sso";
+} from "@/features/security/sso";
 import { FolderSync, Info, Shield } from "lucide-react";
 
 import { useFeatureFlags } from "@/lib/hooks/use-feature-flags";

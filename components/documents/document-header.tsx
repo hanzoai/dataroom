@@ -4,8 +4,8 @@ import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { DocumentAIDialog } from "@/ee/features/ai/components/document-ai-dialog";
-import { PlanEnum } from "@/ee/stripe/constants";
+import { DocumentAIDialog } from "@/features/ai/components/document-ai-dialog";
+import { PlanEnum } from "@/lib/billing/legacy/constants";
 import { Document, DocumentVersion } from "@prisma/client";
 import {
   ArrowRightIcon,

@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { stripeInstance } from "@/ee/stripe";
+import { stripeInstance } from "@/lib/billing/legacy";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { getServerSession } from "next-auth/next";
 

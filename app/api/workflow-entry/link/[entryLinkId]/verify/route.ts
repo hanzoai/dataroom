@@ -6,7 +6,7 @@ import { ratelimit } from "@/lib/redis";
 import { sendOtpVerificationEmail } from "@/lib/emails/send-email-otp-verification";
 import { generateOTP } from "@/lib/utils/generate-otp";
 import { validateEmail } from "@/lib/utils/validate-email";
-import { VerifyEmailRequestSchema } from "@/ee/features/workflows/lib/types";
+import { VerifyEmailRequestSchema } from "@/features/workflows/lib/types";
 
 // POST /app/(ee)/api/workflow-entry/[entryLinkId]/verify - Send OTP
 export async function POST(

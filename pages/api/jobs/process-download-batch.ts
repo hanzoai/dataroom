@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { getTeamStorageConfigById } from "@/ee/features/storage/config";
+import { getTeamStorageConfigById } from "@/features/storage/config";
 import { InvocationType, InvokeCommand } from "@aws-sdk/client-lambda";
 
 import { getLambdaClientForTeam } from "@/lib/files/aws-client";

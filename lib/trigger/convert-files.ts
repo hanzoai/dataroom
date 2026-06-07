@@ -190,7 +190,7 @@ export const convertFilesToPdfTask = task({
           updateStatus({ progress: 25, text: "Sanitizing document…" });
 
           const result = await python.runScript(
-            "./ee/features/conversions/python/docx-sanitizer.py",
+            "./features/conversions/python/docx-sanitizer.py",
             ["-v", "--mode", "all", inputPath, outputPath],
           );
           logger.info("Sanitizer output", { stderr: result.stderr });

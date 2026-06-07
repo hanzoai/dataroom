@@ -1,3 +1,3 @@
-import { useLimits } from "@/ee/limits/swr-handler";
+import { useLimits } from "@/lib/billing/limits/swr-handler";
 
 export default useLimits;

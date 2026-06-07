@@ -134,11 +134,8 @@ export async function getLimits({
     const defaultLimits = planLimitsMap[basePlan] || FREE_PLAN_LIMITS;
     return {
       ...defaultLimits,
-      conversationsInDataroom: false,
+      conversationsInDataroom: true,
       usage: { documents: documentCount, links: linkCount, users: userCount },
-      ...(isTrial && {
-        users: 3,
-      }),
     };
   }
 }
