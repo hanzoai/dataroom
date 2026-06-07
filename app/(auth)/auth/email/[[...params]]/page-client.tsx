@@ -312,7 +312,7 @@ function TestimonialSection() {
             <div className="max-w-xl text-center">
               <blockquote className="text-balance font-normal leading-8 text-white sm:text-xl sm:leading-9">
                 <p>
-                  &quot;We raised our €30M Fund with Hanzo Dataroom Data Rooms. Love
+                  &quot;We raised our €30M Fund with Hanzo Dataroom. Love
                   the customization, security and ease of use.&quot;
                 </p>
               </blockquote>

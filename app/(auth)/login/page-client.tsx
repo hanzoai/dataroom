@@ -104,8 +104,8 @@ export default function Login() {
               <div className="max-w-xl text-center">
                 <blockquote className="text-balance font-normal leading-8 text-white sm:text-xl sm:leading-9">
                   <p>
-                    &quot;We raised our &euro;30M Fund with {APP_NAME} Data Rooms.
-                    Love the customization, security and ease of use.&quot;
+                    &quot;We raised our &euro;30M Fund with {APP_NAME}. Love
+                    the customization, security and ease of use.&quot;
                   </p>
                 </blockquote>
                 <figcaption className="mt-4">
