@@ -16,7 +16,12 @@ jobs:
     uses: hanzoai/.github/.github/workflows/docker-build.yml@main
     with:
       image: ghcr.io/hanzoai/dataroom
-      platforms: linux/amd64
+      # Build both arches natively on Hanzo's self-hosted runner pool.
+      # amd64 → hanzo-build-linux-amd64 (DOKS ARC, default).
+      # arm64 → spark-hanzoai-arm64 (Ampere bare metal, default).
+      # The arm64 leg waits in queue if spark.local arcd is offline;
+      # restart arcd on spark to clear the queue.
+      platforms: linux/amd64,linux/arm64
       deploy: true
       deploy-deployment: dataroom
       deploy-namespace: hanzo
