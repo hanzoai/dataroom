@@ -16,6 +16,7 @@ jobs:
     uses: hanzoai/.github/.github/workflows/docker-build.yml@main
     with:
       image: ghcr.io/hanzoai/dataroom
+      platforms: linux/amd64
       deploy: true
       deploy-deployment: dataroom
       deploy-namespace: hanzo
