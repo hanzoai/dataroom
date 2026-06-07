@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { isTeamPausedById } from "@/ee/features/billing/cancellation/lib/is-team-paused";
+import { isTeamPausedById } from "@/lib/billing/paused";
 
 import { sendViewedDataroomEmail } from "@/lib/emails/send-viewed-dataroom";
 import { sendViewedDataroomPausedEmail } from "@/lib/emails/send-viewed-dataroom-paused";

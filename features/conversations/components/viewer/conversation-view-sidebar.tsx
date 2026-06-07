@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 
-import { ConversationDocumentContext } from "@/ee/features/conversations/components/shared/conversation-document-context";
-import { ConversationMessage } from "@/ee/features/conversations/components/shared/conversation-message";
-import { FAQSection } from "@/ee/features/conversations/components/viewer/faq-section";
+import { ConversationDocumentContext } from "@/features/conversations/components/shared/conversation-document-context";
+import { ConversationMessage } from "@/features/conversations/components/shared/conversation-message";
+import { FAQSection } from "@/features/conversations/components/viewer/faq-section";
 import { format } from "date-fns";
 import { ArrowLeftIcon, BellIcon, BellOffIcon, Plus } from "lucide-react";
 import { toast } from "sonner";

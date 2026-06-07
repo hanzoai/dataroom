@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 
 import { TeamContextType } from "@/context/team-context";
-import { PlanEnum } from "@/ee/stripe/constants";
+import { PlanEnum } from "@/lib/billing/legacy/constants";
 import {
   BetweenHorizontalStartIcon,
   ChevronRight,

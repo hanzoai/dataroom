@@ -5,7 +5,7 @@ import {
   faqParamSchema,
   publishFAQSchema,
   updateFAQSchema,
-} from "@/ee/features/conversations/lib/schemas/faq";
+} from "@/features/conversations/lib/schemas/faq";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { getServerSession } from "next-auth/next";
 

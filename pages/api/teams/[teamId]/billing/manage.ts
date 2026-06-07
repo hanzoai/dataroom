@@ -1,10 +1,10 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { stripeInstance } from "@/ee/stripe";
-import { getCouponFromPlan } from "@/ee/stripe/functions/get-coupon-from-plan";
-import { getQuantityFromPriceId } from "@/ee/stripe/functions/get-quantity-from-plan";
-import getSubscriptionItem from "@/ee/stripe/functions/get-subscription-item";
-import { getPlanFromPriceId, isOldAccount } from "@/ee/stripe/utils";
+import { stripeInstance } from "@/lib/billing/legacy";
+import { getCouponFromPlan } from "@/lib/billing/legacy/functions/get-coupon-from-plan";
+import { getQuantityFromPriceId } from "@/lib/billing/legacy/functions/get-quantity-from-plan";
+import getSubscriptionItem from "@/lib/billing/legacy/functions/get-subscription-item";
+import { getPlanFromPriceId, isOldAccount } from "@/lib/billing/legacy/utils";
 import { waitUntil } from "@vercel/functions";
 import { getServerSession } from "next-auth/next";
 

@@ -1,6 +1,6 @@
 import { logger, metadata, task } from "@trigger.dev/sdk/v3";
 
-import { openai } from "@/ee/features/ai/lib/models/openai";
+import { openai } from "@/features/ai/lib/models/openai";
 
 import type { AddToVectorStorePayload } from "./types";
 

@@ -1,7 +1,7 @@
 import { type ElementType, useEffect, useRef, useState } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { PlanEnum } from "@/ee/stripe/constants";
+import { PlanEnum } from "@/lib/billing/legacy/constants";
 import { LinkType } from "@prisma/client";
 import { AlertTriangleIcon, CircleCheckIcon, InfoIcon } from "lucide-react";
 import { toast } from "sonner";

@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import React from "react";
 
 import { useTeam } from "@/context/team-context";
-import { getStripe } from "@/ee/stripe/client";
-import { Feature, PlanEnum, getPlanFeatures } from "@/ee/stripe/constants";
-import { PLANS } from "@/ee/stripe/utils";
+import { getStripe } from "@/lib/billing/legacy/client";
+import { Feature, PlanEnum, getPlanFeatures } from "@/lib/billing/legacy/constants";
+import { PLANS } from "@/lib/billing/legacy/utils";
 import { CheckIcon, Users2Icon, XIcon } from "lucide-react";
 import { toast } from "sonner";
 

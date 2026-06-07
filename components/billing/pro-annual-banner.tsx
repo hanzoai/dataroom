@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useState } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { getPriceIdFromPlan } from "@/ee/stripe/functions/get-price-id-from-plan";
+import { getPriceIdFromPlan } from "@/lib/billing/legacy/functions/get-price-id-from-plan";
 import Cookies from "js-cookie";
 import { toast } from "sonner";
 

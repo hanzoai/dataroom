@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { PlanEnum } from "@/ee/stripe/constants";
+import { PlanEnum } from "@/lib/billing/legacy/constants";
 import { LinkAudienceType, LinkPreset, LinkType } from "@prisma/client";
 import { RefreshCwIcon } from "lucide-react";
 import { useHotkeys } from "react-hotkeys-hook";

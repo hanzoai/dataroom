@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { getTeamStorageConfigById } from "@/ee/features/storage/config";
+import { getTeamStorageConfigById } from "@/features/storage/config";
 import { ItemType, ViewType } from "@prisma/client";
 
 import { verifyDataroomSessionInPagesRouter } from "@/lib/auth/dataroom-auth";

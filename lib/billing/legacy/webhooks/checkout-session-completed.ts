@@ -4,8 +4,8 @@ import {
   DATAROOMS_PLUS_PLAN_LIMITS,
   DATAROOMS_PREMIUM_PLAN_LIMITS,
   PRO_PLAN_LIMITS,
-} from "@/ee/limits/constants";
-import { stripeInstance } from "@/ee/stripe";
+} from "@/lib/billing/limits/constants";
+import { stripeInstance } from "@/lib/billing/legacy";
 import { waitUntil } from "@vercel/functions";
 import type { CommerceTypes } from "@/lib/commerce";
 
