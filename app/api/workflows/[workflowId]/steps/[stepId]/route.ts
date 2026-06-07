@@ -5,7 +5,7 @@ import {
   formatZodError,
   validateActions,
   validateConditions,
-} from "@/ee/features/workflows/lib/validation";
+} from "@/features/workflows/lib/validation";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { getServerSession } from "next-auth";
 import { z } from "zod";

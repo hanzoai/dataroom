@@ -3,10 +3,10 @@ import { useRouter } from "next/router";
 
 import React, { useEffect, useState } from "react";
 
-import { ConversationListItem } from "@/ee/features/conversations/components/dashboard/conversation-list-item";
-import { PublishFAQModal } from "@/ee/features/conversations/components/dashboard/publish-faq-modal";
-import { ConversationDocumentContext } from "@/ee/features/conversations/components/shared/conversation-document-context";
-import { ConversationMessage } from "@/ee/features/conversations/components/shared/conversation-message";
+import { ConversationListItem } from "@/features/conversations/components/dashboard/conversation-list-item";
+import { PublishFAQModal } from "@/features/conversations/components/dashboard/publish-faq-modal";
+import { ConversationDocumentContext } from "@/features/conversations/components/shared/conversation-document-context";
+import { ConversationMessage } from "@/features/conversations/components/shared/conversation-message";
 import {
   BookOpenCheckIcon,
   Loader2,

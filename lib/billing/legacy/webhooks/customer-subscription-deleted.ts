@@ -1,6 +1,6 @@
 import { NextApiResponse } from "next";
 
-import { FREE_PLAN_LIMITS } from "@/ee/limits/constants";
+import { FREE_PLAN_LIMITS } from "@/lib/billing/limits/constants";
 import { Prisma } from "@prisma/client";
 import type { CommerceTypes } from "@/lib/commerce";
 

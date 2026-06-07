@@ -1,4 +1,4 @@
-import ConversationNotification from "@/ee/features/conversations/emails/components/conversation-notification";
+import ConversationNotification from "@/features/conversations/emails/components/conversation-notification";
 
 import { sendEmail } from "@/lib/resend";
 

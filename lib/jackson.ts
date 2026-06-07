@@ -9,7 +9,7 @@ import crypto from "crypto";
 
 export const samlAudience = "https://saml.dataroom.hanzo.ai";
 
-export { JACKSON_PRODUCT as jacksonProduct } from "@/ee/features/security/sso/product";
+export { JACKSON_PRODUCT as jacksonProduct } from "@/features/security/sso/product";
 
 // Jackson's AES-256-GCM encrypter requires exactly 32 bytes.
 // Derive a stable 32-byte key from NEXTAUTH_SECRET using SHA-256.

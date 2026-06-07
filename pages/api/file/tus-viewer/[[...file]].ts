@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import { MultiRegionS3Store } from "@/ee/features/storage/s3-store";
+import { MultiRegionS3Store } from "@/features/storage/s3-store";
 import { CopyObjectCommand } from "@aws-sdk/client-s3";
 import { Server } from "@tus/server";
 import path from "node:path";

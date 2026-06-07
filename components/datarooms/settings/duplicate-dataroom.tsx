@@ -2,8 +2,8 @@ import { useRouter } from "next/router";
 
 import { useState } from "react";
 
-import { useLimits } from "@/ee/limits/swr-handler";
-import { PlanEnum } from "@/ee/stripe/constants";
+import { useLimits } from "@/lib/billing/limits/swr-handler";
+import { PlanEnum } from "@/lib/billing/legacy/constants";
 import { toast } from "sonner";
 import { mutate } from "swr";
 

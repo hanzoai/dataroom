@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { EditFAQModal } from "@/ee/features/conversations/components/dashboard/edit-faq-modal";
+import { EditFAQModal } from "@/features/conversations/components/dashboard/edit-faq-modal";
 import {
   BookOpenCheckIcon,
   ClockIcon,

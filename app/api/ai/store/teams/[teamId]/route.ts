@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { getVectorStoreInfo } from "@/ee/features/ai/lib/vector-stores/get-vector-store-info";
+import { getVectorStoreInfo } from "@/features/ai/lib/vector-stores/get-vector-store-info";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { getServerSession } from "next-auth";
 

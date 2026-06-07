@@ -1,3 +1,3 @@
-import { automaticUnpauseTask } from "@/ee/features/billing/cancellation/lib/trigger/unpause-task";
+import { automaticUnpauseTask } from "@/lib/billing/cancellation";
 
 export { automaticUnpauseTask };

@@ -10,8 +10,8 @@ import {
   formatZodError,
   validateConditions,
   validateActions,
-} from "@/ee/features/workflows/lib/validation";
-import { ReorderStepsRequest } from "@/ee/features/workflows/lib/types";
+} from "@/features/workflows/lib/validation";
+import { ReorderStepsRequest } from "@/features/workflows/lib/types";
 
 // GET /app/(ee)/api/workflows/[workflowId]/steps?teamId=xxx - List all steps
 export async function GET(

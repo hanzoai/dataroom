@@ -1,7 +1,7 @@
 import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-import { getTeamStorageConfigById } from "@/ee/features/storage/config";
+import { getTeamStorageConfigById } from "@/features/storage/config";
 
 export interface S3KeyInfo {
   bucket: string;

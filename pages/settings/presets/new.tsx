@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { FormEvent, useState } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { PlanEnum } from "@/ee/stripe/constants";
+import { PlanEnum } from "@/lib/billing/legacy/constants";
 import { LinkType } from "@prisma/client";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";

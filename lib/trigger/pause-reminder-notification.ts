@@ -1,3 +1,3 @@
-import { sendPauseResumeNotificationTask } from "@/ee/features/billing/cancellation/lib/trigger/pause-resume-notification";
+import { sendPauseResumeNotificationTask } from "@/lib/billing/cancellation";
 
 export { sendPauseResumeNotificationTask };

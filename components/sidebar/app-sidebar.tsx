@@ -7,7 +7,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 
 import { TeamContextType, initialState, useTeam } from "@/context/team-context";
-import { PlanEnum } from "@/ee/stripe/constants";
+import { PlanEnum } from "@/lib/billing/legacy/constants";
 import Cookies from "js-cookie";
 import {
   BrushIcon,

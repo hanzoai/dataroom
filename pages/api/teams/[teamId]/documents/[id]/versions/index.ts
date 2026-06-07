@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { isTeamPausedById } from "@/ee/features/billing/cancellation/lib/is-team-paused";
+import { isTeamPausedById } from "@/lib/billing/paused";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { getServerSession } from "next-auth/next";
 

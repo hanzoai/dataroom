@@ -1,7 +1,7 @@
 import {
   type StorageConfig,
   getStorageConfig,
-} from "@/ee/features/storage/config";
+} from "@/features/storage/config";
 import { S3 } from "@aws-sdk/client-s3";
 import { S3Store } from "@tus/s3-store";
 import type { Upload } from "@tus/server";

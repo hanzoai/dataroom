@@ -3,7 +3,7 @@
 import Link from "next/link";
 
 import { useTeam } from "@/context/team-context";
-import { PlanEnum } from "@/ee/stripe/constants";
+import { PlanEnum } from "@/lib/billing/legacy/constants";
 import { ChevronRight, CrownIcon, type LucideIcon } from "lucide-react";
 
 import { useAnalytics } from "@/lib/analytics";

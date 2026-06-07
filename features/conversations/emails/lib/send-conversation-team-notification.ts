@@ -1,4 +1,4 @@
-import ConversationTeamNotification from "@/ee/features/conversations/emails/components/conversation-team-notification";
+import ConversationTeamNotification from "@/features/conversations/emails/components/conversation-team-notification";
 
 import { sendEmail } from "@/lib/resend";
 

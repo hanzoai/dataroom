@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import publishFAQRoute from "@/ee/features/conversations/api/team-faqs-route";
+import publishFAQRoute from "@/features/conversations/api/team-faqs-route";
 
 export default async function handler(
   req: NextApiRequest,

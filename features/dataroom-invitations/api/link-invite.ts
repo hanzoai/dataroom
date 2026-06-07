@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import {
   SendLinkInvitationSchema,
   invitationEmailSchema,
-} from "@/ee/features/dataroom-invitations/lib/schema/dataroom-invitations";
+} from "@/features/dataroom-invitations/lib/schema/dataroom-invitations";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { LinkType } from "@prisma/client";
 import { getServerSession } from "next-auth/next";

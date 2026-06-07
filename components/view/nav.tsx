@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 
 import React, { useEffect, useState } from "react";
 
-import { useViewerChatSafe } from "@/ee/features/ai/components/viewer-chat-provider";
+import { useViewerChatSafe } from "@/features/ai/components/viewer-chat-provider";
 import { Brand, DataroomBrand } from "@prisma/client";
 import {
   ArrowUpRight,

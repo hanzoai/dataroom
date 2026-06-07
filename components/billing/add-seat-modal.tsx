@@ -4,8 +4,8 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { getPriceIdFromPlan } from "@/ee/stripe/functions/get-price-id-from-plan";
-import { getQuantityFromPriceId } from "@/ee/stripe/functions/get-quantity-from-plan";
+import { getPriceIdFromPlan } from "@/lib/billing/legacy/functions/get-price-id-from-plan";
+import { getQuantityFromPriceId } from "@/lib/billing/legacy/functions/get-quantity-from-plan";
 import { toast } from "sonner";
 
 import { useAnalytics } from "@/lib/analytics";

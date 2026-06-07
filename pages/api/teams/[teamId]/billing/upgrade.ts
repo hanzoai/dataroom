@@ -1,9 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { checkRateLimit, rateLimiters } from "@/ee/features/security";
-import { stripeInstance } from "@/ee/stripe";
-import { getCouponFromPlan } from "@/ee/stripe/functions/get-coupon-from-plan";
-import { getPlanFromPriceId, isOldAccount } from "@/ee/stripe/utils";
+import { checkRateLimit, rateLimiters } from "@/features/security";
+import { stripeInstance } from "@/lib/billing/legacy";
+import { getCouponFromPlan } from "@/lib/billing/legacy/functions/get-coupon-from-plan";
+import { getPlanFromPriceId, isOldAccount } from "@/lib/billing/legacy/utils";
 import { waitUntil } from "@vercel/functions";
 import { getServerSession } from "next-auth/next";
 

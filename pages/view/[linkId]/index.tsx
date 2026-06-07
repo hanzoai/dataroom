@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 
 import { useEffect, useState } from "react";
 
-import WorkflowAccessView from "@/ee/features/workflows/components/workflow-access-view";
+import WorkflowAccessView from "@/features/workflows/components/workflow-access-view";
 import NotFound from "@/pages/404";
 import { Brand, DataroomBrand, DataroomDocument } from "@prisma/client";
 import Cookies from "js-cookie";

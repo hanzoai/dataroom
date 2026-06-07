@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { useEffect, useRef } from "react";
 import { useState } from "react";
 
-import DataroomTemplates from "@/ee/features/templates/components/dataroom-templates";
+import DataroomTemplates from "@/features/templates/components/dataroom-templates";
 import { sendGTMEvent } from "@next/third-parties/google";
 import { ArrowLeft as ArrowLeftIcon } from "lucide-react";
 import { AnimatePresence } from "motion/react";
