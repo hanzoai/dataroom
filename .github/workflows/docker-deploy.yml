@@ -16,12 +16,10 @@ jobs:
     uses: hanzoai/.github/.github/workflows/docker-build.yml@main
     with:
       image: ghcr.io/hanzoai/dataroom
-      # Native multi-arch builds on Hanzo's self-hosted pools.
-      # amd64 → hanzo-build-linux-amd64 (DOKS ARC, default).
-      # arm64 → spark-hanzo (Ampere bare metal on spark.local). The
-      #         older spark-hanzoai-arm64 label has 0 online runners;
-      #         spark-hanzo is the canonical org-level pool label.
-      runner-arm64: spark-hanzo
+      # Native multi-arch builds on canonical arcd labels.
+      # amd64 → [self-hosted, linux, amd64] (matches evo).
+      # arm64 → [self-hosted, linux, arm64] (matches spark).
+      runner-arm64: '["self-hosted","linux","arm64"]'
       platforms: linux/amd64,linux/arm64
       deploy: true
       deploy-deployment: dataroom
