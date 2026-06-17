@@ -1,4 +1,4 @@
-# LLM.md - Hanzo Dataroom
+# Hanzo Dataroom
 
 ## Overview
 Hanzo dataroom service.
