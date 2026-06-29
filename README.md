@@ -1,3 +1,5 @@
+<p align="center"><img src=".github/hero.svg" alt="dataroom" width="880"></p>
+
 <div align="center">
   <h1 align="center">Hanzo Dataroom</h1>
   <h3>The open-source DocSend alternative.</h3>
