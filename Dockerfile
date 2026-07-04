@@ -1,4 +1,4 @@
-FROM node:22-alpine AS base
+FROM ghcr.io/hanzoai/nodejs:v24.18.0 AS base
 RUN apk add --no-cache libc6-compat openssl python3 make g++
 
 FROM base AS deps
@@ -23,7 +23,7 @@ RUN npx prisma generate
 ENV NODE_OPTIONS="--max-old-space-size=4096"
 RUN npm run build
 
-FROM node:22-alpine AS runner
+FROM ghcr.io/hanzoai/nodejs:v24.18.0 AS runner
 RUN apk add --no-cache openssl
 WORKDIR /app
 ENV NODE_ENV=production
