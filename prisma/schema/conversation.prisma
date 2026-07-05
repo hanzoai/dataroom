@@ -4,7 +4,7 @@ model Conversation {
   isEnabled Boolean @default(true)
 
   // Visibility control
-  visibilityMode ConversationVisibility @default(PRIVATE)
+  visibilityMode String @default("PRIVATE")
 
   // Core relationships
   dataroomId String
@@ -56,19 +56,8 @@ model Conversation {
 }
 
 // Define conversation visibility options
-enum ConversationVisibility {
-  PRIVATE // Only visible to participants and team members
-  PUBLIC_LINK // Visible to all viewers with access to the specific link
-  PUBLIC_GROUP // Visible to all viewers in the specific group
-  PUBLIC_DOCUMENT // Visible to all viewers with access to the document, across any link
-  PUBLIC_DATAROOM // Visible to all viewers with access to the dataroom
-}
 
 // Define participant roles
-enum ParticipantRole {
-  OWNER // Created the conversation
-  PARTICIPANT // Joined the conversation later
-}
 
 // Track participants in a conversation (including the owner)
 model ConversationParticipant {
@@ -77,7 +66,7 @@ model ConversationParticipant {
   conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 
   // Role in the conversation
-  role ParticipantRole @default(PARTICIPANT)
+  role String @default("PARTICIPANT")
 
   // Participant can be either a viewer or a user
   viewerId String?
@@ -184,15 +173,15 @@ model DataroomFaqItem {
   publishedByUser   User   @relation(fields: [publishedByUserId], references: [id], onDelete: Cascade)
 
   // Visibility and status
-  visibilityMode FaqVisibility @default(PUBLIC_DATAROOM)
-  status         FaqStatus     @default(PUBLISHED)
+  visibilityMode String @default("PUBLIC_DATAROOM")
+  status         String     @default("PUBLISHED")
   isAnonymized   Boolean       @default(true)
 
   // Analytics
   viewCount Int @default(0)
 
   // Optional categorization
-  tags String[] @default([])
+  tags Json @default("[]")
 
   // Metadata
   documentPageNumber    Int? // Optional: specific page reference
@@ -213,15 +202,5 @@ model DataroomFaqItem {
 }
 
 // Define FAQ visibility options
-enum FaqVisibility {
-  PUBLIC_DATAROOM // Visible to all dataroom visitors
-  PUBLIC_LINK // Visible only to specific link visitors
-  PUBLIC_DOCUMENT // Visible only when viewing specific document
-}
 
 // Define FAQ status
-enum FaqStatus {
-  DRAFT // Not yet published
-  PUBLISHED // Live and visible to visitors
-  ARCHIVED // No longer visible but kept for reference
-}
