@@ -20,6 +20,9 @@ ENV OPENAI_API_KEY=build-placeholder
 ENV HANKO_API_KEY=build-placeholder
 ENV NEXT_PUBLIC_HANKO_TENANT_ID=build-placeholder
 RUN npx prisma generate
+# SQLite has no Prisma enums; re-inject the enum objects the app imports from
+# @prisma/client (e.g. LinkType.DOCUMENT_LINK) so runtime/prerender resolves them.
+RUN node prisma/inject-sqlite-enums.cjs
 ENV NODE_OPTIONS="--max-old-space-size=4096"
 RUN npm run build
 
