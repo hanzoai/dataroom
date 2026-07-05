@@ -44,4 +44,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.bin ./node_modules/
 USER nextjs
 EXPOSE 3000
 ENV PORT=3000
-CMD ["sh", "-c", "node_modules/.bin/prisma migrate deploy --schema prisma/schema/schema.prisma && node server.js"]
+# SQLite: reconcile schema on startup via `db push` (Prisma has no migrate-deploy
+# path for the sqlite provider here; the pg migration history under prisma/migrations
+# is postgres-specific and unused). Schema folder = prismaSchemaFolder preview.
+CMD ["sh", "-c", "node_modules/.bin/prisma db push --schema prisma/schema --skip-generate --accept-data-loss && node server.js"]

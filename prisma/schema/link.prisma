@@ -1,14 +1,4 @@
-enum LinkType {
-  DOCUMENT_LINK
-  DATAROOM_LINK
-  WORKFLOW_LINK
-}
 
-enum LinkAudienceType {
-  GENERAL
-  GROUP
-  TEAM
-}
 
 model Link {
   id                         String     @id @default(cuid())
@@ -16,14 +6,14 @@ model Link {
   documentId                 String? // This can be nullable, representing links without documents
   dataroom                   Dataroom?  @relation(fields: [dataroomId], references: [id], onDelete: Cascade)
   dataroomId                 String? // This can be nullable, representing links without datarooms
-  linkType                   LinkType   @default(DOCUMENT_LINK) // This will store the type of the link
+  linkType                   String   @default("DOCUMENT_LINK") // This will store the type of the link
   url                        String?    @unique
   name                       String? // Link name
   slug                       String? // Link slug for pretty URLs
   expiresAt                  DateTime? // Optional expiration date
   password                   String? // Optional password for link protection
-  allowList                  String[] // Array of emails and domains allowed to view the document
-  denyList                   String[] // Array of emails and domains denied to view the document
+  allowList                  Json @default("[]")// Array of emails and domains allowed to view the document
+  denyList                   Json @default("[]")// Array of emails and domains denied to view the document
   emailProtected             Boolean    @default(true) // Optional email protection
   emailAuthenticated         Boolean    @default(false) // Optional email authentication flag
   allowDownload              Boolean?   @default(false) // Optional give user a option to allow to download the document
@@ -48,7 +38,7 @@ model Link {
   watermarkConfig            Json? // This will store the watermark configuration: {text: "Confidential", isTiled: false, color: "#000000", fontSize: 12, opacity: 0.5, rotation: 30, position: "top-right"}
 
   // group links
-  audienceType LinkAudienceType @default(GENERAL) // This will store the audience type of the link
+  audienceType String @default("GENERAL") // This will store the audience type of the link
   groupId      String?
   group        ViewerGroup?     @relation(fields: [groupId], references: [id], onDelete: SetNull)
 
@@ -129,9 +119,9 @@ model LinkPreset {
   emailAuthenticated         Boolean?  @default(false)
   allowDownload              Boolean?  @default(false)
   enableAllowList            Boolean?  @default(false)
-  allowList                  String[]
+  allowList                  Json@default("[]")
   enableDenyList             Boolean?  @default(false)
-  denyList                   String[]
+  denyList                   Json@default("[]")
   expiresIn                  Int? // how many days from link creation until it expires in seconds
   enableScreenshotProtection Boolean?  @default(false)
   expiresAt                  DateTime?
@@ -158,21 +148,11 @@ model LinkPreset {
   @@index([teamId])
 }
 
-enum CustomFieldType {
-  SHORT_TEXT
-  LONG_TEXT
-  NUMBER
-  PHONE_NUMBER
-  URL
-  CHECKBOX
-  SELECT
-  MULTI_SELECT
-}
 
 model VisitorGroup {
   id     String   @id @default(cuid())
   name   String
-  emails String[] // List of emails and domains (e.g., "user@example.com", "@example.org")
+  emails Json @default("[]")// List of emails and domains (e.g., "user@example.com", "@example.org")
 
   teamId String
   team   Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
@@ -203,7 +183,7 @@ model CustomField {
   id          String          @id @default(cuid())
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
-  type        CustomFieldType
+  type        String
   identifier  String
   label       String
   placeholder String?
