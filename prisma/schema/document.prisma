@@ -6,7 +6,7 @@ model Document {
   originalFile         String? // This should be a reference to the original file like pptx, xlsx, etc. (S3, Google Cloud Storage, etc.)
   type                 String? // This should be a reference to the file type (pdf, sheet, etc.)
   contentType          String? // This should be the actual contentType of the file like application/pdf, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, etc.
-  storageType          DocumentStorageType @default(VERCEL_BLOB)
+  storageType          String @default("VERCEL_BLOB")
   numPages             Int? // This should be a reference to the number of pages in the document
   owner                User?               @relation(fields: [ownerId], references: [id], onDelete: SetNull)
   teamId               String
@@ -53,7 +53,7 @@ model DocumentVersion {
   type          String? // This should be a reference to the file type (pdf, docx, etc.)
   contentType   String? // This should be the actual contentType of the file like application/pdf, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, etc.
   fileSize      BigInt? // This should be the size of the file in bytes
-  storageType   DocumentStorageType @default(VERCEL_BLOB)
+  storageType   String @default("VERCEL_BLOB")
   numPages      Int? // This should be a reference to the number of pages in the document
   isPrimary        Boolean @default(false) // Indicates if this is the primary version
   isVertical       Boolean @default(false) // Indicates if the document is vertical (portrait) or not (landscape)
@@ -77,11 +77,11 @@ model DocumentPage {
   version       DocumentVersion     @relation(fields: [versionId], references: [id], onDelete: Cascade)
   versionId     String
   pageNumber    Int // e.g., 1, 2, 3 for 
-  embeddedLinks String[]
+  embeddedLinks Json@default("[]")
   pageLinks     Json? // This will store the page links data: [{href: "https://example.com", coords: "0,0,100,100"}]
   metadata      Json? // This will store the page metadata: {originalWidth: 100, origianlHeight: 100, scaledWidth: 50, scaledHeight: 50, scaleFactor: 2}
   file          String // This should be a reference to where the file / page is stored (S3, Google Cloud Storage, etc.)
-  storageType   DocumentStorageType @default(VERCEL_BLOB)
+  storageType   String @default("VERCEL_BLOB")
   createdAt     DateTime            @default(now())
   updatedAt     DateTime            @updatedAt
 
@@ -89,10 +89,6 @@ model DocumentPage {
   @@index([versionId])
 }
 
-enum DocumentStorageType {
-  S3_PATH
-  VERCEL_BLOB
-}
 
 model Folder {
   id                   String     @id @default(cuid())

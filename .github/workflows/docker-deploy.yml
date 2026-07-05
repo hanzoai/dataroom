@@ -16,12 +16,9 @@ jobs:
     uses: hanzoai/.github/.github/workflows/docker-build.yml@main
     with:
       image: ghcr.io/hanzoai/dataroom
-      # Native multi-arch builds on canonical arcd labels.
-      # amd64 → [self-hosted, linux, amd64] (matches evo).
-      # arm64 → [self-hosted, linux, arm64] (matches spark).
-      runner-arm64: '["self-hosted","linux","arm64"]'
-      platforms: linux/amd64,linux/arm64
-      deploy: true
-      deploy-deployment: dataroom
-      deploy-namespace: hanzo
+      # amd64-only: DOKS has no arm64 droplets (arm64 build paused).
+      platforms: linux/amd64
+      # Deploy is operator-managed via universe Service CR (services.hanzo.ai/dataroom).
+      # CI only builds+pushes the image; never `kubectl set image` (operator reverts it).
+      deploy: false
     secrets: inherit

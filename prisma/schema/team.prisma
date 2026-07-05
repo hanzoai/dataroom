@@ -65,18 +65,13 @@ model Team {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  ignoredDomains  String[] // Domains that are ignored for the team
-  globalBlockList String[] // Email and domains that are blocked for the team
+  ignoredDomains  Json @default("[]")// Domains that are ignored for the team
+  globalBlockList Json @default("[]")// Email and domains that are blocked for the team
 }
 
-enum Role {
-  ADMIN
-  MANAGER
-  MEMBER
-}
 
 model UserTeam {
-  role   Role   @default(MEMBER)
+  role   String   @default("MEMBER")
   status String @default("ACTIVE")
   userId String
   teamId String

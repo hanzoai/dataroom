@@ -17,8 +17,8 @@ model jackson_store {
   iv         String?
   tag        String?
   namespace  String?
-  createdAt  DateTime  @default(now()) @db.Timestamp(0)
-  modifiedAt DateTime? @db.Timestamp(0)
+  createdAt  DateTime  @default(now())
+  modifiedAt DateTime?
 
   @@index([namespace], map: "_jackson_store_namespace")
 }
