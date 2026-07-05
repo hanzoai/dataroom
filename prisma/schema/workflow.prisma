@@ -1,16 +1,6 @@
 // Workflow models for routing visitors based on email/domain rules
 
-enum WorkflowStepType {
-  ROUTER // Route to different links based on conditions
-}
 
-enum ExecutionStatus {
-  PENDING
-  IN_PROGRESS
-  COMPLETED
-  FAILED
-  BLOCKED
-}
 
 model Workflow {
   id          String   @id @default(cuid())
@@ -37,7 +27,7 @@ model WorkflowStep {
   workflowId String
   name       String
   stepOrder  Int              // Execution order (priority-based routing)
-  stepType   WorkflowStepType @default(ROUTER)
+  stepType   String @default("ROUTER")
   conditions Json             // JSON array of conditions to evaluate
   actions    Json             // JSON array of actions to execute
   createdAt  DateTime         @default(now())
@@ -55,7 +45,7 @@ model WorkflowExecution {
   workflowId   String
   visitorEmail String?
   visitorIp    String?
-  status       ExecutionStatus
+  status       String
   startedAt    DateTime        @default(now())
   completedAt  DateTime?
   result       Json?           // Final result/output (routing target)

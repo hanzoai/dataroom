@@ -1,8 +1,6 @@
 datasource db {
-  provider          = "postgresql"
-  url               = env("POSTGRES_PRISMA_URL") // uses connection pooling
-  directUrl         = env("POSTGRES_PRISMA_URL_NON_POOLING") // uses a direct connection
-  shadowDatabaseUrl = env("POSTGRES_PRISMA_SHADOW_URL") // used for migrations
+  provider          = "sqlite"
+  url               = env("DATABASE_URL")
 }
 
 generator client {
@@ -16,12 +14,12 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -128,10 +126,10 @@ model View {
   verified            Boolean              @default(false) // Whether the viewer email has been verified
   viewedAt            DateTime             @default(now())
   downloadedAt        DateTime? // This is the time the document was downloaded
-  downloadType        DownloadType? // Type of download: SINGLE, BULK, or FOLDER
+  downloadType        String? // Type of download: SINGLE, BULK, or FOLDER
   downloadMetadata    Json? // Metadata about the download (folder name, document list, etc.)
   reactions           Reaction[]
-  viewType            ViewType             @default(DOCUMENT_VIEW)
+  viewType            String             @default("DOCUMENT_VIEW")
   viewerId            String? // This is the viewer ID from the dataroom
   viewer              Viewer?              @relation(fields: [viewerId], references: [id], onDelete: Cascade)
   groupId             String? // This is the group ID from the dataroom
@@ -169,16 +167,7 @@ model View {
   @@index([documentId, viewedAt(sort: Desc)]) // Performance optimization for latest views queries
 }
 
-enum ViewType {
-  DOCUMENT_VIEW
-  DATAROOM_VIEW
-}
 
-enum DownloadType {
-  SINGLE  // Individual document download
-  BULK    // Full dataroom bulk download
-  FOLDER  // Folder download
-}
 
 model Viewer {
   id                      String    @id @default(cuid())
@@ -234,17 +223,10 @@ model Invitation {
   @@unique([email, teamId])
 }
 
-enum EmailType {
-  FIRST_DAY_DOMAIN_REMINDER_EMAIL
-  FIRST_DOMAIN_INVALID_EMAIL
-  SECOND_DOMAIN_INVALID_EMAIL
-  FIRST_TRIAL_END_REMINDER_EMAIL
-  FINAL_TRIAL_END_REMINDER_EMAIL
-}
 
 model SentEmail {
   id         String    @id @default(cuid())
-  type       EmailType
+  type       String
   recipient  String // Email address of the recipient
   marketing  Boolean   @default(false)
   createdAt  DateTime  @default(now())
@@ -307,7 +289,7 @@ model ChatMessage {
   chat   Chat   @relation(fields: [chatId], references: [id], onDelete: Cascade)
 
   role    String // "user" | "assistant" | "system"
-  content String @db.Text
+  content String
 
   // Optional structured data
   metadata Json? // Store sources, page numbers, confidence scores, etc.
@@ -460,11 +442,6 @@ model YearInReview {
   @@index([teamId])
 }
 
-enum TagType {
-  LINK_TAG
-  DOCUMENT_TAG
-  DATAROOM_TAG
-}
 
 model Tag {
   id          String  @id @default(cuid())
@@ -491,7 +468,7 @@ model TagItem {
   id       String  @id @default(cuid())
   tagId    String
   tag      Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
-  itemType TagType
+  itemType String
 
   // tag can be linked to a link, document or dataroom
   linkId     String?
@@ -521,7 +498,7 @@ model ViewerInvitation {
   invitedBy     String
   customMessage String?
   sentAt        DateTime           @default(now())
-  status        InvitationStatus   @default(SENT)
+  status        String   @default("SENT")
 
   createdAt DateTime @default(now())
 
@@ -530,8 +507,3 @@ model ViewerInvitation {
   @@index([groupId])
 }
 
-enum InvitationStatus {
-  SENT
-  FAILED
-  BOUNCED
-}
