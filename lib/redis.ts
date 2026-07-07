@@ -1,24 +1,24 @@
 /**
  * Hanzo KV client
  *
- * Connects to Hanzo KV (Valkey-compatible) via standard wire protocol.
- * Uses ioredis as transport (wire-compatible with Hanzo KV / Valkey / Redis).
+ * Pluggable KV backend, uniform with commerce (infra/kv.go):
+ *   - KV_URL UNSET ⇒ in-process MemoryKV (the WITHOUT-KV mode; single-replica
+ *     correct). dataroom boots and every KV feature works with no external
+ *     datastore — no phantom `redis://localhost:6379` connect that hangs/retries.
+ *   - KV_URL SET   ⇒ external Hanzo KV over the RESP wire protocol via ioredis
+ *     (the WITH-KV mode; multi-replica HA). A malformed KV_URL fails CLOSED
+ *     (throws) — never a silent in-process fallback.
  *
- * Environment: KV_URL (e.g. redis://:password@hanzo-kv.hanzo.svc:6379)
+ * The selected backend exposes an identical method surface, so the Upstash-compat
+ * shims below and every call site are backend-agnostic. See lib/kv/select.ts.
+ *
+ * Environment: KV_URL (e.g. kv://:password@hanzo-kv:6379 or a redis:// DSN).
  */
-import IORedis from "ioredis";
+import { createKvClient } from "./kv/select";
 
-const kvUrl = process.env.KV_URL || process.env.REDIS_URL || "redis://localhost:6379";
+export const redis = createKvClient();
 
-export const redis = new IORedis(kvUrl, {
-  maxRetriesPerRequest: 3,
-  lazyConnect: true,
-});
-
-export const lockerRedisClient = new IORedis(kvUrl, {
-  maxRetriesPerRequest: 3,
-  lazyConnect: true,
-});
+export const lockerRedisClient = createKvClient();
 
 // Upstash-compatible set() shim — translates options-object calls to ioredis positional args
 const originalSet = redis.set.bind(redis);
