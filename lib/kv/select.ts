@@ -20,12 +20,24 @@ import { resolveKvUrl } from "./url";
 
 const IOREDIS_OPTS = { maxRetriesPerRequest: 3, lazyConnect: true } as const;
 
+let warnedInProcess = false;
+
 export function createKvClient(): Redis {
   const url = resolveKvUrl(process.env.KV_URL); // throws on malformed → fail closed
   if (url === null) {
-    // WITHOUT-KV: in-process backend. `unknown as Redis` is a controlled cast —
-    // MemoryKV implements the exact ioredis subset dataroom uses (proven by
-    // lib/kv/memory-kv.test.ts), not the full ioredis type.
+    // WITHOUT-KV: in-process backend. Warn ONCE per process so this mode is never
+    // SILENT — a multi-replica deploy with KV_URL unset would split sessions,
+    // rate-limit windows and tus locks across replicas (single-replica only).
+    if (!warnedInProcess) {
+      warnedInProcess = true;
+      console.warn(
+        "[kv] KV_URL is unset — using the in-process KV backend. This is correct " +
+          "for a SINGLE replica only; multi-replica HA requires KV_URL (external Hanzo KV).",
+      );
+    }
+    // `unknown as Redis` is a controlled cast — MemoryKV implements the exact
+    // ioredis subset dataroom uses (proven by lib/kv/memory-kv.test.ts), not the
+    // full ioredis type.
     return new MemoryKV() as unknown as Redis;
   }
   // WITH-KV: external Hanzo KV over the RESP wire protocol.
