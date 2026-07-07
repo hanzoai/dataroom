@@ -39,6 +39,7 @@ type PipelineOp = () => Promise<[Error | null, unknown]>;
 
 export class MemoryKV {
   private store = new Map<string, Entry>();
+  private sweepTimer?: ReturnType<typeof setInterval>;
 
   // ── expiry + typed accessors ──────────────────────────────────────────────
 
@@ -51,6 +52,32 @@ export class MemoryKV {
       return undefined;
     }
     return e;
+  }
+
+  /** Resident key count (live + not-yet-swept). Redis DBSIZE analogue — used to
+   *  assert active-expiry reclamation. */
+  get size(): number {
+    return this.store.size;
+  }
+
+  /**
+   * sweepExpired — active-expiry pass. Deletes every entry whose TTL has elapsed
+   * and returns the count reclaimed. The lazy on-read eviction in live() never
+   * fires for write-once-never-read keys (rl:<ip> rate-limit counters, one-shot
+   * session/token keys), so without this sweep the map grows unbounded until the
+   * pod OOMKills. One O(n) pass over the in-process map, run off the hot path on
+   * an unref'd timer (see startActiveExpiry). Pure + synchronous → unit-testable
+   * with no timer.
+   */
+  sweepExpired(now: number = Date.now()): number {
+    let evicted = 0;
+    for (const [k, e] of this.store) {
+      if (e.expireAt !== undefined && e.expireAt <= now) {
+        this.store.delete(k);
+        evicted++;
+      }
+    }
+    return evicted;
   }
 
   private zsetOf(key: string): Zset {
@@ -151,7 +178,12 @@ export class MemoryKV {
   }
 
   async getdel(key: string): Promise<string | null> {
-    const v = await this.get(key);
+    // Atomic read+delete: NO await between the read and the delete, so two racing
+    // getdel calls can never both observe the value. The one-time login-code guard
+    // in lib/emails/send-verification-request.ts (fetchAndDeleteLoginCodeData)
+    // depends on this to stop a code being used twice — see memory-kv.test.ts.
+    const e = this.live(key);
+    const v = e?.str ?? null;
     this.store.delete(key);
     return v;
   }
@@ -371,6 +403,31 @@ export class MemoryKV {
 
   pipeline(): MemoryPipeline {
     return new MemoryPipeline(this);
+  }
+
+  // ── active expiry (bounds resident memory) ─────────────────────────────────
+
+  /**
+   * startActiveExpiry — run sweepExpired() every intervalMs. Idempotent. The
+   * timer handle is .unref()'d so it NEVER holds the Node event loop open (the
+   * process may still exit with a sweep pending). The composition root
+   * (lib/redis.ts) starts this for the long-lived server singleton, gated OUT of
+   * the edge runtime; the pure unit tests never call it, so they stay timer-free.
+   */
+  startActiveExpiry(intervalMs: number = 60_000): void {
+    if (this.sweepTimer !== undefined) return;
+    const t = setInterval(() => this.sweepExpired(), intervalMs);
+    // unref where supported (Node Timeout); harmless no-op under a numeric handle.
+    (t as unknown as { unref?: () => void }).unref?.();
+    this.sweepTimer = t;
+  }
+
+  /** Stop the active-expiry timer (parity with quit/disconnect teardown). */
+  stopActiveExpiry(): void {
+    if (this.sweepTimer !== undefined) {
+      clearInterval(this.sweepTimer);
+      this.sweepTimer = undefined;
+    }
   }
 
   // ── lifecycle no-ops (ioredis parity; MemoryKV needs no connection) ────────
