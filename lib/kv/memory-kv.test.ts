@@ -116,6 +116,23 @@ test("getdel returns value then removes it", async () => {
   assert.equal(await kv.get("state"), null);
 });
 
+test("SECURITY — getdel is atomic: two racing getdel, exactly one sees the value", async () => {
+  // The one-time login-code guard (lib/emails/send-verification-request.ts,
+  // fetchAndDeleteLoginCodeData) relies on GETDEL atomicity to stop a login code
+  // being used twice. A get-then-delete with an await BETWEEN the read and the
+  // delete lets both racers observe the value (TOCTOU); getdel must read+delete
+  // in one un-yielded step so only one caller ever wins.
+  const kv = new MemoryKV();
+  await kv.set("login_code:once", "grant");
+  const [a, b] = await Promise.all([
+    kv.getdel("login_code:once"),
+    kv.getdel("login_code:once"),
+  ]);
+  const winners = [a, b].filter((v) => v === "grant");
+  assert.equal(winners.length, 1, "exactly one racer may observe the value");
+  assert.equal(await kv.get("login_code:once"), null); // key is gone either way
+});
+
 test("call('SET', ...) dispatches to set (the set-with-options shim path)", async () => {
   const kv = new MemoryKV();
   assert.equal(await kv.call("SET", "k", "v", "EX", 60, "NX"), "OK");
@@ -152,7 +169,7 @@ test("pipeline: notification-queue pattern (rpush/expire/sadd)", async () => {
   assert.deepEqual(await kv.smembers("viewers:daily"), ["v:d:t"]);
 });
 
-test("pipeline: get+del (the getdel shim relies on results[0][1])", async () => {
+test("pipeline: get+del composes in order (results[0][1] = GET result before DEL)", async () => {
   const kv = new MemoryKV();
   await kv.set("g", "val");
   const res = await kv.pipeline().get("g").del("g").exec();
@@ -167,4 +184,32 @@ test("SECURITY CONTRACT — two MemoryKV instances DO NOT share state", async ()
   const b = new MemoryKV();
   await a.set("session:1", "alice");
   assert.equal(await b.get("session:1"), null);
+});
+
+test("active expiry: sweepExpired reclaims write-once-never-read keys (bounds memory)", async () => {
+  // rl:<ip> rate-limit keys and one-shot session/token keys are written with a
+  // TTL and never read again, so the lazy on-read eviction never fires for them.
+  // Without an active sweep the map grows unbounded until the pod OOMKills.
+  // sweepExpired() reclaims every elapsed-TTL entry in one pass.
+  const kv = new MemoryKV();
+  const N = 100_000;
+  const past = Date.now() - 1; // already expired at write time (deterministic)
+  for (let i = 0; i < N; i++) {
+    await kv.set(`rl:${i}`, "1", "PXAT", past);
+  }
+  assert.equal(kv.size, N); // resident despite expiry — never read, so never lazily evicted
+  const evicted = kv.sweepExpired();
+  assert.equal(evicted, N);
+  assert.equal(kv.size, 0); // resident memory reclaimed
+});
+
+test("active expiry: sweepExpired keeps live keys, drops only expired ones", async () => {
+  const kv = new MemoryKV();
+  await kv.set("live", "1", "PX", 60_000); // far-future TTL
+  await kv.set("nottl", "1"); // no TTL at all
+  await kv.set("dead", "1", "PXAT", Date.now() - 1); // expired
+  assert.equal(kv.sweepExpired(), 1); // only "dead"
+  assert.equal(kv.size, 2);
+  assert.equal(await kv.get("live"), "1");
+  assert.equal(await kv.get("nottl"), "1");
 });

@@ -14,11 +14,24 @@
  *
  * Environment: KV_URL (e.g. kv://:password@hanzo-kv:6379 or a redis:// DSN).
  */
+import { MemoryKV } from "./kv/memory-kv";
 import { createKvClient } from "./kv/select";
 
 export const redis = createKvClient();
 
 export const lockerRedisClient = createKvClient();
+
+// In-process backend (KV_URL unset): actively expire keys so write-once-never-read
+// keys (rate-limit rl:<ip>, one-shot tokens) can't accrete to an OOM. Server runtime
+// only — the edge runtime has no long-lived process to sweep, and active expiry is
+// moot against the external ioredis client (Hanzo KV expires its own keys). The timer
+// is unref'd (MemoryKV.startActiveExpiry) so it never holds the process open; no test
+// imports this module, so unit runs stay timer-free.
+if (process.env.NEXT_RUNTIME !== "edge") {
+  for (const client of [redis, lockerRedisClient]) {
+    if (client instanceof MemoryKV) client.startActiveExpiry();
+  }
+}
 
 // Upstash-compatible set() shim — translates options-object calls to ioredis positional args
 const originalSet = redis.set.bind(redis);
@@ -58,14 +71,11 @@ const originalZrangebyscore = redis.zrangebyscore.bind(redis);
   return originalZrange(key, start as number, stop as number);
 };
 
-// Upstash-compatible getdel() shim — atomic GET + DEL
-(redis as any).getdel = async function (key: string) {
-  const pipeline = redis.pipeline();
-  pipeline.get(key);
-  pipeline.del(key);
-  const results = await pipeline.exec();
-  return results?.[0]?.[1] ?? null;
-};
+// No getdel() shim: GETDEL is atomic natively on BOTH backends — ioredis maps it
+// to the single-round-trip Redis GETDEL command, and MemoryKV.getdel reads+deletes
+// in one un-yielded step. A get→del pipeline here would NOT be atomic (other
+// commands interleave between GET and DEL) and would reintroduce the one-time
+// login-code double-use race. Do not add one.
 
 // Upstash-compatible get() shim — try to auto-parse JSON
 const originalGet = redis.get.bind(redis);
