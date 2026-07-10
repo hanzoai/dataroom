@@ -10,6 +10,11 @@ The standalone Next.js app + Postgres is **retired**: cloud serves the whole
 dataroom surface (`/v1/dataroom/*`) itself, backed by Hanzo Base/SQLite
 (one file per org) and the cloud object-storage seam. No Postgres, no Next.js.
 
+It runs on the **reusable `clients/gojabase` binding** — the RW-Base goja host
+`captable` pilots and `esign` reuses — so the bundle carries only domain logic;
+persistence, per-tenant file selection, and per-request transactions are the
+binding's job.
+
 ## What the bundle does
 
 The complete dataroom flow, re-expressed as a route table over injected host
@@ -32,23 +37,27 @@ The Prisma models (`Document`, `Dataroom`, `DataroomDocument`, `Link`, `Viewer`,
 
 ## Host contract
 
-The Go host (`hanzoai/cloud/clients/dataroom`) injects these globals and calls
+`clients/gojabase` injects these globals per dispatch (each dispatch runs inside
+ONE per-tenant SQLite transaction that commits iff `status < 400`) and calls
 `handle` once per request:
 
 ```
-globalThis.db.query(sql, args)              -> [ {col: val, ...}, ... ]   // tenant-scoped
-globalThis.db.exec(sql, args)               -> { rowsAffected, lastInsertId }
-globalThis.crypto.hashPassword(pw)          -> bcrypt hash string
-globalThis.crypto.verifyPassword(pw, hash)  -> bool
-globalThis.handle({ method, route, params, query, session, orgId, body })
-                                            -> { status, body }
+globalThis.__db.query(sql, args)   -> [ {col: val, ...}, ... ]   // tenant-scoped
+globalThis.__db.exec(sql, args)    -> { changes, lastId }
+globalThis.__newId()               -> collision-resistant id (crypto/rand)
+globalThis.__now()                 -> unix milliseconds
+globalThis.__bcrypt.hash(pw)       -> bcrypt hash   (leaf HostFn, vetted Go)
+globalThis.__bcrypt.verify(pw, h)  -> bool
+globalThis.handle({ route, params, query, orgId, body }) -> { status, body }
 ```
 
-- `db` is bound **per dispatch** to exactly one tenant's SQLite file, so a route
-  can only ever touch its own org's rows. This is the shared, reusable Base
-  host-binding in `cloud/clients/goja` (`goja.DB` + `goja.NewSQLiteBase`).
-- `crypto` is bcrypt in vetted Go — link passwords are **hashed, never
-  plaintext**.
+- `__db` is bound **per dispatch** to exactly one tenant's SQLite file (selected
+  from the caller's validated org), so a route can only ever touch its own org's
+  rows.
+- `__bcrypt` is a leaf-injected HostFn (bcrypt in vetted Go) — link passwords are
+  **hashed, never plaintext**.
+- The per-tenant **schema** (DDL) lives in the Go leaf (`clients/dataroom/
+  schema.go`), run by gojabase on first open; this bundle only issues SQL.
 - Admin routes run under the caller's validated cloud principal (org); public
   viewer routes resolve their org from the link index the leaf maintains.
 
