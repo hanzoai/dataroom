@@ -1,20 +1,22 @@
-// Hanzo Dataroom — goja bundle.
+// Hanzo Dataroom — goja bundle (read-WRITE, on clients/gojabase).
 //
 // SELF-CONTAINED, NO ESM, NO node: imports. The complete dataroom business
 // logic (documents, data rooms, shareable links with access controls, viewers,
 // per-page view analytics), authored to run verbatim inside the dop251/goja
 // engine embedded in hanzoai/cloud (HIP-0106, task #101). It is the ESM-free
 // port of the Papermark/Next.js API handlers this fold replaces — the Prisma
-// data model becomes Base/SQLite tables, the handlers become the route table
-// below. No Postgres, no Next.js.
+// data model becomes Base/SQLite tables (see the leaf's schema.go), the handlers
+// become the route table below. No Postgres, no Next.js.
 //
-// Host contract:
-//   globalThis.db.query(sql, args)  -> [ {col: val, ...}, ... ]   (tenant-scoped)
-//   globalThis.db.exec(sql, args)   -> { rowsAffected, lastInsertId }
-//   globalThis.crypto.hashPassword(pw)          -> bcrypt hash string
-//   globalThis.crypto.verifyPassword(pw, hash)  -> bool
-//   globalThis.handle({ method, route, params, query, session, orgId, body })
-//     -> { status, body }
+// Host contract (clients/gojabase injects these per dispatch; each dispatch runs
+// inside ONE per-tenant SQLite transaction that commits iff status < 400):
+//   globalThis.__db.query(sql, args)   -> [ {col: val, ...}, ... ]
+//   globalThis.__db.exec(sql, args)    -> { changes, lastId }
+//   globalThis.__newId()               -> collision-resistant id (crypto/rand)
+//   globalThis.__now()                 -> unix milliseconds
+//   globalThis.__bcrypt.hash(pw)       -> bcrypt hash   (leaf HostFn, vetted Go)
+//   globalThis.__bcrypt.verify(pw,h)   -> bool
+//   globalThis.handle({ route, params, query, orgId, body }) -> { status, body }
 //
 // Document BYTES live in object storage (the cloud VFS/S3 seam) and are handled
 // by the Go leaf; this bundle only ever stores/reads the opaque storage KEY.
@@ -28,20 +30,10 @@
 
   // === tiny helpers ==========================================================
 
-  function nowMs() { return Date.now(); }
-
-  // newId is a compact, collision-resistant id: prefix + base36(time) + random.
-  function newId(prefix) {
-    var t = Date.now().toString(36);
-    var r = '';
-    for (var i = 0; i < 12; i++) {
-      r += Math.floor(Math.random() * 36).toString(36);
-    }
-    return (prefix || 'c') + t + r;
-  }
-
-  function q(sql, args) { return globalThis.db.query(sql, args || []); }
-  function e(sql, args) { return globalThis.db.exec(sql, args || []); }
+  function q(sql, args) { return globalThis.__db.query(sql, args || []); }
+  function e(sql, args) { return globalThis.__db.exec(sql, args || []); }
+  function id(prefix) { return (prefix || '') + globalThis.__newId(); }
+  function now() { return globalThis.__now(); }
   function one(rows) { return rows && rows.length ? rows[0] : null; }
 
   function jsonList(v) {
@@ -56,49 +48,10 @@
     return isNaN(n) ? (dflt == null ? null : dflt) : n;
   }
 
-  // err builds a route result carrying a non-200 status via __status.
+  // err builds a route result carrying a non-200 status via __status. A >=400
+  // status also rolls back the dispatch transaction (gojabase), so a rejected
+  // request leaves the tenant DB untouched.
   function err(status, message) { return { __status: status, error: message }; }
-
-  // === schema (migrate route) ================================================
-  // The ONE source of truth for the dataroom Base schema. The Go leaf calls the
-  // 'migrate' route once per org before first use (CREATE ... IF NOT EXISTS is
-  // idempotent). Booleans are stored as INTEGER 0/1; timestamps as epoch millis.
-  var DDL = [
-    'CREATE TABLE IF NOT EXISTS document (' +
-      'id TEXT PRIMARY KEY, name TEXT NOT NULL, file_key TEXT NOT NULL, ' +
-      'content_type TEXT, type TEXT, num_pages INTEGER, file_size INTEGER, ' +
-      'created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL)',
-    'CREATE TABLE IF NOT EXISTS dataroom (' +
-      'id TEXT PRIMARY KEY, p_id TEXT NOT NULL UNIQUE, name TEXT NOT NULL, ' +
-      'description TEXT, created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL)',
-    'CREATE TABLE IF NOT EXISTS dataroom_document (' +
-      'id TEXT PRIMARY KEY, dataroom_id TEXT NOT NULL, document_id TEXT NOT NULL, ' +
-      'order_index INTEGER, created_at INTEGER NOT NULL, ' +
-      'UNIQUE(dataroom_id, document_id))',
-    'CREATE INDEX IF NOT EXISTS ix_dd_room ON dataroom_document(dataroom_id)',
-    'CREATE TABLE IF NOT EXISTS link (' +
-      'id TEXT PRIMARY KEY, link_type TEXT NOT NULL DEFAULT \'DATAROOM_LINK\', ' +
-      'dataroom_id TEXT, document_id TEXT, name TEXT, password_hash TEXT, ' +
-      'email_protected INTEGER NOT NULL DEFAULT 1, allow_list TEXT NOT NULL DEFAULT \'[]\', ' +
-      'deny_list TEXT NOT NULL DEFAULT \'[]\', allow_download INTEGER NOT NULL DEFAULT 0, ' +
-      'expires_at INTEGER, is_archived INTEGER NOT NULL DEFAULT 0, ' +
-      'created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL)',
-    'CREATE INDEX IF NOT EXISTS ix_link_room ON link(dataroom_id)',
-    'CREATE TABLE IF NOT EXISTS viewer (' +
-      'id TEXT PRIMARY KEY, email TEXT NOT NULL UNIQUE, verified INTEGER NOT NULL DEFAULT 0, ' +
-      'created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL)',
-    'CREATE TABLE IF NOT EXISTS view (' +
-      'id TEXT PRIMARY KEY, link_id TEXT NOT NULL, dataroom_id TEXT, document_id TEXT, ' +
-      'viewer_id TEXT, viewer_email TEXT, view_type TEXT NOT NULL DEFAULT \'DATAROOM_VIEW\', ' +
-      'verified INTEGER NOT NULL DEFAULT 0, viewed_at INTEGER NOT NULL)',
-    'CREATE INDEX IF NOT EXISTS ix_view_link ON view(link_id)',
-    'CREATE TABLE IF NOT EXISTS page_view (' +
-      'id TEXT PRIMARY KEY, view_id TEXT NOT NULL, link_id TEXT NOT NULL, ' +
-      'document_id TEXT, dataroom_id TEXT, page_number INTEGER NOT NULL, ' +
-      'version_number INTEGER, duration INTEGER NOT NULL DEFAULT 0, viewed_at INTEGER NOT NULL)',
-    'CREATE INDEX IF NOT EXISTS ix_pv_link ON page_view(link_id)',
-    'CREATE INDEX IF NOT EXISTS ix_pv_view ON page_view(view_id)',
-  ];
 
   // === shapers (row -> API object) ===========================================
 
@@ -149,39 +102,32 @@
   }
 
   function linkExpired(r) {
-    return r.expires_at != null && Number(r.expires_at) > 0 && nowMs() > Number(r.expires_at);
+    return r.expires_at != null && Number(r.expires_at) > 0 && now() > Number(r.expires_at);
   }
 
   // === route handlers ========================================================
-  // Admin routes are org-scoped by the injected tenant db; the Go leaf refuses
-  // any request without a validated principal before dispatching. Viewer routes
-  // run under the org resolved from the public link id.
+  // Admin routes are org-scoped by the per-tenant DB gojabase selects; the Go
+  // leaf refuses any request without a validated principal before dispatching.
+  // Viewer routes run under the org resolved from the public link id.
 
   var routes = {
 
-    // ---- migrate ------------------------------------------------------------
-    'migrate': function () {
-      for (var i = 0; i < DDL.length; i++) e(DDL[i]);
-      return { ok: true };
-    },
-
     // ---- documents ----------------------------------------------------------
-    // POST: the Go leaf has already stored the bytes in object storage and
-    // passes the resulting fileKey; this records the metadata row.
+    // POST: the Go leaf has already stored the bytes on the object-storage seam
+    // and passes the resulting fileKey; this records the metadata row.
     'documents.create': function (ctx) {
       var b = ctx.body || {};
       if (!b.name || !b.fileKey) return err(400, 'name and fileKey required');
-      var id = newId('doc_');
-      var t = nowMs();
+      var docId = id('doc_');
+      var t = now();
       e('INSERT INTO document (id,name,file_key,content_type,type,num_pages,file_size,created_at,updated_at) ' +
         'VALUES (?,?,?,?,?,?,?,?,?)',
-        [id, String(b.name), String(b.fileKey), b.contentType || null, b.type || null,
+        [docId, String(b.name), String(b.fileKey), b.contentType || null, b.type || null,
          asInt(b.numPages), asInt(b.fileSize), t, t]);
-      return { document: documentOut(one(q('SELECT * FROM document WHERE id=?', [id]))) };
+      return { document: documentOut(one(q('SELECT * FROM document WHERE id=?', [docId]))) };
     },
     'documents.list': function () {
-      var rows = q('SELECT * FROM document ORDER BY created_at DESC');
-      return { documents: rows.map(documentOut) };
+      return { documents: q('SELECT * FROM document ORDER BY created_at DESC').map(documentOut) };
     },
     'documents.get': function (ctx) {
       var r = one(q('SELECT * FROM document WHERE id=?', [ctx.params.id]));
@@ -199,16 +145,15 @@
     'datarooms.create': function (ctx) {
       var b = ctx.body || {};
       if (!b.name) return err(400, 'name required');
-      var id = newId('room_');
-      var pId = 'dr_' + newId('').slice(0, 12);
-      var t = nowMs();
+      var roomId = id('room_');
+      var pId = 'dr_' + globalThis.__newId().slice(1, 13);
+      var t = now();
       e('INSERT INTO dataroom (id,p_id,name,description,created_at,updated_at) VALUES (?,?,?,?,?,?)',
-        [id, pId, String(b.name), b.description || null, t, t]);
-      return { dataroom: dataroomOut(one(q('SELECT * FROM dataroom WHERE id=?', [id]))) };
+        [roomId, pId, String(b.name), b.description || null, t, t]);
+      return { dataroom: dataroomOut(one(q('SELECT * FROM dataroom WHERE id=?', [roomId]))) };
     },
     'datarooms.list': function () {
-      var rows = q('SELECT * FROM dataroom ORDER BY created_at DESC');
-      return { datarooms: rows.map(dataroomOut) };
+      return { datarooms: q('SELECT * FROM dataroom ORDER BY created_at DESC').map(dataroomOut) };
     },
     'datarooms.get': function (ctx) {
       var r = one(q('SELECT * FROM dataroom WHERE id=?', [ctx.params.id]));
@@ -236,10 +181,10 @@
       if (one(q('SELECT id FROM dataroom_document WHERE dataroom_id=? AND document_id=?', [roomId, docId]))) {
         return err(409, 'document already in dataroom');
       }
-      var id = newId('dd_');
+      var ddId = id('dd_');
       e('INSERT INTO dataroom_document (id,dataroom_id,document_id,order_index,created_at) VALUES (?,?,?,?,?)',
-        [id, roomId, docId, asInt(b.orderIndex), nowMs()]);
-      return { dataroomDocumentId: id, dataroomId: roomId, documentId: docId };
+        [ddId, roomId, docId, asInt(b.orderIndex), now()]);
+      return { dataroomDocumentId: ddId, dataroomId: roomId, documentId: docId };
     },
 
     // ---- links --------------------------------------------------------------
@@ -251,23 +196,22 @@
       if (roomId && !one(q('SELECT id FROM dataroom WHERE id=?', [roomId]))) return err(404, 'dataroom not found');
       if (docId && !one(q('SELECT id FROM document WHERE id=?', [docId]))) return err(404, 'document not found');
       var pwHash = null;
-      if (b.password) pwHash = globalThis.crypto.hashPassword(String(b.password));
+      if (b.password) pwHash = globalThis.__bcrypt.hash(String(b.password));
       var allowList = Array.isArray(b.allowList) ? b.allowList : [];
       var denyList = Array.isArray(b.denyList) ? b.denyList : [];
-      var id = newId('link_');
-      var t = nowMs();
+      var linkId = id('link_');
+      var t = now();
       var linkType = docId && !roomId ? 'DOCUMENT_LINK' : 'DATAROOM_LINK';
       e('INSERT INTO link (id,link_type,dataroom_id,document_id,name,password_hash,email_protected,' +
         'allow_list,deny_list,allow_download,expires_at,is_archived,created_at,updated_at) ' +
         'VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
-        [id, linkType, roomId, docId, b.name || null, pwHash,
+        [linkId, linkType, roomId, docId, b.name || null, pwHash,
          b.emailProtected === false ? 0 : 1, JSON.stringify(allowList), JSON.stringify(denyList),
          b.allowDownload ? 1 : 0, asInt(b.expiresAt), 0, t, t]);
-      return { link: linkOut(one(q('SELECT * FROM link WHERE id=?', [id]))) };
+      return { link: linkOut(one(q('SELECT * FROM link WHERE id=?', [linkId]))) };
     },
     'links.list': function () {
-      var rows = q('SELECT * FROM link WHERE is_archived=0 ORDER BY created_at DESC');
-      return { links: rows.map(linkOut) };
+      return { links: q('SELECT * FROM link WHERE is_archived=0 ORDER BY created_at DESC').map(linkOut) };
     },
 
     // ---- viewer surface (public) -------------------------------------------
@@ -303,7 +247,7 @@
       if (truthy(r.email_protected) && !email) return err(401, 'email required');
       if (!emailAllowed(email, jsonList(r.allow_list))) return err(403, 'email not allowed');
       if (r.password_hash) {
-        if (!b.password || !globalThis.crypto.verifyPassword(String(b.password), r.password_hash)) {
+        if (!b.password || !globalThis.__bcrypt.verify(String(b.password), r.password_hash)) {
           return err(401, 'invalid password');
         }
       }
@@ -313,18 +257,18 @@
         var existing = one(q('SELECT * FROM viewer WHERE email=?', [email]));
         if (existing) { viewerId = existing.id; }
         else {
-          viewerId = newId('viewer_');
-          var tv = nowMs();
+          viewerId = id('viewer_');
+          var tv = now();
           e('INSERT INTO viewer (id,email,verified,created_at,updated_at) VALUES (?,?,?,?,?)',
             [viewerId, email, 0, tv, tv]);
         }
       }
 
-      var viewId = newId('view_');
+      var viewId = id('view_');
       var viewType = r.dataroom_id ? 'DATAROOM_VIEW' : 'DOCUMENT_VIEW';
       e('INSERT INTO view (id,link_id,dataroom_id,document_id,viewer_id,viewer_email,view_type,verified,viewed_at) ' +
         'VALUES (?,?,?,?,?,?,?,?,?)',
-        [viewId, r.id, r.dataroom_id, r.document_id, viewerId, email || null, viewType, 0, nowMs()]);
+        [viewId, r.id, r.dataroom_id, r.document_id, viewerId, email || null, viewType, 0, now()]);
 
       var payload = { viewId: viewId, viewerId: viewerId, allowDownload: truthy(r.allow_download) };
       if (r.dataroom_id) {
@@ -350,12 +294,12 @@
       var v = one(q('SELECT * FROM view WHERE id=? AND link_id=?', [b.viewId, linkId]));
       if (!v) return err(404, 'view not found');
       if (b.pageNumber == null) return err(400, 'pageNumber required');
-      var id = newId('pv_');
+      var pvId = id('pv_');
       e('INSERT INTO page_view (id,view_id,link_id,document_id,dataroom_id,page_number,version_number,duration,viewed_at) ' +
         'VALUES (?,?,?,?,?,?,?,?,?)',
-        [id, v.id, linkId, b.documentId || v.document_id, v.dataroom_id,
-         asInt(b.pageNumber, 0), asInt(b.versionNumber), asInt(b.duration, 0), nowMs()]);
-      return { ok: true, id: id };
+        [pvId, v.id, linkId, b.documentId || v.document_id, v.dataroom_id,
+         asInt(b.pageNumber, 0), asInt(b.versionNumber), asInt(b.duration, 0), now()]);
+      return { ok: true, id: pvId };
     },
 
     // view.file authorises a viewer download and returns the storage key.
@@ -417,10 +361,8 @@
   globalThis.handle = function (req) {
     req = req || {};
     var ctx = {
-      method: req.method || 'GET',
       params: req.params || {},
       query: req.query || {},
-      session: req.session || null,
       orgId: req.orgId || '',
       body: req.body || null,
     };
