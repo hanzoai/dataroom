@@ -58,7 +58,7 @@ export default async function middleware(req: NextRequest, ev: NextFetchEvent) {
   }
 
   // For custom domains, rewrite to domain viewer routes
-  // NOTE: DomainMiddleware is dynamically imported to avoid pulling ioredis
+  // NOTE: DomainMiddleware is dynamically imported to avoid pulling @hanzo/kv
   // into the Edge Runtime bundle (Edge Runtime has no TCP/net APIs)
   if (isCustomDomain(host || "")) {
     const { default: DomainMiddleware } = await import(
