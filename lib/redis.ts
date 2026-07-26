@@ -2,25 +2,25 @@
  * Hanzo KV client
  *
  * Connects to Hanzo KV (Valkey-compatible) via standard wire protocol.
- * Uses ioredis as transport (wire-compatible with Hanzo KV / Valkey / Redis).
+ * Uses @hanzo/kv as transport (wire-compatible with Hanzo KV / Valkey / Redis).
  *
  * Environment: KV_URL (e.g. redis://:password@hanzo-kv.hanzo.svc:6379)
  */
-import IORedis from "ioredis";
+import KV from "@hanzo/kv";
 
 const kvUrl = process.env.KV_URL || process.env.REDIS_URL || "redis://localhost:6379";
 
-export const redis = new IORedis(kvUrl, {
+export const redis = new KV(kvUrl, {
   maxRetriesPerRequest: 3,
   lazyConnect: true,
 });
 
-export const lockerRedisClient = new IORedis(kvUrl, {
+export const lockerRedisClient = new KV(kvUrl, {
   maxRetriesPerRequest: 3,
   lazyConnect: true,
 });
 
-// Upstash-compatible set() shim — translates options-object calls to ioredis positional args
+// Upstash-compatible set() shim — translates options-object calls to @hanzo/kv positional args
 const originalSet = redis.set.bind(redis);
 (redis as any).set = async function (
   key: string,
@@ -75,7 +75,7 @@ const originalGet = redis.get.bind(redis);
   try { return JSON.parse(val); } catch { return val; }
 };
 
-// Upstash-compatible hincrby — already same signature in ioredis
+// Upstash-compatible hincrby — already same signature in @hanzo/kv
 
 // Simple sliding-window rate limiter using Hanzo KV
 export function ratelimit(

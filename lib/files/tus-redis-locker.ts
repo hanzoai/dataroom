@@ -1,8 +1,8 @@
 import { ERRORS, Lock, Locker, RequestRelease } from "@tus/utils";
-import type Redis from "ioredis";
+import type KV from "@hanzo/kv";
 
 /**
- * RedisLocker is an implementation of the Locker interface that manages locks in key-value store using Redis.
+ * RedisLocker is an implementation of the Locker interface that manages locks in key-value store using KV.
  * This class is designed for exclusive access control over resources, often used in scenarios like upload management.
  *
  * Key Features:
@@ -24,12 +24,12 @@ import type Redis from "ioredis";
 
 interface RedisLockerOptions {
   acquireLockTimeout?: number;
-  redisClient: Redis;
+  redisClient: KV;
 }
 
 export class RedisLocker implements Locker {
   timeout: number;
-  redisClient: Redis;
+  redisClient: KV;
 
   constructor(options: RedisLockerOptions) {
     this.timeout = options.acquireLockTimeout ?? 1000 * 30; // default: 30 seconds
@@ -79,7 +79,7 @@ class RedisLock implements Lock {
     const lock = await this.locker.redisClient.set(lockKey, "locked", "PX", this.timeout, "NX");
 
     if (lock === "OK") {
-      // Register a release request flag in Redis
+      // Register a release request flag in KV
       await this.locker.redisClient.set(`requestRelease:${lockKey}`, "true", "PX", this.timeout);
       return true;
     }
