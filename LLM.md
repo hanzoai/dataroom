@@ -62,14 +62,46 @@ Rules for anyone touching this repo:
 (2026-03-01) ran a repo-wide branding pass that also rewrote `ee/LICENSE.md`,
 retitling "The Papermark Commercial License" to "The Hanzo Dataroom Commercial
 License" and swapping its copyright line from Papermark, Inc. to Hanzo AI, Inc.
-The code under `ee/` is substantially upstream Papermark code, and retitling a
-license document does not transfer copyright in it. This is recorded in `NOTICE`
-section 3 rather than silently reverted, because unwinding it is a legal
-determination, not an engineering one. Do not "fix" it unilaterally.
+Retitling a license document does not transfer copyright in the code beneath it.
+This is recorded in `NOTICE` section 3 rather than silently reverted, because
+unwinding it is a legal determination, not an engineering one. Do not "fix" it
+unilaterally.
 
-Minor, same area: the root LICENSE points at `ee/LICENSE` but the file is
-`ee/LICENSE.md`, and it identifies the carve-out directories by their upstream
-github.com/mfts/papermark URLs.
+The fact that settles how weak our position is: **`ee/` is 100% upstream code.**
+All 160 file-additions under `ee/` were authored upstream (151 by Marc Seitz);
+zero by Hanzo. Not "substantially upstream" — entirely.
+
+    git log --format='%H %ae' --name-status --diff-filter=A -- ee
+
+### Deleting `ee/` was evaluated (2026-08-03) and is NOT a small change
+
+Removing `ee/` outright was proposed as a way to dissolve the ownership
+question. Do not attempt it as a quick fix. `ee/` is not a severable
+commercial add-on here — **141 files outside `ee/` import from it**:
+
+    grep -rIE "@/ee/" . --include='*.ts' --include='*.tsx' \
+      --exclude-dir=node_modules | grep -vE '^\./(ee|app/\(ee\))/'
+
+Of those, 63 import only plan gating (`@/ee/stripe/constants`, `@/ee/limits`)
+and would fall out cleanly if paywalls were dropped — the same move already
+made in `hanzoai/sign`. The other 78 import real features. The blocker is
+`ee/features/storage/config.ts`, imported 9× from outside `ee/`: it builds the
+S3 `StorageConfig` used by `lib/files/aws-client.ts`,
+`lib/files/bulk-download-presign.ts`, `app/api/views/route.ts` and every
+download route. It is the storage layer of a document-sharing product, and it
+happens to live under `ee/`.
+
+Deleting `ee/` therefore removes document storage, AI document chat,
+conversations, granular permissions, dataroom invitations, workflows and
+templates, and does not build. If the decision is still to remove it, it is a
+scoped feature-removal project — migrate `features/storage` out of `ee/` first
+— not a `git rm`.
+
+Note the root LICENSE points at `ee/LICENSE` but the file is `ee/LICENSE.md`,
+and it identifies the carve-out directories by their upstream
+github.com/mfts/papermark URLs. Fixing that pointer was authorised *conditional
+on `ee/` being deleted*; since `ee/` remains, the pointer still resolves to a
+directory that exists and the root LICENSE stays untouched.
 
 **AGPL §13 gap (open):** we serve this over the network at dataroom.hanzo.ai, so
 users interacting with it remotely must be offered the Corresponding Source. The

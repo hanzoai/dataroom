@@ -86,10 +86,18 @@ Record of what Hanzo changed here, stated plainly:
   corresponding party names in the body. The operative terms were otherwise
   unchanged.
 
-  The code in `ee/` is substantially upstream Papermark code. Retitling the
-  license document and substituting the copyright holder does not by itself
-  transfer copyright in that upstream code, which remains with Papermark,
-  Inc. and its contributors.
+  The code in `ee/` is not merely "substantially" upstream Papermark code —
+  it is entirely upstream. Every one of the 160 file-additions ever made
+  under `ee/` was authored upstream: 151 by Marc Seitz <marc@mfts.io> and 9
+  by other upstream contributors. Zero files under `ee/` have ever been
+  authored by Hanzo, and no Hanzo commit has added source there. This is
+  verifiable with:
+
+      git log --format='%H %ae' --name-status --diff-filter=A -- ee
+
+  Retitling the license document and substituting the copyright holder does
+  not transfer copyright in that code, which remains with Papermark, Inc.
+  and its contributors.
 
   This is flagged as an open question requiring review by legal counsel. It
   is recorded here rather than silently corrected, because unwinding it is a
@@ -97,6 +105,18 @@ Record of what Hanzo changed here, stated plainly:
   LICENSE directs readers to "ee/LICENSE" while the file is in fact named
   `ee/LICENSE.md`, and that it identifies the covered directories by their
   upstream URLs under github.com/mfts/papermark.
+
+  Deletion of `ee/` was evaluated on 2026-08-03 as a way of resolving this
+  by removing the code rather than adjudicating its ownership. It was not
+  carried out, because `ee/` is not a severable commercial add-on in this
+  codebase: 141 files outside `ee/` import from it, and those imports include
+  core infrastructure rather than paywall gating alone. In particular
+  `ee/features/storage/config.ts` supplies the S3 configuration consumed by
+  `lib/files/aws-client.ts`, `lib/files/bulk-download-presign.ts` and every
+  document view and download route. Deleting `ee/` therefore removes document
+  storage, AI document chat, conversations, granular permissions, dataroom
+  invitations, workflows and templates, and leaves a tree that does not
+  build. The licensing question above is unchanged by this and remains open.
 
 
 ================================================================================
