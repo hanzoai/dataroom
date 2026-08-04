@@ -6,7 +6,9 @@ Hanzo dataroom service.
 **Upstream**: [Papermark](https://github.com/mfts/papermark) (AGPL-3.0). LICENSE
 retains "Copyright (c) 2023-present Papermark, Inc." Open-source DocSend
 alternative. This fork is Hanzo Dataroom — single-license AGPL, no commercial
-carve-out anywhere in the tree.
+carve-out anywhere in the tree. Per HIP-0137 (`hanzoai/hips`) a fork keeps
+upstream's licence untouched — never edit `LICENSE`; only Hanzo-**original**
+work is `MIT OR Apache-2.0`.
 
 ## Tech Stack
 - **Language**: TypeScript/JavaScript
