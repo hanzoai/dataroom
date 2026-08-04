@@ -1,0 +1,21 @@
+dataroom
+Copyright (c) 2026 Hanzo AI, Inc.
+
+This product includes software from Papermark (https://github.com/mfts/papermark),
+licensed under the GNU Affero General Public License v3.0:
+
+    Copyright (c) 2023-present Papermark, Inc.
+
+Forked from https://github.com/mfts/papermark with the full upstream commit
+history preserved.
+
+Only the AGPLv3-licensed portions of Papermark are used here. Papermark's
+source-available "ee/" and "app/(ee)" code, governed by a separate, non-OSS
+commercial license, is NOT included in this repository and is never
+redistributed. The upstream commercial carve-out clause has been removed from
+LICENSE along with its pointers to those directories, which do not exist in
+this repository.
+
+Any license or entitlement check in this product is served by Hanzo's own
+licensing API. This product contains no upstream Enterprise Edition license
+key check and no third-party commercial license gate.
