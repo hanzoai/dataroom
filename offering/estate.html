@@ -1,0 +1,154 @@
+<title>Estate — 186 orgs</title>
+<style>
+  :root{
+    --bg:#f2f4f7; --panel:#fff; --ink:#141a21; --dim:#5d6b7a; --line:#d3dae2;
+    --open:#1f7a6b; --closed:#b8402f; --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:"Helvetica Neue",Helvetica,"Segoe UI",Arial,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{--bg:#0d1117;--panel:#151c24;--ink:#e4ebf2;--dim:#8a9aab;--line:#25303c;--open:#3fbfa8;--closed:#e5705c}
+  }
+  :root[data-theme="dark"]{--bg:#0d1117;--panel:#151c24;--ink:#e4ebf2;--dim:#8a9aab;--line:#25303c;--open:#3fbfa8;--closed:#e5705c}
+  :root[data-theme="light"]{--bg:#f2f4f7;--panel:#fff;--ink:#141a21;--dim:#5d6b7a;--line:#d3dae2;--open:#1f7a6b;--closed:#b8402f}
+
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5}
+  .wrap{max-width:64rem;margin:0 auto;padding:2rem 1.25rem 4rem;display:flex;flex-direction:column;gap:1.5rem}
+
+  h1{font-size:1.6rem;letter-spacing:-.02em}
+  .sub{color:var(--dim);font-size:.92rem}
+
+  .totals{display:grid;grid-template-columns:repeat(auto-fit,minmax(9rem,1fr));gap:.75rem}
+  .tot{background:var(--panel);border:1px solid var(--line);padding:.85rem 1rem;display:flex;flex-direction:column;gap:.15rem}
+  .tot .n{font-family:var(--mono);font-size:1.75rem;font-variant-numeric:tabular-nums;letter-spacing:-.03em;line-height:1}
+  .tot .l{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+  .tot.o .n{color:var(--open)} .tot.c .n{color:var(--closed)}
+
+  .bar{display:flex;height:.55rem;overflow:hidden;border:1px solid var(--line)}
+  .bar i{display:block;height:100%}
+  .bar .o{background:var(--open)} .bar .c{background:var(--closed)}
+
+  .ctl{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
+  input,select{font:inherit;font-size:.88rem;padding:.42rem .6rem;background:var(--panel);color:var(--ink);border:1px solid var(--line)}
+  input{flex:1;min-width:11rem}
+  input:focus-visible,select:focus-visible,th button:focus-visible{outline:2px solid var(--open);outline-offset:1px}
+  .legend{font-size:.78rem;color:var(--dim);display:flex;gap:.9rem;align-items:center}
+  .legend b{display:inline-block;width:.6rem;height:.6rem;margin-right:.3rem;vertical-align:baseline}
+  .legend .o b{background:var(--open)} .legend .c b{background:var(--closed)}
+
+  .scroll{overflow-x:auto;background:var(--panel);border:1px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th,td{text-align:left;padding:.42rem .7rem;border-bottom:1px solid var(--line);white-space:nowrap}
+  th{position:sticky;top:0;background:var(--panel);font-size:.68rem;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);z-index:1}
+  th button{all:unset;cursor:pointer;font:inherit;letter-spacing:inherit;text-transform:inherit;color:inherit}
+  th button[aria-sort]{color:var(--ink)}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:color-mix(in srgb,var(--open) 7%,transparent)}
+  .n{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right}
+  .o{color:var(--open)} .c{color:var(--closed)}
+  td.viz{width:38%;min-width:9rem}
+  a{color:var(--ink)}
+  .meth{font-size:.8rem;color:var(--dim);border-top:1px solid var(--line);padding-top:1rem}
+  code{font-family:var(--mono);font-size:.82em}
+</style>
+
+<div class="wrap">
+  <div>
+    <h1>The estate</h1>
+    <p class="sub">Every GitHub organisation, counted with the credential that can see all of them. One engineer.</p>
+  </div>
+
+  <div class="totals">
+    <div class="tot"><span class="n" id="tOrg">—</span><span class="l">orgs</span></div>
+    <div class="tot o"><span class="n" id="tPub">—</span><span class="l">public</span></div>
+    <div class="tot c"><span class="n" id="tPrv">—</span><span class="l">private</span></div>
+    <div class="tot"><span class="n" id="tAll">—</span><span class="l">org repos</span></div>
+    <div class="tot"><span class="n">4,973</span><span class="l">incl. 548 personal</span></div>
+  </div>
+
+  <div class="bar" id="gbar" aria-hidden="true"></div>
+
+  <div class="ctl">
+    <input id="q" type="search" placeholder="Filter organisations…" aria-label="Filter organisations">
+    <select id="only" aria-label="Show">
+      <option value="all">All orgs</option>
+      <option value="nonzero" selected>With repos</option>
+      <option value="haspriv">Has private</option>
+      <option value="allpub">Fully public</option>
+    </select>
+    <span class="legend"><span class="o"><b></b>public</span><span class="c"><b></b>private</span></span>
+  </div>
+
+  <div class="scroll">
+    <table>
+      <thead><tr>
+        <th><button data-k="o">Organisation</button></th>
+        <th class="n"><button data-k="u">Public</button></th>
+        <th class="n"><button data-k="r">Private</button></th>
+        <th class="n"><button data-k="t">Total</button></th>
+        <th class="viz">Split</th>
+      </tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+
+  <p class="meth" id="meth"></p>
+</div>
+
+<script>
+const DATA = [{"o":"dmagic","u":2,"r":49},{"o":"nko3","u":48,"r":340},{"o":"activeuser","u":2,"r":0},{"o":"monoid-llc","u":1,"r":0},{"o":"songlocator","u":14,"r":0},{"o":"crowdfunder","u":1,"r":15},{"o":"slashnet","u":13,"r":2},{"o":"verus-io","u":0,"r":20},{"o":"ellipsis-index","u":11,"r":0},{"o":"crowdstart","u":3,"r":0},{"o":"nko5","u":34,"r":112},{"o":"gitarmy","u":1,"r":0},{"o":"hanzoai","u":156,"r":435},{"o":"ellipsis","u":8,"r":0},{"o":"smokeaura","u":1,"r":0},{"o":"stonedhq","u":1,"r":1},{"o":"hanzo-core","u":5,"r":0},{"o":"hanzo-ext","u":0,"r":0},{"o":"sakejs","u":15,"r":0},{"o":"eljs","u":2,"r":0},{"o":"shopjs","u":4,"r":0},{"o":"secretpool","u":8,"r":1},{"o":"hanzohq","u":0,"r":0},{"o":"bootnode","u":0,"r":5},{"o":"HalcyonBio","u":1,"r":0},{"o":"bitcheck-co","u":0,"r":0},{"o":"bitping","u":1,"r":0},{"o":"badkit","u":0,"r":0},{"o":"arcalabs","u":13,"r":0},{"o":"chainsync","u":0,"r":0},{"o":"Dream-AI-4444","u":329,"r":7},{"o":"theseuscapital","u":1,"r":0},{"o":"campdao","u":5,"r":0},{"o":"cannabunnyco","u":0,"r":0},{"o":"entertainmentstockx","u":0,"r":4},{"o":"karmamade","u":0,"r":1},{"o":"forstmann-co","u":0,"r":0},{"o":"mone2go","u":0,"r":1},{"o":"memefarm","u":0,"r":3},{"o":"payminto","u":0,"r":5},{"o":"hanzo-labs","u":15,"r":1},{"o":"evmlabs","u":0,"r":0},{"o":"k-collective","u":0,"r":2},{"o":"apelabz","u":0,"r":1},{"o":"luxcredit","u":0,"r":0},{"o":"luxfi","u":118,"r":289},{"o":"zoo-labs","u":3,"r":36},{"o":"nftsdk","u":0,"r":0},{"o":"luxfinance","u":0,"r":0},{"o":"luxstatic","u":1,"r":12},{"o":"luxdao","u":8,"r":0},{"o":"clone-labs","u":0,"r":0},{"o":"antisocialnetworkxyz","u":0,"r":0},{"o":"zooai","u":3,"r":45},{"o":"luxdefi","u":1,"r":0},{"o":"degenfrens","u":4,"r":0},{"o":"cdaxfx","u":2,"r":4},{"o":"sparkleponyclub","u":2,"r":1},{"o":"luxaudio","u":1,"r":0},{"o":"sixrcricket","u":0,"r":0},{"o":"slogmeme","u":2,"r":0},{"o":"hanzoapp","u":0,"r":0},{"o":"hanzo-app","u":13,"r":0},{"o":"lux-apps","u":4,"r":26},{"o":"hanzo-apps","u":56,"r":72},{"o":"sensei-group","u":1,"r":0},{"o":"hanzo-industries","u":0,"r":0},{"o":"hanzo-agency","u":0,"r":0},{"o":"zeekayai","u":0,"r":0},{"o":"ARcAIx","u":0,"r":0},{"o":"hanzolm","u":0,"r":0},{"o":"zenlm","u":86,"r":13},{"o":"hanzoworks","u":0,"r":0},{"o":"hanzoio","u":0,"r":0},{"o":"hanzo-js","u":4,"r":22},{"o":"hanzo-io","u":9,"r":15},{"o":"hanzo-lm","u":0,"r":0},{"o":"hanzonet","u":1,"r":42},{"o":"hanzonetwork","u":0,"r":0},{"o":"lux-js","u":1,"r":0},{"o":"ad-xyz","u":2,"r":1},{"o":"adnexustech","u":0,"r":15},{"o":"ai-jerk","u":0,"r":1},{"o":"luxexchange","u":9,"r":4},{"o":"spoiled-rotten","u":1,"r":0},{"o":"Supra-Nexus","u":5,"r":3},{"o":"beyondalphaventures","u":1,"r":1},{"o":"beyondequity","u":1,"r":2},{"o":"zoo-apps","u":14,"r":1},{"o":"hanzo-studio","u":2,"r":3},{"o":"holmesfree","u":3,"r":0},{"o":"zoogov","u":7,"r":0},{"o":"hanzodao","u":7,"r":0},{"o":"zOS4-2","u":4,"r":0},{"o":"z-os4","u":7,"r":0},{"o":"zos-apps","u":111,"r":0},{"o":"z-os-labs","u":0,"r":0},{"o":"luxfhe","u":0,"r":64},{"o":"luxcpp","u":0,"r":21},{"o":"luxnext","u":0,"r":17},{"o":"sfsecretmenu","u":0,"r":0},{"o":"lux-tel","u":52,"r":0},{"o":"lux-exchange","u":0,"r":12},{"o":"parsfi","u":0,"r":0},{"o":"parsnetwork","u":15,"r":0},{"o":"migaprotocol","u":4,"r":0},{"o":"secretmenusf","u":2,"r":0},{"o":"zap-protocol","u":0,"r":33},{"o":"parsis-foundation","u":2,"r":0},{"o":"secondchanceventures","u":0,"r":0},{"o":"2ndchanceventures","u":0,"r":1},{"o":"hanzobot","u":0,"r":17},{"o":"zap-proto","u":56,"r":0},{"o":"hanzoid","u":0,"r":8},{"o":"hanzovm","u":4,"r":0},{"o":"enso-browser","u":15,"r":0},{"o":"hanzoskill","u":749,"r":0},{"o":"hanzoskills","u":0,"r":0},{"o":"madeforpeace","u":0,"r":0},{"o":"megastorelol","u":0,"r":0},{"o":"mega-lol","u":1,"r":0},{"o":"hanzozt","u":1,"r":82},{"o":"hanzos3","u":1,"r":19},{"o":"hanzofn","u":1,"r":0},{"o":"hanzodns","u":0,"r":1},{"o":"hanzo-ml","u":8,"r":0},{"o":"hanzocr","u":1,"r":0},{"o":"hanzodb","u":1,"r":0},{"o":"hanzoo11y","u":3,"r":0},{"o":"hanzosql","u":1,"r":0},{"o":"hanzokv","u":4,"r":1},{"o":"hanzolog","u":0,"r":0},{"o":"hanzometric","u":0,"r":0},{"o":"hanzomsg","u":5,"r":0},{"o":"hanzodocs","u":0,"r":2},{"o":"hanzoui","u":53,"r":0},{"o":"hanzokms","u":20,"r":4},{"o":"luxbank","u":0,"r":4},{"o":"luxats","u":0,"r":4},{"o":"luxbd","u":0,"r":0},{"o":"hanzogui","u":0,"r":116},{"o":"BCFK","u":0,"r":0},{"o":"lux-dex","u":0,"r":1},{"o":"lux-amm","u":10,"r":0},{"o":"lux-bridge","u":0,"r":0},{"o":"lux-wallet","u":0,"r":0},{"o":"lux-mpc","u":0,"r":0},{"o":"luxgpu","u":1,"r":0},{"o":"osagepeople","u":0,"r":0},{"o":"osagedao","u":0,"r":13},{"o":"osagenet","u":0,"r":0},{"o":"lux-private","u":0,"r":37},{"o":"luxpq","u":0,"r":0},{"o":"hanzoiam","u":0,"r":3},{"o":"hanzompc","u":0,"r":0},{"o":"hanzo-ds","u":11,"r":0},{"o":"hanzodocdb","u":0,"r":0},{"o":"torusml","u":0,"r":0},{"o":"torusfhe","u":0,"r":0},{"o":"acmglobaltech","u":1,"r":2},{"o":"arc-runner","u":0,"r":1},{"o":"hanzoinsights","u":0,"r":2},{"o":"hanzoteam","u":0,"r":0},{"o":"luxwallet","u":6,"r":3},{"o":"hanzo-docs","u":5,"r":2},{"o":"zoo-docs","u":1,"r":0},{"o":"lux-docs","u":0,"r":2},{"o":"zen-docs","u":0,"r":0},{"o":"pars-docs","u":0,"r":0},{"o":"yotodatech","u":1,"r":0},{"o":"hanzo-dart","u":2,"r":0},{"o":"maxpowerhq","u":2,"r":0},{"o":"hanzo-fi","u":10,"r":0},{"o":"hanzo-git","u":2,"r":0},{"o":"hanzochat","u":1,"r":0},{"o":"hanzo-cl","u":0,"r":0},{"o":"7starsdev","u":0,"r":0},{"o":"yadotatech","u":0,"r":1},{"o":"hanzo-go","u":2,"r":0},{"o":"hanzo-rs","u":2,"r":0},{"o":"hanzo-py","u":1,"r":0},{"o":"hanzo-cpp","u":2,"r":0},{"o":"hanzo-swift","u":2,"r":0},{"o":"hanzo-kt","u":2,"r":0},{"o":"hanzo-inc","u":0,"r":16},{"o":"hanzo-templates","u":1,"r":70}];
+DATA.forEach(d => d.t = d.u + d.r);
+
+const rows = document.getElementById('rows');
+const fmt = n => n.toLocaleString('en-US');
+let sortKey = 't', desc = true;
+
+const tot = DATA.reduce((a, d) => (a.u += d.u, a.r += d.r, a), {u: 0, r: 0});
+document.getElementById('tOrg').textContent = fmt(DATA.length);
+document.getElementById('tPub').textContent = fmt(tot.u);
+document.getElementById('tPrv').textContent = fmt(tot.r);
+document.getElementById('tAll').textContent = fmt(tot.u + tot.r);
+document.getElementById('gbar').innerHTML =
+  `<i class="o" style="width:${tot.u / (tot.u + tot.r) * 100}%"></i><i class="c" style="width:${tot.r / (tot.u + tot.r) * 100}%"></i>`;
+document.getElementById('meth').innerHTML =
+  `Counted <code>gh api user/orgs --paginate</code>, then <code>gh api orgs/&lt;o&gt; --jq '[.public_repos, .total_private_repos]'</code> — the authenticated endpoints. ` +
+  `The unauthenticated ones return only <em>public</em> org membership and undercount this estate roughly fivefold. ` +
+  `Excludes the self-hosted forge at git.hanzo.ai, so every figure here is a floor. Private repositories are shown separately and are not open source today.`;
+
+const max = Math.max(...DATA.map(d => d.t));
+
+function render() {
+  const q = document.getElementById('q').value.trim().toLowerCase();
+  const only = document.getElementById('only').value;
+  const list = DATA
+    .filter(d => !q || d.o.toLowerCase().includes(q))
+    .filter(d => only === 'all' || (only === 'nonzero' && d.t > 0) ||
+                 (only === 'haspriv' && d.r > 0) || (only === 'allpub' && d.t > 0 && d.r === 0))
+    .sort((a, b) => {
+      const v = sortKey === 'o' ? a.o.localeCompare(b.o) : a[sortKey] - b[sortKey];
+      return desc ? -v : v;
+    });
+
+  rows.innerHTML = list.map(d => `<tr>
+    <td><a href="https://github.com/${d.o}" target="_blank" rel="noopener">${d.o}</a></td>
+    <td class="n o">${d.u || ''}</td>
+    <td class="n c">${d.r || ''}</td>
+    <td class="n">${fmt(d.t)}</td>
+    <td class="viz"><span class="bar" style="width:${Math.max(d.t / max * 100, 1)}%">
+      <i class="o" style="width:${d.t ? d.u / d.t * 100 : 0}%"></i><i class="c" style="width:${d.t ? d.r / d.t * 100 : 0}%"></i>
+    </span></td></tr>`).join('') ||
+    `<tr><td colspan="5" style="color:var(--dim)">No organisation matches that filter.</td></tr>`;
+
+  document.querySelectorAll('th button').forEach(b =>
+    b.dataset.k === sortKey ? b.setAttribute('aria-sort', desc ? 'descending' : 'ascending')
+                            : b.removeAttribute('aria-sort'));
+}
+
+document.querySelectorAll('th button').forEach(b => b.onclick = () => {
+  const k = b.dataset.k;
+  if (k === sortKey) desc = !desc; else { sortKey = k; desc = k !== 'o'; }
+  render();
+});
+document.getElementById('q').oninput = render;
+document.getElementById('only').onchange = render;
+render();
+</script>
