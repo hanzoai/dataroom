@@ -1,7 +1,7 @@
 import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-import { getTeamStorageConfigById } from "@/features/storage/config";
+import { getStorageConfig } from "@/lib/storage/config";
 
 export interface S3KeyInfo {
   bucket: string;
@@ -62,7 +62,7 @@ export async function generateFreshPresignedUrl(
   s3Key: S3KeyInfo,
   expiresInSeconds: number = THREE_DAYS_IN_SECONDS,
 ): Promise<string> {
-  const config = await getTeamStorageConfigById(teamId);
+  const config = getStorageConfig();
 
   const client = new S3Client({
     region: s3Key.region,

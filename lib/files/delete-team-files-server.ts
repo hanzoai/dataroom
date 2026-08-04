@@ -1,7 +1,7 @@
 import { DeleteObjectsCommand, ListObjectsV2Command } from "@aws-sdk/client-s3";
 import { del } from "@vercel/blob";
 
-import { getTeamS3ClientAndConfig } from "./aws-client";
+import { getS3ClientAndConfig } from "./aws-client";
 
 export type DeleteFilesOptions = {
   teamId: string;
@@ -25,7 +25,7 @@ const deleteAllFilesFromS3Server = async (teamId: string) => {
   // the teamId is the first prefix in the folder path
   const folderPath = teamId;
 
-  const { client, config } = await getTeamS3ClientAndConfig(teamId);
+  const { client, config } = getS3ClientAndConfig();
 
   try {
     // List all objects in the folder

@@ -5,7 +5,7 @@ import { match } from "ts-pattern";
 
 import { newId } from "@/lib/id-helper";
 
-import { getTeamS3ClientAndConfig } from "./aws-client";
+import { getS3ClientAndConfig } from "./aws-client";
 
 export const copyFileServer = async ({
   teamId,
@@ -72,7 +72,7 @@ const copyFileInS3Server = async ({
   const fromLocation = `${teamId}/${fromDocId}/`;
   const toLocation = `${teamId}/${toDocId}/`;
 
-  const { config } = await getTeamS3ClientAndConfig(teamId);
+  const { config } = getS3ClientAndConfig();
 
   const response = await copyFolder(
     {
@@ -107,7 +107,7 @@ async function copyFolder(
   },
   teamId: string,
 ) {
-  const { client } = await getTeamS3ClientAndConfig(teamId);
+  const { client } = getS3ClientAndConfig();
   let count = 0;
   const recursiveCopy = async function (token?: string) {
     const listCommand = new ListObjectsV2Command({
