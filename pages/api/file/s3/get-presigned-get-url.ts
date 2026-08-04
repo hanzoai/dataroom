@@ -5,7 +5,7 @@ import { getSignedUrl as getCloudfrontSignedUrl } from "@aws-sdk/cloudfront-sign
 import { getSignedUrl as getS3SignedUrl } from "@aws-sdk/s3-request-presigner";
 
 import { ONE_HOUR, ONE_SECOND } from "@/lib/constants";
-import { getTeamS3ClientAndConfig } from "@/lib/files/aws-client";
+import { getS3ClientAndConfig } from "@/lib/files/aws-client";
 import { log } from "@/lib/utils";
 
 export default async function handler(
@@ -52,7 +52,7 @@ export default async function handler(
       return res.status(400).json({ error: "Invalid key format" });
     }
 
-    const { client, config } = await getTeamS3ClientAndConfig(teamId);
+    const { client, config } = getS3ClientAndConfig();
 
     if (config.distributionHost) {
       const distributionUrl = new URL(

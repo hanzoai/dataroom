@@ -8,7 +8,7 @@ import { newId } from "@/lib/id-helper";
 import { safeSlugify } from "@/lib/utils";
 
 import { SUPPORTED_DOCUMENT_MIME_TYPES } from "../constants";
-import { getTeamS3ClientAndConfig } from "./aws-client";
+import { getS3ClientAndConfig } from "./aws-client";
 
 // `File` is a web API type and not available server-side, so we need to define our own type
 type File = {
@@ -88,7 +88,7 @@ const putFileInS3Server = async ({
     throw new Error("Unsupported file type");
   }
 
-  const { client, config } = await getTeamS3ClientAndConfig(teamId);
+  const { client, config } = getS3ClientAndConfig();
 
   // Get the basename and extension for the file
   const { name, ext } = path.parse(file.name);

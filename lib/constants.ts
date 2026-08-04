@@ -106,17 +106,6 @@ export const SUPPORTED_DOCUMENT_MIME_TYPES = [
 ];
 
 // Upload configurations for different plan types and contexts
-export const FREE_PLAN_ACCEPTED_FILE_TYPES = {
-  "application/pdf": [], // ".pdf"
-  "application/vnd.ms-excel": [], // ".xls"
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [], // ".xlsx"
-  "text/csv": [], // ".csv"
-  "application/vnd.oasis.opendocument.spreadsheet": [], // ".ods"
-  "image/png": [], // ".png"
-  "image/jpeg": [], // ".jpeg"
-  "image/jpg": [], // ".jpg"
-};
-
 export const FULL_PLAN_ACCEPTED_FILE_TYPES = {
   "application/pdf": [], // ".pdf"
   "application/vnd.ms-excel": [], // ".xls"

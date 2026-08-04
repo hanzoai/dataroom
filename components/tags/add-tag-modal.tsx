@@ -1,12 +1,8 @@
 import { ChangeEvent, FormEventHandler, useMemo, useRef } from "react";
 
-import { PlanEnum } from "@/lib/billing/legacy/constants";
-
-import { usePlan } from "@/lib/swr/use-billing";
 import { TagColorProps } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-import { UpgradePlanModal } from "@/components/billing/upgrade-plan-modal";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -31,9 +27,7 @@ export function AddTagsModal({
   tagForm,
   setTagForm,
   handleSubmit,
-  tagCount = 0,
 }: {
-  tagCount: number | undefined;
   open: boolean;
   setMenuOpen: (open: boolean) => void;
   children?: React.ReactNode;
@@ -54,7 +48,6 @@ export function AddTagsModal({
   >;
   handleSubmit: FormEventHandler<HTMLFormElement> | undefined;
 }) {
-  const { isFree, isTrial } = usePlan();
   const initialValues = useRef(tagForm);
 
   useMemo(() => {
@@ -70,20 +63,6 @@ export function AddTagsModal({
 
   const isFormValid =
     tagForm.name.length >= 3 && !!tagForm.color && (!tagForm.id || hasChanged);
-
-  // If the team is on a free plan and has reached the max limit of 5 tags
-  if (isFree && tagCount >= 5) {
-    if (children) {
-      return (
-        <UpgradePlanModal
-          clickedPlan={isTrial ? PlanEnum.Business : PlanEnum.Pro}
-          trigger={"create_tag"}
-        >
-          <Button>Upgrade to Create Tags</Button>
-        </UpgradePlanModal>
-      );
-    }
-  }
 
   function handleValueChange(
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,

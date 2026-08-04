@@ -1,66 +1,48 @@
-type FileSizeLimits = {
+/**
+ * Upload constraints.
+ *
+ * These are operational limits — what the conversion and storage pipeline can
+ * chew through — not commercial ones. Hanzo Dataroom has no paywall, so every
+ * team gets the same ceiling. Tune per deployment via the env overrides.
+ */
+export type UploadLimits = {
+  /** per-file ceilings, in megabytes, by kind */
   video: number;
   document: number;
   image: number;
   excel: number;
+  /** files accepted in a single drop */
   maxFiles: number;
+  /** pages rendered per document */
   maxPages: number;
 };
 
-export function getFileSizeLimits({
-  limits,
-  isFree,
-  isTrial,
-}: {
-  limits?: { fileSizeLimits?: Partial<FileSizeLimits> } | null;
-  isFree: boolean;
-  isTrial: boolean;
-}): FileSizeLimits {
-  // Default limits based on plan type
-  const defaultLimits: FileSizeLimits = {
-    video: 500, // 500MB
-    document: isFree && !isTrial ? 100 : 350, // 100MB free, 350MB paid
-    image: isFree && !isTrial ? 30 : 100, // 30MB free, 100MB paid
-    excel: 40, // 40MB
-    maxFiles: 150,
-    maxPages: isFree && !isTrial ? 100 : 500,
-  };
+const mb = (name: string, fallback: number): number => {
+  const raw = Number(process.env[name]);
+  return Number.isFinite(raw) && raw > 0 ? raw : fallback;
+};
 
-  // If no custom limits are set, return default limits
-  if (!limits?.fileSizeLimits) {
-    return defaultLimits;
-  }
+export const UPLOAD_LIMITS: UploadLimits = {
+  video: mb("NEXT_PUBLIC_UPLOAD_LIMIT_VIDEO_MB", 500),
+  document: mb("NEXT_PUBLIC_UPLOAD_LIMIT_DOCUMENT_MB", 350),
+  image: mb("NEXT_PUBLIC_UPLOAD_LIMIT_IMAGE_MB", 100),
+  excel: mb("NEXT_PUBLIC_UPLOAD_LIMIT_EXCEL_MB", 40),
+  maxFiles: mb("NEXT_PUBLIC_UPLOAD_LIMIT_MAX_FILES", 150),
+  maxPages: mb("NEXT_PUBLIC_UPLOAD_LIMIT_MAX_PAGES", 500),
+};
 
-  // Merge custom limits with defaults
-  return {
-    video: limits.fileSizeLimits.video ?? defaultLimits.video,
-    document: limits.fileSizeLimits.document ?? defaultLimits.document,
-    image: limits.fileSizeLimits.image ?? defaultLimits.image,
-    excel: limits.fileSizeLimits.excel ?? defaultLimits.excel,
-    maxFiles: limits.fileSizeLimits.maxFiles ?? defaultLimits.maxFiles,
-    maxPages: limits.fileSizeLimits.maxPages ?? defaultLimits.maxPages,
-  };
-}
-
-// Helper function to get size limit for a specific file type
-export function getFileSizeLimit(
-  fileType: string,
-  limits: FileSizeLimits,
-): number {
-  if (fileType.startsWith("video/")) {
-    return limits.video;
-  }
-  if (fileType.startsWith("image/")) {
-    return limits.image;
-  }
+/** Size ceiling in megabytes for a given content type. */
+export function getFileSizeLimit(contentType: string): number {
+  if (contentType.startsWith("video/")) return UPLOAD_LIMITS.video;
+  if (contentType.startsWith("image/")) return UPLOAD_LIMITS.image;
   if (
-    fileType.startsWith(
+    contentType.startsWith(
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     ) ||
-    fileType.startsWith("application/vnd.ms-excel") ||
-    fileType.startsWith("application/vnd.oasis.opendocument.spreadsheet")
+    contentType.startsWith("application/vnd.ms-excel") ||
+    contentType.startsWith("application/vnd.oasis.opendocument.spreadsheet")
   ) {
-    return limits.excel;
+    return UPLOAD_LIMITS.excel;
   }
-  return limits.document;
+  return UPLOAD_LIMITS.document;
 }

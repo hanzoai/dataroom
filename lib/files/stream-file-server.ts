@@ -5,7 +5,7 @@ import { Readable } from "stream";
 
 import { safeSlugify } from "@/lib/utils";
 
-import { getTeamS3ClientAndConfig } from "./aws-client";
+import { getS3ClientAndConfig } from "./aws-client";
 
 type StreamFile = {
   name: string;
@@ -22,7 +22,7 @@ export const streamFileServer = async ({
   teamId: string;
   docId: string;
 }) => {
-  const { client, config } = await getTeamS3ClientAndConfig(teamId);
+  const { client, config } = getS3ClientAndConfig();
 
   // Get the basename and extension for the file
   const { name, ext } = path.parse(file.name);

@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { getTeamStorageConfigById } from "@/features/storage/config";
+import { getStorageConfig } from "@/lib/storage/config";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { getServerSession } from "next-auth";
 
@@ -215,7 +215,7 @@ export default async function handler(
       }
 
       // Get team-specific storage config
-      const storageConfig = await getTeamStorageConfigById(teamId);
+      const storageConfig = getStorageConfig();
 
       // Get user email for notification
       const user = await prisma.user.findUnique({

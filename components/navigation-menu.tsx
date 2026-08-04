@@ -5,14 +5,9 @@ import { useRouter } from "next/router";
 
 import * as React from "react";
 
-import { PlanEnum } from "@/lib/billing/legacy/constants";
-import { CrownIcon } from "lucide-react";
-
 import { cn } from "@/lib/utils";
 
 import { Separator } from "@/components/ui/separator";
-
-import { UpgradePlanModal } from "./billing/upgrade-plan-modal";
 
 type Props = {
   navigation: {
@@ -21,7 +16,6 @@ type Props = {
     segment: string | null;
     tag?: string;
     disabled?: boolean;
-    limited?: boolean;
   }[];
   className?: string;
 };
@@ -36,19 +30,16 @@ export const NavMenu: React.FC<React.PropsWithChildren<Props>> = ({
     >
       <div className="flex w-full items-center overflow-x-auto px-4 pl-1">
         <ul className="flex flex-row gap-4">
-          {navigation.map(
-            ({ label, href, segment, tag, disabled, limited }) => (
-              <NavItem
-                key={label}
-                label={label}
-                href={href}
-                segment={segment}
-                tag={tag}
-                disabled={disabled}
-                limited={limited}
-              />
-            ),
-          )}
+          {navigation.map(({ label, href, segment, tag, disabled }) => (
+            <NavItem
+              key={label}
+              label={label}
+              href={href}
+              segment={segment}
+              tag={tag}
+              disabled={disabled}
+            />
+          ))}
         </ul>
       </div>
       <Separator />
@@ -62,7 +53,6 @@ const NavItem: React.FC<Props["navigation"][0]> = ({
   segment,
   tag,
   disabled,
-  limited,
 }) => {
   const router = useRouter();
   // active is true if the segment included in the pathname, but not if it's the root pathname. unless the segment is the root pathname.
@@ -98,36 +88,22 @@ const NavItem: React.FC<Props["navigation"][0]> = ({
         },
       )}
     >
-      {limited ? (
-        <UpgradePlanModal
-          key={label}
-          clickedPlan={PlanEnum.DataRoomsPlus}
-          trigger={label}
-          highlightItem={["qa"]}
-        >
-          <div className="text-content-subtle hover:bg-background-subtle -mx-3 flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium hover:bg-muted hover:text-primary">
-            {label}
-            <CrownIcon className="h-4 w-4 text-muted-foreground" />
+      <Link
+        href={href}
+        className={cn(
+          "text-content-subtle hover:bg-background-subtle -mx-3 flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium hover:bg-muted hover:text-primary",
+          {
+            "text-primary": active,
+          },
+        )}
+      >
+        {label}
+        {tag ? (
+          <div className="text-content-subtle rounded border bg-background px-1 py-0.5 font-mono text-xs">
+            {tag}
           </div>
-        </UpgradePlanModal>
-      ) : (
-        <Link
-          href={href}
-          className={cn(
-            "text-content-subtle hover:bg-background-subtle -mx-3 flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium hover:bg-muted hover:text-primary",
-            {
-              "text-primary": active,
-            },
-          )}
-        >
-          {label}
-          {tag ? (
-            <div className="text-content-subtle rounded border bg-background px-1 py-0.5 font-mono text-xs">
-              {tag}
-            </div>
-          ) : null}
-        </Link>
-      )}
+        ) : null}
+      </Link>
     </li>
   );
 };

@@ -1,10 +1,8 @@
 import ErrorPage from "next/error";
 import Link from "next/link";
-import { useRouter } from "next/router";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-import { usePlan } from "@/lib/swr/use-billing";
 import useViewer from "@/lib/swr/use-viewer";
 
 import AppLayout from "@/components/layouts/app";
@@ -22,8 +20,6 @@ import { ContactsDocumentsTable } from "@/components/visitors/contacts-document-
 import { VisitorAvatar } from "@/components/visitors/visitor-avatar";
 
 export default function VisitorDetailPage() {
-  const router = useRouter();
-  const { isFree, isTrial } = usePlan();
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [sortBy, setSortBy] = useState("lastViewed");
@@ -53,10 +49,6 @@ export default function VisitorDetailPage() {
     setSortOrder(newSortOrder);
     setCurrentPage(1);
   };
-
-  useEffect(() => {
-    if (isFree && !isTrial) router.push("/documents");
-  }, [isTrial, isFree]);
 
   if (error) {
     return <ErrorPage statusCode={404} />;

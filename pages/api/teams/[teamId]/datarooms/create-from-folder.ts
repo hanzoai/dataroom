@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { getLimits } from "@/lib/billing/limits/server";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { DataroomFolder, Document, Folder } from "@prisma/client";
 import { getServerSession } from "next-auth/next";
@@ -150,33 +149,6 @@ export default async function handle(
 
       if (!team) {
         return res.status(401).end("Unauthorized");
-      }
-
-      const limits = await getLimits({ teamId, userId });
-      const stripedTeamPlan = team.plan.replace("+old", "");
-
-      if (
-        !team.plan.includes("drtrial") &&
-        ["business", "datarooms", "datarooms-plus", "datarooms-premium"].includes(stripedTeamPlan) &&
-        limits &&
-        team._count.datarooms >= limits.datarooms
-      ) {
-        return res.status(403).json({
-          message:
-            "You've reached the limit of datarooms. Consider upgrading your plan.",
-        });
-      }
-
-      if (team.plan.includes("drtrial") && team._count.datarooms > 0) {
-        return res
-          .status(400)
-          .json({ message: "Trial data room already exists" });
-      }
-
-      if (["free", "pro"].includes(team.plan) && !team.plan.includes("drtrial")) {
-        return res
-          .status(400)
-          .json({ message: "You need a Business plan to create a data room" });
       }
 
       // Fetch the folder structure

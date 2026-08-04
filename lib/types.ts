@@ -287,16 +287,6 @@ export type AnalyticsEvents =
       teamId: string;
     }
   | {
-      event: "Stripe Checkout Clicked";
-      teamId: string;
-      priceId: string;
-    }
-  | {
-      event: "Stripe Billing Portal Clicked";
-      teamId: string;
-      action?: string;
-    }
-  | {
       event: "User Sign In Attempted";
       email: string | undefined;
       userId: string;
@@ -317,7 +307,7 @@ export interface TeamDetail {
   name: string;
   users: {
     role: "ADMIN" | "MANAGER" | "MEMBER";
-    status: "ACTIVE" | "BLOCKED_TRIAL_EXPIRED";
+    status: "ACTIVE";
     teamId: string;
     userId: string;
     user: {
@@ -364,6 +354,34 @@ export const WatermarkConfigSchema = z.object({
 export type WatermarkConfig = z.infer<typeof WatermarkConfigSchema>;
 
 export type NotionTheme = "light" | "dark";
+
+/**
+ * The link kinds the link sheet can create. Upstream wrote this as
+ * `Omit<LinkType, "WORKFLOW_LINK">`, but Omit on a string union yields an
+ * object type, not a narrowed union — so it never narrowed anything.
+ */
+export type ShareableLinkType = "DOCUMENT_LINK" | "DATAROOM_LINK";
+
+/**
+ * The two kinds of thing a dataroom permission can name. Mirrors the
+ * `itemType` column, which the schema stores as a plain string.
+ */
+export const ITEM_TYPE = {
+  document: "DATAROOM_DOCUMENT",
+  folder: "DATAROOM_FOLDER",
+} as const;
+
+export type DataroomItemType = (typeof ITEM_TYPE)[keyof typeof ITEM_TYPE];
+
+/**
+ * Per-item access for a dataroom, keyed by dataroom document / folder id.
+ * An empty map means "the whole dataroom" — the absence of restrictions,
+ * not the absence of access.
+ */
+export type ItemPermission = Record<
+  string,
+  { view: boolean; download: boolean; itemType: DataroomItemType }
+>;
 
 export type BasePlan =
   | "free"

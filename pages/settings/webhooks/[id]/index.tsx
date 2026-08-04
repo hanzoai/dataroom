@@ -9,7 +9,6 @@ import { toast } from "sonner";
 import useSWR from "swr";
 import z from "zod";
 
-import { usePlan } from "@/lib/swr/use-billing";
 import { cn, fetcher } from "@/lib/utils";
 
 import AppLayout from "@/components/layouts/app";
@@ -33,7 +32,6 @@ export default function WebhookDetail() {
   const router = useRouter();
   const { id } = router.query;
   const { currentTeamId: teamId } = useTeam();
-  const { isFree, isPro, isTrial } = usePlan();
   const [isEditing, setIsEditing] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const [formData, setFormData] = useState<WebhookFormData>({
@@ -64,11 +62,6 @@ export default function WebhookDetail() {
   }, [webhook]);
 
   const handleUpdate = async () => {
-    if ((isFree || isPro) && !isTrial) {
-      toast.error("This feature is not available on your plan");
-      return;
-    }
-
     try {
       const webhookId = z.string().cuid().parse(id);
       const response = await fetch(
@@ -363,12 +356,6 @@ export default function WebhookDetail() {
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
-                          if ((isFree || isPro) && !isTrial) {
-                            toast.error(
-                              "This feature is not available on your plan",
-                            );
-                            return;
-                          }
                           setIsEditing(true);
                         }}
                       >

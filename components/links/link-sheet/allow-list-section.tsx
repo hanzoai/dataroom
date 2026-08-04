@@ -19,24 +19,14 @@ import { Textarea } from "@/components/ui/textarea";
 
 import { DEFAULT_LINK_TYPE } from ".";
 import LinkItem from "./link-item";
-import { LinkUpgradeOptions } from "./link-options";
 
 export default function AllowListSection({
   data,
   setData,
-  isAllowed,
-  handleUpgradeStateChange,
   presets,
 }: {
   data: DEFAULT_LINK_TYPE;
   setData: React.Dispatch<React.SetStateAction<DEFAULT_LINK_TYPE>>;
-  isAllowed: boolean;
-  handleUpgradeStateChange: ({
-    state,
-    trigger,
-    plan,
-    highlightItem,
-  }: LinkUpgradeOptions) => void;
   presets: LinkPreset | null;
 }) {
   const { emailProtected, allowList, visitorGroupIds } = data;
@@ -64,11 +54,11 @@ export default function AllowListSection({
   }, [emailProtected, enabled, setData]);
 
   useEffect(() => {
-    if (isAllowed && presets?.allowList && presets.allowList.length > 0) {
+    if (presets?.allowList && presets.allowList.length > 0) {
       setEnabled(true);
       setAllowListInput(presets.allowList.join("\n") || "");
     }
-  }, [presets, isAllowed]);
+  }, [presets]);
 
   const handleEnableAllowList = () => {
     const updatedEnabled = !enabled;
@@ -134,17 +124,7 @@ export default function AllowListSection({
           link="https://dataroom.hanzo.ai/help/article/allow-list"
           tooltipContent={`Restrict access to a selected group of viewers. Enter allowed emails or domains${visitorGroups && visitorGroups.length > 0 ? ", or select visitor groups" : ""}.`}
           enabled={enabled}
-          isAllowed={isAllowed}
           action={handleEnableAllowList}
-          requiredPlan="business"
-          upgradeAction={() =>
-            handleUpgradeStateChange({
-              state: true,
-              trigger: "link_sheet_allowlist_section",
-              plan: "Business",
-              highlightItem: ["allow-block"],
-            })
-          }
         />
 
         {enabled && (
@@ -219,9 +199,7 @@ export default function AllowListSection({
                                   : "border-muted-foreground/30"
                               }`}
                             >
-                              {isSelected && (
-                                <CheckIcon className="h-3 w-3" />
-                              )}
+                              {isSelected && <CheckIcon className="h-3 w-3" />}
                             </div>
                             <div className="min-w-0 flex-1">
                               <div className="truncate font-medium">

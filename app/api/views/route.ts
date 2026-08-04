@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { reportDeniedAccessAttempt } from "@/features/access-notifications";
-import { getTeamStorageConfigById } from "@/features/storage/config";
+import { getStorageConfig } from "@/lib/storage/config";
 // Import authOptions directly from the source
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { ipAddress, waitUntil } from "@vercel/functions";
@@ -108,7 +107,6 @@ export async function POST(request: NextRequest) {
           select: {
             plan: true,
             globalBlockList: true,
-            agentsEnabled: true,
             pauseStartsAt: true,
           },
         },
@@ -116,11 +114,6 @@ export async function POST(request: NextRequest) {
           select: {
             identifier: true,
             label: true,
-          },
-        },
-        document: {
-          select: {
-            agentsEnabled: true,
           },
         },
         visitorGroups: {
@@ -250,7 +243,6 @@ export async function POST(request: NextRequest) {
         );
       }
       if (globalBlockCheck.isBlocked) {
-        waitUntil(reportDeniedAccessAttempt(link, email, "global"));
 
         return NextResponse.json({ message: "Access denied" }, { status: 403 });
       }
@@ -272,7 +264,6 @@ export async function POST(request: NextRequest) {
 
         // Deny access if the email is not allowed
         if (!isAllowed) {
-          waitUntil(reportDeniedAccessAttempt(link, email, "allow"));
 
           return NextResponse.json(
             { message: "Unauthorized access" },
@@ -290,7 +281,6 @@ export async function POST(request: NextRequest) {
 
         // Deny access if the email is denied
         if (isDenied) {
-          waitUntil(reportDeniedAccessAttempt(link, email, "deny"));
 
           return NextResponse.json(
             { message: "Unauthorized access" },
@@ -652,9 +642,7 @@ export async function POST(request: NextRequest) {
           if (useAdvancedExcelViewer) {
             if (!documentVersion.file.includes("https://")) {
               // Get team-specific storage config for advanced distribution host
-              const storageConfig = await getTeamStorageConfigById(
-                link.teamId!,
-              );
+              const storageConfig = getStorageConfig();
               documentVersion.file = `https://${storageConfig.advancedDistributionHost}/${documentVersion.file}`;
             }
           } else {
@@ -670,11 +658,6 @@ export async function POST(request: NextRequest) {
         console.timeEnd("get-file");
       }
 
-      const isPaused =
-        link.team?.pauseStartsAt && link.team?.pauseStartsAt <= new Date()
-          ? true
-          : false;
-
       if (newView) {
         // Record view in the background to avoid blocking the response
         waitUntil(
@@ -687,7 +670,6 @@ export async function POST(request: NextRequest) {
             documentId,
             teamId: link.teamId!,
             enableNotification: link.enableNotification,
-            isPaused,
           }),
         );
         if (!isPreview) {
@@ -698,17 +680,12 @@ export async function POST(request: NextRequest) {
               linkId,
               viewerEmail: email ?? undefined,
               viewerId: viewer?.id ?? undefined,
-              teamIsPaused: isPaused,
             }).catch((error) => {
               console.error("Error sending Slack notification:", error);
             }),
           );
         }
       }
-
-      // Determine if AI agents should be enabled (requires both team and document level)
-      const agentsEnabled =
-        link.team?.agentsEnabled && link.document?.agentsEnabled;
 
       const returnObject = {
         message: "View recorded",
@@ -752,7 +729,6 @@ export async function POST(request: NextRequest) {
             : undefined,
         verificationToken: hashedVerificationToken ?? undefined,
         ...(isTeamMember && { isTeamMember: true }),
-        ...(agentsEnabled && { agentsEnabled: true }),
       };
 
       return NextResponse.json(returnObject);

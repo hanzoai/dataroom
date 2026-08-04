@@ -17,7 +17,6 @@ import {
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 import { Button } from "../../ui/button";
-import { ConversationSidebar } from "../conversations/sidebar";
 import { ViewerDownloadProgressModal } from "./viewer-download-progress-modal";
 
 const DEFAULT_BANNER_IMAGE = "/_static/hanzo-dataroom-banner.png";
@@ -33,7 +32,6 @@ export default function DataroomNav({
   dataroomId,
   viewerId,
   viewerEmail,
-  conversationsEnabled,
   isTeamMember,
 }: {
   allowDownload?: boolean;
@@ -46,10 +44,8 @@ export default function DataroomNav({
   dataroomId?: string;
   viewerId?: string;
   viewerEmail?: string | null;
-  conversationsEnabled?: boolean;
   isTeamMember?: boolean;
 }) {
-  const [showConversations, setShowConversations] = useState<boolean>(false);
   const [showDownloadModal, setShowDownloadModal] = useState<boolean>(false);
   const [downloadModalJobId, setDownloadModalJobId] = useState<string | null>(null);
   const [downloadFolderId, setDownloadFolderId] = useState<string | null>(null);
@@ -96,31 +92,6 @@ export default function DataroomNav({
     setDownloadFolderName(null);
     setShowDownloadModal(true);
   };
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Toggle conversations with 'c' key
-      if (
-        e.key === "c" &&
-        !e.metaKey &&
-        !e.ctrlKey &&
-        !e.altKey &&
-        conversationsEnabled &&
-        !showConversations // if conversations are already open, don't toggle them
-      ) {
-        e.preventDefault();
-        setShowConversations((prev) => !prev);
-      }
-
-      if (e.key === "Escape" && showConversations) {
-        e.preventDefault();
-        setShowConversations(false);
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [conversationsEnabled, showConversations]);
 
   return (
     <nav
@@ -171,11 +142,6 @@ export default function DataroomNav({
                 </Tooltip>
               </TooltipProvider>
             ) : null}
-            {conversationsEnabled && (
-              <Button onClick={() => setShowConversations(!showConversations)}>
-                View FAQ
-              </Button>
-            )}
             {allowDownload && allowBulkDownload && viewerEmail ? (
               <ButtonTooltip content="Download Dataroom">
                 <Button
@@ -237,17 +203,6 @@ export default function DataroomNav({
           folderName={downloadFolderName}
         />
       )}
-      {conversationsEnabled && showConversations ? (
-        <ConversationSidebar
-          dataroomId={dataroomId}
-          viewId={viewId || ""}
-          viewerId={viewerId}
-          linkId={linkId!}
-          isEnabled={true}
-          isOpen={showConversations}
-          onOpenChange={setShowConversations}
-        />
-      ) : null}
     </nav>
   );
 }
