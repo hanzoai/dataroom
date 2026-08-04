@@ -165,11 +165,6 @@ const SingleDataroomBreadcrumb = ({ path }: { path: string }) => {
         return "Permissions";
       case "/datarooms/[id]/analytics":
         return "Analytics";
-      case "/datarooms/[id]/conversations/faqs":
-        return "FAQ";
-      case "/datarooms/[id]/conversations":
-      case "/datarooms/[id]/conversations/[conversationId]":
-        return "Conversations";
       case "/datarooms/[id]/settings/notifications":
         return "Notifications";
       case "/datarooms/[id]/settings/file-permissions":
@@ -217,10 +212,6 @@ const SettingsBreadcrumb = () => {
         return "Domains";
       case "/settings/presets":
         return "Presets";
-      case "/settings/billing":
-        return "Billing";
-      case "/settings/billing/invoices":
-        return "Invoices";
       case "/settings/tokens":
         return "API Tokens";
       case "/settings/webhooks":
@@ -236,8 +227,6 @@ const SettingsBreadcrumb = () => {
     }
   }, [path]);
 
-  const isInvoicesPage = path === "/settings/billing/invoices";
-
   return (
     <Breadcrumb>
       <BreadcrumbList>
@@ -247,23 +236,9 @@ const SettingsBreadcrumb = () => {
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
-        {isInvoicesPage ? (
-          <>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link href="/settings/billing">Billing</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Invoices</BreadcrumbPage>
-            </BreadcrumbItem>
-          </>
-        ) : (
-          <BreadcrumbItem>
-            <BreadcrumbPage>{settingsTitle}</BreadcrumbPage>
-          </BreadcrumbItem>
-        )}
+        <BreadcrumbItem>
+          <BreadcrumbPage>{settingsTitle}</BreadcrumbPage>
+        </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>
   );

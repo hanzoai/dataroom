@@ -44,11 +44,7 @@ export default function DataroomPage() {
           <StatsCard />
 
           {/* Links */}
-          <LinksTable
-            links={links}
-            targetType={"DATAROOM"}
-            dataroomName={dataroom.name}
-          />
+          <LinksTable links={links} targetType={"DATAROOM"} />
 
           {/* Visitors */}
           <DataroomVisitorsTable dataroomId={dataroom.id} />

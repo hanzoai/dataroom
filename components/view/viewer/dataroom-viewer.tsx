@@ -3,12 +3,6 @@ import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import React from "react";
 
-import { ViewerChatPanel } from "@/features/ai/components/viewer-chat-panel";
-import {
-  ViewerChatLayout,
-  ViewerChatProvider,
-} from "@/features/ai/components/viewer-chat-provider";
-import { ViewerChatToggle } from "@/features/ai/components/viewer-chat-toggle";
 import {
   DataroomBrand,
   DataroomFolder,
@@ -455,26 +449,8 @@ export default function DataroomViewer({
     [viewerSurfaceTheme],
   );
 
-  // Prepare documents for chat context
-  const documentsForChat = documents.map((doc) => ({
-    dataroomDocumentId: doc.dataroomDocumentId,
-    id: doc.id,
-    name: doc.name,
-    folderId: doc.folderId,
-  }));
-
   return (
     <IntroductionProvider dataroom={dataroom} viewerId={viewerId}>
-      <ViewerChatProvider
-        enabled={viewData.agentsEnabled}
-        dataroomId={dataroom?.id}
-        dataroomName={viewData.dataroomName}
-        linkId={linkId}
-        viewId={viewId}
-        viewerId={viewerId}
-        documents={documentsForChat}
-        folders={folders}
-      >
       <DataroomNav
         brand={brand}
         linkId={linkId}
@@ -486,11 +462,9 @@ export default function DataroomViewer({
         dataroomId={dataroom?.id}
         viewerId={viewerId}
         viewerEmail={viewerEmail}
-        conversationsEnabled={viewData.conversationsEnabled}
         isTeamMember={viewData.isTeamMember}
       />
       <ViewerSurfaceThemeProvider value={viewerSurfaceTheme}>
-        <ViewerChatLayout>
           <div
             className="relative flex flex-1 items-center overflow-hidden bg-white dark:bg-black"
             style={
@@ -779,13 +753,7 @@ export default function DataroomViewer({
             </ScrollArea>
           </div>
           </div>
-        </ViewerChatLayout>
       </ViewerSurfaceThemeProvider>
-
-      {/* AI Chat Components */}
-      <ViewerChatPanel />
-      <ViewerChatToggle />
-      </ViewerChatProvider>
     </IntroductionProvider>
   );
 }

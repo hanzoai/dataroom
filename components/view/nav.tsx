@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 
 import React, { useEffect, useState } from "react";
 
-import { useViewerChatSafe } from "@/features/ai/components/viewer-chat-provider";
 import { Brand, DataroomBrand } from "@prisma/client";
 import {
   ArrowUpRight,
@@ -46,7 +45,6 @@ import {
 } from "../ui/breadcrumb";
 import { Button } from "../ui/button";
 import { AnnotationToggle } from "./annotations/annotation-toggle";
-import { ConversationSidebar } from "./conversations/sidebar";
 import ReportForm from "./report-form";
 
 export type TNavData = {
@@ -60,7 +58,6 @@ export type TNavData = {
   isMobile?: boolean;
   isPreview?: boolean;
   dataroomId?: string;
-  conversationsEnabled?: boolean;
   isTeamMember?: boolean;
   annotationsEnabled?: boolean;
   hasAnnotations?: boolean;
@@ -93,10 +90,6 @@ export default function Nav({
   const asPath = router.asPath;
   const { previewToken, preview } = router.query;
 
-  // Get chat context to adjust navbar when chat is open
-  const chatContext = useViewerChatSafe();
-  const isChatOpen = chatContext?.isOpen && chatContext?.isEnabled;
-
   const {
     linkId,
     allowDownload,
@@ -108,7 +101,6 @@ export default function Nav({
     isPreview,
     documentId,
     dataroomId,
-    conversationsEnabled,
     isTeamMember,
     annotationsEnabled,
     hasAnnotations,
@@ -116,7 +108,6 @@ export default function Nav({
     onToggleAnnotations,
   } = navData;
 
-  const [showConversations, setShowConversations] = useState(false);
   const navColorPalette = createAdaptiveSurfacePalette(brand?.brandColor);
 
   // Extract the dataroom path from the URL
@@ -206,40 +197,11 @@ export default function Nav({
     });
   };
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Toggle conversations with 'c' key
-      if (
-        e.key === "c" &&
-        !e.metaKey &&
-        !e.ctrlKey &&
-        !e.altKey &&
-        isDataroom &&
-        conversationsEnabled &&
-        !showConversations // if conversations are already open, don't toggle them
-      ) {
-        e.preventDefault();
-        setShowConversations((prev) => !prev);
-      }
-
-      if (e.key === "Escape" && showConversations) {
-        e.preventDefault();
-        setShowConversations(false);
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isDataroom, conversationsEnabled, showConversations]);
-
   return (
     <nav
       className="bg-black"
       style={{
         backgroundColor: brand && brand.brandColor ? brand.brandColor : "black",
-        // Extend navbar to full width when chat panel is open (counteract parent padding)
-        marginRight: isChatOpen ? "-400px" : undefined,
-        // paddingRight: isChatOpen ? "400px" : undefined,
       }}
     >
       <div className="mx-auto px-2 sm:px-6 lg:px-8">
@@ -317,15 +279,6 @@ export default function Nav({
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
-            )}
-            {/* Conversation toggle button for dataroom documents */}
-            {isDataroom && conversationsEnabled && (
-              <Button
-                onClick={() => setShowConversations(!showConversations)}
-                className="bg-gray-900 text-white hover:bg-gray-900/80"
-              >
-                View FAQ
-              </Button>
             )}
             {/* Annotations toggle button */}
             {onToggleAnnotations && annotationsFeatureEnabled && (
@@ -467,19 +420,6 @@ export default function Nav({
           </div>
         </div>
       </div>
-      {isDataroom && conversationsEnabled && showConversations ? (
-        <ConversationSidebar
-          dataroomId={dataroomId}
-          documentId={documentId}
-          pageNumber={pageNumber}
-          viewId={viewId || ""}
-          viewerId={viewerId}
-          linkId={linkId!}
-          isEnabled={true}
-          isOpen={showConversations}
-          onOpenChange={setShowConversations}
-        />
-      ) : null}
     </nav>
   );
 }

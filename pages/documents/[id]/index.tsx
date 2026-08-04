@@ -5,12 +5,10 @@ import ErrorPage from "next/error";
 import { Suspense, useState } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { PlanEnum } from "@/lib/billing/legacy/constants";
 
 import { useDocumentLinks } from "@/lib/swr/use-document";
 import { useDocumentOverview } from "@/lib/swr/use-document-overview";
 
-import { UpgradePlanModal } from "@/components/billing/upgrade-plan-modal";
 import DocumentHeader from "@/components/documents/document-header";
 import { DocumentPreviewButton } from "@/components/documents/document-preview-button";
 // Import placeholder components
@@ -68,8 +66,6 @@ export default function DocumentPage() {
     data: overview,
     document: prismaDocument,
     primaryVersion,
-    limits,
-    team,
     isEmpty,
     loading: overviewLoading,
     error,
@@ -92,30 +88,6 @@ export default function DocumentPage() {
   if (error && error.status === 400) {
     return <ErrorPage statusCode={400} />;
   }
-
-  const AddLinkButton = () => {
-    if (!limits?.canAddLinks) {
-      return (
-        <UpgradePlanModal
-          clickedPlan={team?.isTrial ? PlanEnum.Business : PlanEnum.Pro}
-          trigger={"limit_add_link"}
-        >
-          <Button className="flex h-8 whitespace-nowrap text-xs lg:h-9 lg:text-sm">
-            Upgrade to Create Link
-          </Button>
-        </UpgradePlanModal>
-      );
-    } else {
-      return (
-        <Button
-          className="flex h-8 whitespace-nowrap text-xs lg:h-9 lg:text-sm"
-          onClick={() => setIsLinkSheetOpen(true)}
-        >
-          Create Link
-        </Button>
-      );
-    }
-  };
 
   // Show loading only for the initial overview load
   if (overviewLoading) {
@@ -172,7 +144,13 @@ export default function DocumentPage() {
               showTooltip={false}
               className="h-8 whitespace-nowrap text-xs lg:h-9 lg:text-sm"
             />,
-            <AddLinkButton key={"create-link"} />,
+            <Button
+              key={"create-link"}
+              className="flex h-8 whitespace-nowrap text-xs lg:h-9 lg:text-sm"
+              onClick={() => setIsLinkSheetOpen(true)}
+            >
+              Create Link
+            </Button>,
           ]}
         />
 

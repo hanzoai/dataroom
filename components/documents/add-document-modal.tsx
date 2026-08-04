@@ -1,10 +1,8 @@
-import Link from "next/link";
 import { useRouter } from "next/router";
 
 import { FormEvent, useEffect, useState } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { PlanEnum } from "@/lib/billing/legacy/constants";
 import { DefaultPermissionStrategy } from "@prisma/client";
 import { parsePageId } from "notion-utils";
 import { toast } from "sonner";
@@ -22,7 +20,6 @@ import { useDataroomPermissions } from "@/lib/hooks/use-dataroom-permissions";
 import { getNotionPageIdFromSlug } from "@/lib/notion/utils";
 import { usePlan } from "@/lib/swr/use-billing";
 import { useDataroom } from "@/lib/swr/use-dataroom";
-import useLimits from "@/lib/swr/use-limits";
 import { getSupportedContentType } from "@/lib/utils/get-content-type";
 
 import { SetUnifiedPermissionsModal } from "@/components/datarooms/groups/set-unified-permissions-modal";
@@ -44,8 +41,6 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
-import { UpgradePlanModal } from "../billing/upgrade-plan-modal";
 
 interface DataroomDocument {
   id: string;
@@ -85,8 +80,7 @@ export function AddDocumentModal({
     }[]
   >([]);
   const teamInfo = useTeam();
-  const { canAddDocuments, limits } = useLimits();
-  const { plan, isFree, isTrial, isPaused } = usePlan();
+  const { plan } = usePlan();
   const { dataroom } = useDataroom();
   const teamId = teamInfo?.currentTeam?.id as string;
 
@@ -208,40 +202,10 @@ export function AddDocumentModal({
   ): Promise<void> => {
     event.preventDefault();
 
-    // Check if team is paused
-    if (isPaused) {
-      toast.error(
-        "Your subscription is paused. Resume your subscription to upload documents.",
-        {
-          action: {
-            label: "Go to Billing",
-            onClick: () => router.push("/settings/billing"),
-          },
-        },
-      );
-      return;
-    }
-
     // Check if the file is chosen
     if (!currentFile) {
       toast.error("Please select a file to upload.");
       return; // prevent form from submitting
-    }
-
-    if (!canAddDocuments) {
-      toast.error(
-        limits?.documents
-          ? `You've reached your plan's document limit (${limits.usage?.documents}/${limits.documents} documents). Upgrade your plan to upload more.`
-          : "You have reached the maximum number of documents.",
-        {
-          action: {
-            label: "Upgrade",
-            onClick: () => router.push("/settings/billing"),
-          },
-          duration: 8000,
-        },
-      );
-      return;
     }
 
     try {
@@ -411,36 +375,6 @@ export function AddDocumentModal({
   ): Promise<void> => {
     event.preventDefault();
 
-    // Check if team is paused
-    if (isPaused) {
-      toast.error(
-        "Your subscription is paused. Resume your subscription to upload documents.",
-        {
-          action: {
-            label: "Go to Billing",
-            onClick: () => router.push("/settings/billing"),
-          },
-        },
-      );
-      return;
-    }
-
-    if (!canAddDocuments) {
-      toast.error(
-        limits?.documents
-          ? `You've reached your plan's document limit (${limits.usage?.documents}/${limits.documents} documents). Upgrade your plan to upload more.`
-          : "You have reached the maximum number of documents.",
-        {
-          action: {
-            label: "Upgrade",
-            onClick: () => router.push("/settings/billing"),
-          },
-          duration: 8000,
-        },
-      );
-      return;
-    }
-
     // Check if the field is empty or not
     if (!notionLink) {
       toast.error("Please enter a Notion link to proceed.");
@@ -581,28 +515,6 @@ export function AddDocumentModal({
   ): Promise<void> => {
     event.preventDefault();
 
-    // Check if user is on a free plan (not trial)
-    if (isFree && !isTrial) {
-      toast.error("Web links are available on Pro plan and above.");
-      return;
-    }
-
-    if (!canAddDocuments) {
-      toast.error(
-        limits?.documents
-          ? `You've reached your plan's document limit (${limits.usage?.documents}/${limits.documents} documents). Upgrade your plan to upload more.`
-          : "You have reached the maximum number of documents.",
-        {
-          action: {
-            label: "Upgrade",
-            onClick: () => router.push("/settings/billing"),
-          },
-          duration: 8000,
-        },
-      );
-      return;
-    }
-
     // Check if the field is empty or not
     if (!webLink) {
       toast.error("Please enter a website URL to proceed.");
@@ -732,27 +644,6 @@ export function AddDocumentModal({
     setAddDocumentModalOpen && setAddDocumentModalOpen(!isOpen);
   };
 
-  if (!canAddDocuments && children) {
-    if (newVersion) {
-      return (
-        <UpgradePlanModal
-          clickedPlan={PlanEnum.Pro}
-          trigger={"limit_upload_document_version"}
-        >
-          {children}
-        </UpgradePlanModal>
-      );
-    }
-    return (
-      <UpgradePlanModal
-        clickedPlan={PlanEnum.Pro}
-        trigger={"limit_upload_documents"}
-      >
-        <Button>Upgrade to Add Documents</Button>
-      </UpgradePlanModal>
-    );
-  }
-
   return (
     <>
       <Dialog open={isOpen} onOpenChange={clearModelStates}>
@@ -783,26 +674,9 @@ export function AddDocumentModal({
                     {newVersion ? `Upload a new version` : `Share a document`}
                   </CardTitle>
                   <CardDescription>
-                    {newVersion ? (
-                      `After you upload a new version, the existing links will remain unchanged.`
-                    ) : (
-                      <span>
-                        After you upload the document, create a shareable link.{" "}
-                        {isFree && !isTrial ? (
-                          <>
-                            Upload larger files and more{" "}
-                            <Link
-                              href="https://dataroom.hanzo.ai/help/article/document-types"
-                              target="_blank"
-                              className="underline underline-offset-4 transition-all hover:text-muted-foreground/80 hover:dark:text-muted-foreground/80"
-                            >
-                              file types
-                            </Link>{" "}
-                            with a higher plan.
-                          </>
-                        ) : null}
-                      </span>
-                    )}
+                    {newVersion
+                      ? `After you upload a new version, the existing links will remain unchanged.`
+                      : `After you upload the document, create a shareable link.`}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-2">
@@ -850,30 +724,16 @@ export function AddDocumentModal({
                               upload multiple files
                             </button>{" "}
                             or{" "}
-                            {isFree && !isTrial ? (
-                              <UpgradePlanModal
-                                clickedPlan={PlanEnum.Pro}
-                                trigger={"add_web_link_document"}
-                              >
-                                <button
-                                  type="button"
-                                  className="inline-flex items-center gap-1 underline-offset-4 transition-all hover:text-gray-800 hover:underline hover:dark:text-muted-foreground/80"
-                                >
-                                  share link as a document
-                                </button>
-                              </UpgradePlanModal>
-                            ) : (
-                              <button
-                                type="button"
-                                className="inline-flex items-center gap-1 underline-offset-4 transition-all hover:text-gray-800 hover:underline hover:dark:text-muted-foreground/80"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  setUploadMode("link");
-                                }}
-                              >
-                                share link as a document
-                              </button>
-                            )}
+                            <button
+                              type="button"
+                              className="inline-flex items-center gap-1 underline-offset-4 transition-all hover:text-gray-800 hover:underline hover:dark:text-muted-foreground/80"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setUploadMode("link");
+                              }}
+                            >
+                              share link as a document
+                            </button>
                             ?
                           </p>
                         </div>

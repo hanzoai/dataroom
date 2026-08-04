@@ -38,52 +38,18 @@ export const OnboardingDataroomLinkOptions = ({
   const alwaysShown = (
     <>
       <EmailProtectionSection {...{ data, setData }} />
-      <EmailAuthenticationSection
-        {...{ data, setData }}
-        isAllowed={true}
-        handleUpgradeStateChange={() => {}}
-      />
+      <EmailAuthenticationSection {...{ data, setData }} />
       <AllowNotificationSection {...{ data, setData }} />
       <AllowDownloadSection {...{ data, setData }} />
       <PasswordSection {...{ data, setData }} />
-      <AllowListSection
-        data={data}
-        setData={setData}
-        isAllowed={true}
-        handleUpgradeStateChange={() => {}}
-        presets={currentPreset}
-      />
-      <DenyListSection
-        data={data}
-        setData={setData}
-        isAllowed={true}
-        handleUpgradeStateChange={() => {}}
-        presets={currentPreset}
-      />
-      <ScreenshotProtectionSection
-        data={data}
-        setData={setData}
-        isAllowed={true}
-        handleUpgradeStateChange={() => {}}
-      />
-      <WatermarkSection
-        data={data}
-        setData={setData}
-        isAllowed={true}
-        handleUpgradeStateChange={() => {}}
-        presets={currentPreset}
-      />
-      <AgreementSection
-        data={data}
-        setData={setData}
-        isAllowed={true}
-        handleUpgradeStateChange={() => {}}
-      />
+      <AllowListSection data={data} setData={setData} presets={currentPreset} />
+      <DenyListSection data={data} setData={setData} presets={currentPreset} />
+      <ScreenshotProtectionSection data={data} setData={setData} />
+      <WatermarkSection data={data} setData={setData} presets={currentPreset} />
+      <AgreementSection data={data} setData={setData} />
       <CustomFieldsSection
         data={data}
         setData={setData}
-        isAllowed={true}
-        handleUpgradeStateChange={() => {}}
         presets={currentPreset}
       />
       <div className="mb-4 mt-2">
@@ -113,26 +79,14 @@ export const OnboardingDataroomLinkOptions = ({
       <OGSection
         data={data}
         setData={setData}
-        isAllowed={true}
-        handleUpgradeStateChange={() => {}}
         editLink={false}
         presets={currentPreset}
       />
 
       <FeedbackSection data={data} setData={setData} />
-      <QuestionSection
-        data={data}
-        setData={setData}
-        isAllowed={true}
-        handleUpgradeStateChange={() => {}}
-      />
+      <QuestionSection data={data} setData={setData} />
 
-      <ProBannerSection
-        data={data}
-        setData={setData}
-        isAllowed={true}
-        handleUpgradeStateChange={() => {}}
-      />
+      <ProBannerSection data={data} setData={setData} />
     </>
   );
 

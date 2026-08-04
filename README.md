@@ -46,7 +46,6 @@ Hanzo Dataroom is the open-source document-sharing alternative to DocSend, featu
 - [NextAuth.js](https://next-auth.js.org/) – Authentication
 - [Tinybird](https://tinybird.co) – Analytics
 - [Resend](https://resend.com) – Email
-- [Stripe](https://stripe.com) – Payments
 - [Vercel](https://vercel.com/) – Hosting
 
 ## Getting Started

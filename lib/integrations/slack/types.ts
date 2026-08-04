@@ -63,7 +63,6 @@ export interface SlackEventData {
   viewerId?: string;
   userId?: string;
   metadata?: Record<string, any>;
-  teamIsPaused?: boolean;
 }
 
 export type SlackNotificationType =

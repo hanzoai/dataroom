@@ -1,12 +1,8 @@
-import Link from "next/link";
-
 import { useState } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { PlanEnum } from "@/lib/billing/legacy/constants";
 import { DocumentVersion } from "@prisma/client";
 import {
-  AlertTriangleIcon,
   ArchiveIcon,
   ArchiveRestoreIcon,
   BadgeCheckIcon,
@@ -22,11 +18,9 @@ import {
 import { toast } from "sonner";
 import { mutate } from "swr";
 
-import { usePlan } from "@/lib/swr/use-billing";
 import { useDocumentVisits } from "@/lib/swr/use-document";
 import { durationFormat, timeAgo } from "@/lib/utils";
 
-import ChevronDown from "@/components/shared/icons/chevron-down";
 import {
   Collapsible,
   CollapsibleContent,
@@ -47,7 +41,6 @@ import { BadgeTooltip } from "@/components/ui/tooltip";
 
 import { Badge } from "@/components/ui/badge";
 
-import { UpgradePlanModal } from "../billing/upgrade-plan-modal";
 import { Pagination } from "../documents/pagination";
 import { Button } from "../ui/button";
 import {
@@ -63,7 +56,6 @@ import VisitorChart from "./visitor-chart";
 import VisitorClicks from "./visitor-clicks";
 import VisitorCustomFields from "./visitor-custom-fields";
 import VisitorUserAgent from "./visitor-useragent";
-import VisitorUserAgentPlaceholder from "./visitor-useragent-placeholder";
 import VisitorVideoChart from "./visitor-video-chart";
 
 export default function VisitorsTable({
@@ -82,9 +74,6 @@ export default function VisitorsTable({
     currentPage,
     pageSize,
   );
-  const { plan, isTrial, isPaused } = usePlan();
-  const isFreePlan = plan === "free";
-
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -155,66 +144,14 @@ export default function VisitorsTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {views?.viewsWithDuration.length === 0 &&
-              views?.hiddenViewCount === 0 && (
-                <TableRow>
-                  <TableCell colSpan={5}>
-                    <div className="flex h-40 w-full items-center justify-center">
-                      <p>No views yet. Try sharing a link.</p>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              )}
-            {views?.hiddenViewCount! > 0 && (
-              <>
-                <TableRow className="">
-                  <TableCell colSpan={5} className="text-left sm:text-center">
-                    {isPaused &&
-                    views?.hiddenFromPause &&
-                    views.hiddenFromPause > 0 ? (
-                      // Show pause-specific message if team is paused and has hidden views from pause
-                      <div className="flex flex-col items-start justify-center gap-2 sm:flex-row sm:items-center">
-                        <span className="flex items-center gap-x-1">
-                          <AlertTriangleIcon className="inline-block h-4 w-4 text-orange-500" />
-                          {views.hiddenFromPause} visit
-                          {views.hiddenFromPause !== 1 ? "s" : ""} occurred
-                          after your team was paused and{" "}
-                          {views.hiddenFromPause !== 1 ? "are" : "is"}{" "}
-                          hidden.{" "}
-                        </span>
-                        <Link
-                          href="/settings/billing"
-                          className="font-medium text-orange-600 underline hover:text-orange-700"
-                        >
-                          Unpause subscription to see all visits
-                        </Link>
-                      </div>
-                    ) : (
-                      // Show regular free plan message
-                      <div className="flex flex-col items-start justify-center gap-1 sm:flex-row sm:items-center">
-                        <span className="flex items-center gap-x-1">
-                          <AlertTriangleIcon className="inline-block h-4 w-4 text-yellow-500" />
-                          Some older visits may not be shown because your
-                          document has more than 20 views.{" "}
-                        </span>
-                        <UpgradePlanModal
-                          clickedPlan={
-                            isTrial ? PlanEnum.Business : PlanEnum.Pro
-                          }
-                          trigger=""
-                        >
-                          <button className="underline hover:text-gray-800">
-                            Upgrade to see full history
-                          </button>
-                        </UpgradePlanModal>
-                      </div>
-                    )}
-                  </TableCell>
-                </TableRow>
-                {Array.from({ length: views?.hiddenViewCount! }).map((_, i) => (
-                  <VisitorBlurred key={i} />
-                ))}
-              </>
+            {views?.viewsWithDuration.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={5}>
+                  <div className="flex h-40 w-full items-center justify-center">
+                    <p>No views yet. Try sharing a link.</p>
+                  </div>
+                </TableCell>
+              </TableRow>
             )}
             {views?.viewsWithDuration ? (
               views.viewsWithDuration.map((view) => {
@@ -493,18 +430,12 @@ export default function VisitorsTable({
                         <>
                           <TableRow className="hover:bg-transparent">
                             <TableCell colSpan={5}>
-                              {!isFreePlan && (
-                                <VisitorCustomFields
-                                  viewId={view.id}
-                                  teamId={view.teamId!}
-                                  documentId={view.documentId!}
-                                />
-                              )}
-                              {!isFreePlan ? (
-                                <VisitorUserAgent viewId={view.id} />
-                              ) : (
-                                <VisitorUserAgentPlaceholder />
-                              )}
+                              <VisitorCustomFields
+                                viewId={view.id}
+                                teamId={view.teamId!}
+                                documentId={view.documentId!}
+                              />
+                              <VisitorUserAgent viewId={view.id} />
 
                               <div className="pb-0.5 pl-0.5 md:pb-1 md:pl-1">
                                 <div className="flex items-center gap-x-1 px-1">
@@ -531,7 +462,7 @@ export default function VisitorsTable({
                                   }
                                 />
                               )}
-                              {(!isFreePlan && primaryVersion.type === "pdf") ||
+                              {primaryVersion.type === "pdf" ||
                               primaryVersion.type === "link" ? (
                                 <VisitorClicks
                                   teamId={view.teamId!}
@@ -588,54 +519,3 @@ export default function VisitorsTable({
     </div>
   );
 }
-
-// create a component for a blurred view of the visitor
-const VisitorBlurred = () => {
-  return (
-    <TableRow className="blur-sm">
-      <TableCell className="">
-        <div className="flex items-center overflow-visible sm:space-x-3">
-          <VisitorAvatar viewerEmail={"abc@example.org"} />
-          <div className="min-w-0 flex-1">
-            <div className="focus:outline-none">
-              <p className="flex items-center gap-x-2 overflow-visible text-sm font-medium text-gray-800 dark:text-gray-200">
-                Anonymous
-              </p>
-              <p className="text-xs text-muted-foreground/60 sm:text-sm">
-                Demo link
-              </p>
-            </div>
-          </div>
-        </div>
-      </TableCell>
-      {/* Duration */}
-      <TableCell className="">
-        <div className="text-sm text-muted-foreground">
-          {durationFormat(10000)}
-        </div>
-      </TableCell>
-      {/* Completion */}
-      <TableCell className="flex justify-start">
-        <div className="text-sm text-muted-foreground">
-          <Gauge value={90} size={"small"} showValue={true} />
-        </div>
-      </TableCell>
-      {/* Last Viewed */}
-      <TableCell className="text-sm text-muted-foreground">
-        <time
-          dateTime={new Date(
-            new Date().getTime() - 30 * 24 * 60 * 60 * 1000,
-          ).toISOString()}
-        >
-          {timeAgo(new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000))}
-        </time>
-      </TableCell>
-      {/* Actions */}
-      <TableCell className="cursor-pointer p-0 text-center sm:text-right">
-        <div className="flex justify-end space-x-1 p-5 [&[data-state=open]>svg.chevron]:rotate-180">
-          <ChevronDown className="chevron h-4 w-4 shrink-0 transition-transform duration-200" />
-        </div>
-      </TableCell>
-    </TableRow>
-  );
-};

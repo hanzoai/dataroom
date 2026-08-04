@@ -13,25 +13,15 @@ import { Label } from "@/components/ui/label";
 
 import { DEFAULT_LINK_TYPE } from ".";
 import LinkItem from "./link-item";
-import { LinkUpgradeOptions } from "./link-options";
 import WatermarkConfigSheet from "./watermark-panel";
 
 export default function WatermarkSection({
   data,
   setData,
-  isAllowed,
-  handleUpgradeStateChange,
   presets,
 }: {
   data: DEFAULT_LINK_TYPE;
   setData: React.Dispatch<React.SetStateAction<DEFAULT_LINK_TYPE>>;
-  isAllowed: boolean;
-  handleUpgradeStateChange: ({
-    state,
-    trigger,
-    plan,
-    highlightItem,
-  }: LinkUpgradeOptions) => void;
   presets: LinkPreset | null;
 }) {
   const { enableWatermark, watermarkConfig } = data;
@@ -43,7 +33,7 @@ export default function WatermarkSection({
   }, [enableWatermark]);
 
   useEffect(() => {
-    if (isAllowed && presets?.enableWatermark && presets?.watermarkConfig) {
+    if (presets?.enableWatermark && presets?.watermarkConfig) {
       setEnabled(true);
       setData((prevData) => ({
         ...prevData,
@@ -53,7 +43,7 @@ export default function WatermarkSection({
           : null,
       }));
     }
-  }, [presets, isAllowed]);
+  }, [presets]);
 
   const initialconfig: WatermarkConfig = {
     text: watermarkConfig?.text ?? "",
@@ -93,16 +83,6 @@ export default function WatermarkSection({
         tooltipContent="Add a dynamic watermark to your content."
         enabled={enabled}
         action={handleWatermarkToggle}
-        isAllowed={isAllowed}
-        requiredPlan="datarooms"
-        upgradeAction={() =>
-          handleUpgradeStateChange({
-            state: true,
-            trigger: "link_sheet_watermark_section",
-            plan: "Data Rooms",
-            highlightItem: ["watermark"],
-          })
-        }
       />
 
       {enabled && (

@@ -2,23 +2,13 @@ import { useEffect, useState } from "react";
 
 import { DEFAULT_LINK_TYPE } from ".";
 import LinkItem from "./link-item";
-import { LinkUpgradeOptions } from "./link-options";
 
 export default function EmailAuthenticationSection({
   data,
   setData,
-  isAllowed,
-  handleUpgradeStateChange,
 }: {
   data: DEFAULT_LINK_TYPE;
   setData: React.Dispatch<React.SetStateAction<DEFAULT_LINK_TYPE>>;
-  isAllowed: boolean;
-  handleUpgradeStateChange: ({
-    state,
-    trigger,
-    plan,
-    highlightItem,
-  }: LinkUpgradeOptions) => void;
 }) {
   const { emailProtected, emailAuthenticated, enableConversation } = data;
   const [enabled, setEnabled] = useState<boolean>(emailAuthenticated);
@@ -48,16 +38,6 @@ export default function EmailAuthenticationSection({
         tooltipContent="Users must verify their email before accessing the content."
         enabled={enabled}
         action={handleEnableAuthentication}
-        isAllowed={isAllowed}
-        requiredPlan="business"
-        upgradeAction={() =>
-          handleUpgradeStateChange({
-            state: true,
-            trigger: "link_sheet_email_auth_section",
-            plan: "Business",
-            highlightItem: ["email-verify"],
-          })
-        }
       />
     </div>
   );

@@ -1,7 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { isTeamPausedById } from "@/lib/billing/paused";
-import { getLimits } from "@/lib/billing/limits/server";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import {
   Dataroom,
@@ -176,15 +174,6 @@ export default async function handle(
         });
       }
 
-      // Check if team is paused
-      const teamIsPaused = await isTeamPausedById(teamId);
-      if (teamIsPaused) {
-        return res.status(403).json({
-          error:
-            "Team is currently paused. Duplicating dataroom is not available.",
-        });
-      }
-
       const dataroom = await prisma.dataroom.findUnique({
         where: {
           id: dataroomId,
@@ -195,20 +184,6 @@ export default async function handle(
 
       if (!dataroom) {
         return res.status(404).json({ message: "Dataroom not found" });
-      }
-
-      // Check if the team has reached the limit of datarooms
-      const limits = await getLimits({ teamId, userId });
-      if (limits && team._count.datarooms >= limits.datarooms) {
-        console.log(
-          "Dataroom limit reached",
-          limits.datarooms,
-          team._count.datarooms,
-        );
-        return res.status(400).json({
-          message:
-            "You've reached the limit of datarooms. Consider upgrading your plan.",
-        });
       }
 
       // Fetch the existing data room structure

@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 
 import { TeamContextType } from "@/context/team-context";
-import { PlanEnum } from "@/lib/billing/legacy/constants";
 import {
   BetweenHorizontalStartIcon,
   ChevronRight,
@@ -22,14 +21,11 @@ import { toast } from "sonner";
 import { mutate } from "swr";
 
 import useDataroomsSimple from "@/lib/swr/use-datarooms-simple";
-import useLimits from "@/lib/swr/use-limits";
 import { DocumentWithLinksAndLinkCountAndViewCount } from "@/lib/types";
 import { cn, getBreadcrumbPath, nFormatter, timeAgo } from "@/lib/utils";
 import { fileIcon } from "@/lib/utils/get-file-icon";
 import { useCopyToClipboard } from "@/lib/utils/use-copy-to-clipboard";
 
-import { UpgradePlanModal } from "@/components/billing/upgrade-plan-modal";
-import { DataroomTrialModal } from "@/components/datarooms/dataroom-trial-modal";
 import { AddToDataroomModal } from "@/components/documents/add-document-to-dataroom-modal";
 import { DocumentPreviewModal } from "@/components/documents/document-preview-modal";
 import { MoveToFolderModal } from "@/components/documents/move-folder-modal";
@@ -72,14 +68,11 @@ export default function DocumentsCard({
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const [moveFolderOpen, setMoveFolderOpen] = useState<boolean>(false);
   const [addDataroomOpen, setAddDataroomOpen] = useState<boolean>(false);
-  const [trialModalOpen, setTrialModalOpen] = useState<boolean>(false);
-  const [planModalOpen, setPlanModalOpen] = useState<boolean>(false);
   const [previewOpen, setPreviewOpen] = useState<boolean>(false);
 
   const { datarooms } = useDataroomsSimple();
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);
-  const { canAddDocuments } = useLimits();
 
   /** current folder name */
   const currentFolderPath = router.query.name as string[] | undefined;
@@ -210,28 +203,6 @@ export default function DocumentsCard({
     }
   };
 
-  const handleDuplicateDocument = async (event: any) => {
-    event.stopPropagation();
-    event.preventDefault();
-
-    toast.promise(
-      fetch(
-        `/api/teams/${teamInfo?.currentTeam?.id}/documents/${prismaDocument.id}/duplicate`,
-        { method: "POST" },
-      ).then(() => {
-        mutate(`/api/teams/${teamInfo?.currentTeam?.id}/documents`);
-        mutate(
-          `/api/teams/${teamInfo?.currentTeam?.id}/folders/documents/${currentFolderPath?.join("/")}`,
-        );
-      }),
-      {
-        loading: "Duplicating document...",
-        success: "Document duplicated successfully.",
-        error: "Failed to duplicate document. Try again.",
-      },
-    );
-  };
-
   const handleHideDocument = async (event: any) => {
     event.stopPropagation();
     event.preventDefault();
@@ -297,8 +268,7 @@ export default function DocumentsCard({
       {
         loading: "Hiding document from All Documents...",
         success: "Document hidden from All Documents.",
-        error: (err) =>
-          err.message || "Failed to hide document. Try again.",
+        error: (err) => err.message || "Failed to hide document. Try again.",
       },
     );
   };
@@ -436,14 +406,6 @@ export default function DocumentsCard({
                 <FolderInputIcon className="mr-2 h-4 w-4" />
                 Move to folder
               </DropdownMenuItem>
-              {/* INFO: Duplicate document is disabled for now */}
-              {/* <DropdownMenuItem
-                onClick={(e) => handleDuplicateDocument(e)}
-                disabled={!canAddDocuments}
-              >
-                <Layers2Icon className="mr-2 h-4 w-4" />
-                Duplicate document
-              </DropdownMenuItem> */}
               {datarooms && datarooms.length !== 0 && (
                 <DropdownMenuItem onClick={() => setAddDataroomOpen(true)}>
                   <BetweenHorizontalStartIcon className="mr-2 h-4 w-4" />
@@ -487,21 +449,6 @@ export default function DocumentsCard({
           setOpen={setAddDataroomOpen}
           documentId={prismaDocument.id}
           documentName={prismaDocument.name}
-        />
-      ) : null}
-
-      {trialModalOpen ? (
-        <DataroomTrialModal
-          openModal={trialModalOpen}
-          setOpenModal={setTrialModalOpen}
-        />
-      ) : null}
-      {planModalOpen ? (
-        <UpgradePlanModal
-          clickedPlan={PlanEnum.DataRooms}
-          trigger="datarooms"
-          open={planModalOpen}
-          setOpen={setPlanModalOpen}
         />
       ) : null}
 

@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import { useEffect, useRef } from "react";
 import { useState } from "react";
 
-import DataroomTemplates from "@/features/templates/components/dataroom-templates";
 import { sendGTMEvent } from "@next/third-parties/google";
 import { ArrowLeft as ArrowLeftIcon } from "lucide-react";
 import { AnimatePresence } from "motion/react";
@@ -17,7 +16,6 @@ import { Button } from "@/components/ui/button";
 import Dataroom from "@/components/welcome/dataroom";
 import DataroomAIGenerate from "@/components/welcome/dataroom-ai-generate";
 import DataroomChoice from "@/components/welcome/dataroom-choice";
-import DataroomTrial from "@/components/welcome/dataroom-trial";
 import DataroomUpload from "@/components/welcome/dataroom-upload";
 import Intro from "@/components/welcome/intro";
 import Next from "@/components/welcome/next";
@@ -56,16 +54,14 @@ export default function Welcome() {
 
   const isDataroomUpload = router.query.type === "dataroom-upload";
   const isDataroomChoice = router.query.type === "dataroom-choice";
-  const isDataroomTemplates = router.query.type === "dataroom-templates";
   const isDataroomAIGenerate = router.query.type === "dataroom-ai-generate";
 
   const skipButtonText =
-    isDataroomUpload || isDataroomChoice || isDataroomTemplates || isDataroomAIGenerate
+    isDataroomUpload || isDataroomChoice || isDataroomAIGenerate
       ? "Skip to dataroom"
       : "Skip to dashboard";
   const skipButtonPath =
-    (isDataroomUpload || isDataroomChoice || isDataroomTemplates) &&
-    router.query.dataroomId
+    (isDataroomUpload || isDataroomChoice) && router.query.dataroomId
       ? `/datarooms/${router.query.dataroomId}`
       : "/documents";
 
@@ -106,20 +102,10 @@ export default function Welcome() {
           )}
           {router.query.type === "notion" && <NotionForm key="notion" />}
           {router.query.type === "dataroom" && <Dataroom key="dataroom" />}
-          {router.query.type === "dataroom-trial" && (
-            <DataroomTrial key="dataroom-trial" />
-          )}
           {router.query.type === "dataroom-choice" &&
             router.query.dataroomId && (
               <DataroomChoice
                 key="dataroom-choice"
-                dataroomId={router.query.dataroomId as string}
-              />
-            )}
-          {router.query.type === "dataroom-templates" &&
-            router.query.dataroomId && (
-              <DataroomTemplates
-                key="dataroom-templates"
                 dataroomId={router.query.dataroomId as string}
               />
             )}

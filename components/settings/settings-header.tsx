@@ -1,11 +1,9 @@
 import { useFeatureFlags } from "@/lib/hooks/use-feature-flags";
-import { useIsAdmin } from "@/lib/hooks/use-is-admin";
 
 import { NavMenu } from "../navigation-menu";
 
 export function SettingsHeader() {
   const { features } = useFeatureFlags();
-  const { isAdmin } = useIsAdmin();
 
   return (
     <header>
@@ -63,12 +61,6 @@ export function SettingsHeader() {
             segment: "slack",
           },
           {
-            label: "AI",
-            href: `/settings/ai`,
-            segment: "ai",
-            disabled: !features?.ai,
-          },
-          {
             label: "Tokens",
             href: `/settings/tokens`,
             segment: "tokens",
@@ -79,18 +71,6 @@ export function SettingsHeader() {
             href: `/settings/incoming-webhooks`,
             segment: "incoming-webhooks",
             disabled: !features?.incomingWebhooks,
-          },
-          {
-            label: "Security",
-            href: `/settings/security`,
-            segment: "security",
-            disabled: !isAdmin,
-          },
-          {
-            label: "Billing",
-            href: `/settings/billing`,
-            segment: "billing",
-            disabled: !isAdmin,
           },
         ]}
       />

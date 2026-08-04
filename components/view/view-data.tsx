@@ -1,11 +1,5 @@
 import dynamic from "next/dynamic";
 
-import { ViewerChatPanel } from "@/features/ai/components/viewer-chat-panel";
-import {
-  ViewerChatLayout,
-  ViewerChatProvider,
-} from "@/features/ai/components/viewer-chat-provider";
-import { ViewerChatToggle } from "@/features/ai/components/viewer-chat-toggle";
 import {
   Brand,
   DataroomBrand,
@@ -98,11 +92,6 @@ export default function ViewData({
     isDataroom: !!dataroomId,
     documentId: document.id,
     dataroomId: dataroomId,
-    conversationsEnabled:
-      !!dataroomId &&
-      ("conversationsEnabled" in viewData
-        ? viewData.conversationsEnabled
-        : false),
     allowDownload:
       document.downloadOnly ||
       isDownloadAllowed(canDownload, link.allowDownload ?? false),
@@ -110,28 +99,8 @@ export default function ViewData({
     annotationsFeatureEnabled: annotationsEnabled,
   };
 
-  // Check if agents are enabled (returned from views API after access is granted)
-  const agentsEnabled =
-    "agentsEnabled" in viewData ? viewData.agentsEnabled : false;
-
-  // Determine dataroom name if applicable
-  const dataroomName =
-    dataroomId && "dataroomName" in viewData
-      ? viewData.dataroomName
-      : undefined;
-
   return (
-    <ViewerChatProvider
-      enabled={agentsEnabled}
-      documentId={document.id}
-      documentName={document.name}
-      dataroomId={dataroomId}
-      dataroomName={dataroomName}
-      linkId={link.id}
-      viewId={viewData.viewId}
-      viewerId={"viewerId" in viewData ? viewData.viewerId : undefined}
-    >
-      <ViewerChatLayout>
+    <>
         {notionData?.recordMap ? (
           <NotionPage
             recordMap={notionData.recordMap}
@@ -237,11 +206,6 @@ export default function ViewData({
             navData={navData}
           />
         )}
-      </ViewerChatLayout>
-
-      {/* AI Chat Components */}
-      <ViewerChatPanel />
-      <ViewerChatToggle />
-    </ViewerChatProvider>
+    </>
   );
 }

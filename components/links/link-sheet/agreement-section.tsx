@@ -17,23 +17,13 @@ import {
 import { DEFAULT_LINK_TYPE } from ".";
 import AgreementSheet from "./agreement-panel";
 import LinkItem from "./link-item";
-import { LinkUpgradeOptions } from "./link-options";
 
 export default function AgreementSection({
   data,
   setData,
-  isAllowed,
-  handleUpgradeStateChange,
 }: {
   data: DEFAULT_LINK_TYPE;
   setData: React.Dispatch<React.SetStateAction<DEFAULT_LINK_TYPE>>;
-  isAllowed: boolean;
-  handleUpgradeStateChange: ({
-    state,
-    trigger,
-    plan,
-    highlightItem,
-  }: LinkUpgradeOptions) => void;
 }) {
   const { agreements } = useAgreements();
   const { enableAgreement, agreementId, emailProtected } = data;
@@ -83,16 +73,6 @@ export default function AgreementSection({
         tooltipContent="Users must acknowledge an agreement to access the content."
         enabled={enabled}
         action={handleAgreement}
-        isAllowed={isAllowed}
-        requiredPlan="datarooms"
-        upgradeAction={() =>
-          handleUpgradeStateChange({
-            state: true,
-            trigger: "link_sheet_agreement_section",
-            plan: "Data Rooms",
-            highlightItem: ["nda"],
-          })
-        }
       />
 
       {enabled && (

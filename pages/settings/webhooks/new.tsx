@@ -5,13 +5,11 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { PlanEnum } from "@/lib/billing/legacy/constants";
 import { ArrowLeft, Check } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 
 import { newId } from "@/lib/id-helper";
-import { usePlan } from "@/lib/swr/use-billing";
 
 import AppLayout from "@/components/layouts/app";
 import { SettingsHeader } from "@/components/settings/settings-header";
@@ -21,7 +19,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { UpgradeButton } from "@/components/ui/upgrade-button";
 
 interface WebhookEvent {
   id: string;
@@ -74,7 +71,6 @@ const formSchema = z.object({
 export default function NewWebhook() {
   const router = useRouter();
   const teamInfo = useTeam();
-  const { isFree, isPro, isTrial } = usePlan();
   const teamId = teamInfo?.currentTeam?.id;
 
   const [isLoading, setIsLoading] = useState(false);
@@ -92,10 +88,6 @@ export default function NewWebhook() {
   }, []);
 
   const createWebhook = async () => {
-    if ((isFree || isPro) && !isTrial) {
-      return;
-    }
-
     try {
       setIsLoading(true);
       const result = formSchema.safeParse(formData);
@@ -337,21 +329,9 @@ export default function NewWebhook() {
             </div>
 
             <div className="flex space-x-4">
-              {(isFree || isPro) && !isTrial ? (
-                <UpgradeButton
-                  text="Save Webhook"
-                  clickedPlan={PlanEnum.Business}
-                  trigger="create_webhook"
-                  highlightItem={["webhooks"]}
-                  type="submit"
-                  disabled={isLoading}
-                  key="create-webhook"
-                />
-              ) : (
-                <Button type="submit" disabled={isLoading}>
-                  {isLoading ? "Creating..." : "Create Webhook"}
-                </Button>
-              )}
+              <Button type="submit" disabled={isLoading}>
+                {isLoading ? "Creating..." : "Create Webhook"}
+              </Button>
               <Button
                 type="button"
                 variant="outline"

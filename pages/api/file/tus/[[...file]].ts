@@ -1,7 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import { isTeamPausedById } from "@/lib/billing/paused";
-import { getLimits } from "@/lib/billing/limits/server";
 import { createTusStore } from "@/lib/storage/tus-store";
 import { CopyObjectCommand } from "@aws-sdk/client-s3";
 import { Server } from "@tus/server";
@@ -15,10 +13,7 @@ import prisma from "@/lib/prisma";
 import { lockerRedisClient } from "@/lib/redis";
 import { CustomUser } from "@/lib/types";
 import { log, safeSlugify } from "@/lib/utils";
-import {
-  getFileSizeLimit,
-  getFileSizeLimits,
-} from "@/lib/utils/get-file-size-limits";
+import { getFileSizeLimit } from "@/lib/utils/get-file-size-limits";
 
 import { authOptions } from "../../auth/[...nextauth]";
 
@@ -33,8 +28,6 @@ const locker = new RedisLocker({
   redisClient: lockerRedisClient,
 });
 
-const FREE_PLAN = "free";
-const FREE_TRIAL_PLAN = "free+drtrial";
 const BYTES_PER_MEGABYTE = 1024 * 1024;
 type TusErrorResponse = { status_code: number; body: string };
 
@@ -152,36 +145,12 @@ const tusServer = new Server({
         },
       },
       select: {
-        plan: true,
+        id: true,
       },
     });
 
     if (!team) {
       throw { status_code: 403, body: "Unauthorized to access this team" };
-    }
-
-    const [limits, teamIsPaused] = await Promise.all([
-      getLimits({ teamId, userId }),
-      isTeamPausedById(teamId),
-    ]);
-
-    if (teamIsPaused) {
-      throw {
-        status_code: 403,
-        body: "Team is currently paused. New document uploads are not available.",
-      };
-    }
-
-    const documentLimit = limits.documents;
-    if (
-      typeof documentLimit === "number" &&
-      Number.isFinite(documentLimit) &&
-      limits.usage.documents >= documentLimit
-    ) {
-      throw {
-        status_code: 403,
-        body: "You have reached the team document limit",
-      };
     }
 
     const uploadSize = upload.size;
@@ -193,25 +162,7 @@ const tusServer = new Server({
       throw { status_code: 400, body: "Missing or invalid upload length" };
     }
 
-    const isFree = team.plan === FREE_PLAN || team.plan === FREE_TRIAL_PLAN;
-    const isTrial = team.plan.includes("drtrial");
-    const teamFileSizeLimitConfig: Parameters<typeof getFileSizeLimits>[0]["limits"] =
-      "fileSizeLimits" in limits &&
-      typeof limits.fileSizeLimits === "object" &&
-      limits.fileSizeLimits !== null
-        ? {
-            fileSizeLimits: limits.fileSizeLimits as Record<
-              string,
-              number | undefined
-            >,
-          }
-        : undefined;
-    const fileSizeLimits = getFileSizeLimits({
-      limits: teamFileSizeLimitConfig,
-      isFree,
-      isTrial,
-    });
-    const fileSizeLimitMb = getFileSizeLimit(contentType, fileSizeLimits);
+    const fileSizeLimitMb = getFileSizeLimit(contentType);
     const fileSizeLimitBytes = fileSizeLimitMb * BYTES_PER_MEGABYTE;
 
     if (uploadSize > fileSizeLimitBytes) {

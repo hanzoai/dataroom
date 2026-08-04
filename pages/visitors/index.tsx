@@ -2,7 +2,6 @@ import { useRouter } from "next/router";
 
 import { useEffect, useState } from "react";
 
-import { usePlan } from "@/lib/swr/use-billing";
 import useViewers from "@/lib/swr/use-viewers";
 
 import AppLayout from "@/components/layouts/app";
@@ -14,7 +13,6 @@ import { VisitorGroupsSection } from "@/components/visitors/visitor-groups-secti
 
 export default function Visitors() {
   const router = useRouter();
-  const { isFree, isTrial } = usePlan();
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [sortBy, setSortBy] = useState("lastViewed");
@@ -48,10 +46,6 @@ export default function Visitors() {
   useEffect(() => {
     setCurrentPage(1);
   }, [router.query.search]);
-
-  useEffect(() => {
-    if (isFree && !isTrial) router.push("/documents");
-  }, [isTrial, isFree]);
 
   useEffect(() => {
     if (router.query.tab) {

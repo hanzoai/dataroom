@@ -12,19 +12,14 @@ import { Button } from "@/components/ui/button";
 import { CustomFieldData } from "./custom-fields-panel";
 import CustomFieldsPanel from "./custom-fields-panel";
 import LinkItem from "./link-item";
-import { LinkUpgradeOptions } from "./link-options";
 
 export default function CustomFieldsSection({
   data,
   setData,
-  isAllowed,
-  handleUpgradeStateChange,
   presets,
 }: {
   data: DEFAULT_LINK_TYPE;
   setData: React.Dispatch<React.SetStateAction<DEFAULT_LINK_TYPE>>;
-  isAllowed: boolean;
-  handleUpgradeStateChange: (options: LinkUpgradeOptions) => void;
   presets: LinkPreset | null;
 }) {
   const [enabled, setEnabled] = useState<boolean>(false);
@@ -38,7 +33,7 @@ export default function CustomFieldsSection({
   }, [data.customFields, enabled]);
 
   useEffect(() => {
-    if (isAllowed && presets?.enableCustomFields && presets?.customFields) {
+    if (presets?.enableCustomFields && presets?.customFields) {
       console.log("presets", presets.customFields);
       setEnabled(true);
       setData((prevData) => ({
@@ -48,7 +43,7 @@ export default function CustomFieldsSection({
           : [],
       }));
     }
-  }, [presets, isAllowed]);
+  }, [presets]);
 
   const handleCustomFieldsToggle = useCallback(() => {
     const updatedEnabled = !enabled;
@@ -94,15 +89,6 @@ export default function CustomFieldsSection({
         link="https://dataroom.hanzo.ai/help/article/custom-fields"
         enabled={enabled}
         action={handleCustomFieldsToggle}
-        isAllowed={isAllowed}
-        requiredPlan="business"
-        upgradeAction={() =>
-          handleUpgradeStateChange({
-            state: true,
-            trigger: "custom_fields",
-            plan: "Business",
-          })
-        }
       />
 
       {enabled && (
