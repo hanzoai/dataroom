@@ -1,19 +1,12 @@
 import { useRouter } from "next/router";
 
-
-
 import { FormEvent, useState } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { PlanEnum } from "@/lib/billing/legacy/constants";
 import { LinkType } from "@prisma/client";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 
-import { usePlan } from "@/lib/swr/use-billing";
-import useLimits from "@/lib/swr/use-limits";
-
-import { UpgradePlanModal } from "@/components/billing/upgrade-plan-modal";
 import AppLayout from "@/components/layouts/app";
 import {
   DEFAULT_LINK_PROPS,
@@ -29,7 +22,6 @@ import DenyListSection from "@/components/links/link-sheet/deny-list-section";
 import EmailAuthenticationSection from "@/components/links/link-sheet/email-authentication-section";
 import EmailProtectionSection from "@/components/links/link-sheet/email-protection-section";
 import ExpirationInSection from "@/components/links/link-sheet/expirationIn-section";
-import { LinkUpgradeOptions } from "@/components/links/link-sheet/link-options";
 import OGSection from "@/components/links/link-sheet/og-section";
 import PasswordSection from "@/components/links/link-sheet/password-section";
 import { ProBannerSection } from "@/components/links/link-sheet/pro-banner-section";
@@ -57,38 +49,6 @@ export default function NewPreset() {
     ...DEFAULT_LINK_PROPS(LinkType.DOCUMENT_LINK),
     name: "",
   });
-
-  const {
-    isPro,
-    isBusiness,
-    isDatarooms,
-    isDataroomsPlus,
-    isTrial,
-  } = usePlan();
-  const { limits } = useLimits();
-  const allowAdvancedLinkControls = limits
-    ? limits?.advancedLinkControlsOnPro
-    : false;
-  const allowWatermarkOnBusiness = limits?.watermarkOnBusiness ?? false;
-
-  const [openUpgradeModal, setOpenUpgradeModal] = useState<boolean>(false);
-  const [trigger, setTrigger] = useState<string>("");
-  const [upgradePlan, setUpgradePlan] = useState<PlanEnum>(PlanEnum.Business);
-  const [highlightItem, setHighlightItem] = useState<string[]>([]);
-
-  const handleUpgradeStateChange = ({
-    state,
-    trigger,
-    plan,
-    highlightItem,
-  }: LinkUpgradeOptions) => {
-    setOpenUpgradeModal(state);
-    setTrigger(trigger);
-    if (plan) {
-      setUpgradePlan(plan as PlanEnum);
-    }
-    setHighlightItem(highlightItem || []);
-  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -203,14 +163,6 @@ export default function NewPreset() {
                 <OGSection
                   data={data}
                   setData={setData}
-                  isAllowed={
-                    isTrial ||
-                    (isPro && allowAdvancedLinkControls) ||
-                    isBusiness ||
-                    isDatarooms ||
-                    isDataroomsPlus
-                  }
-                  handleUpgradeStateChange={handleUpgradeStateChange}
                   editLink={false}
                   presets={null}
                 />
@@ -219,18 +171,7 @@ export default function NewPreset() {
               <div className="rounded-lg border p-6">
                 <h3 className="mb-4 text-lg font-medium">Basic Settings</h3>
                 <EmailProtectionSection data={data} setData={setData} />
-                <EmailAuthenticationSection
-                  data={data}
-                  setData={setData}
-                  isAllowed={
-                    isTrial ||
-                    (isPro && allowAdvancedLinkControls) ||
-                    isBusiness ||
-                    isDatarooms ||
-                    isDataroomsPlus
-                  }
-                  handleUpgradeStateChange={handleUpgradeStateChange}
-                />
+                <EmailAuthenticationSection data={data} setData={setData} />
                 <AllowNotificationSection data={data} setData={setData} />
                 <AllowDownloadSection data={data} setData={setData} />
                 <ExpirationInSection data={data} setData={setData} />
@@ -242,27 +183,11 @@ export default function NewPreset() {
                 <AllowListSection
                   data={data}
                   setData={setData}
-                  isAllowed={
-                    isTrial ||
-                    (isPro && allowAdvancedLinkControls) ||
-                    isBusiness ||
-                    isDatarooms ||
-                    isDataroomsPlus
-                  }
-                  handleUpgradeStateChange={handleUpgradeStateChange}
                   presets={null}
                 />
                 <DenyListSection
                   data={data}
                   setData={setData}
-                  isAllowed={
-                    isTrial ||
-                    (isPro && allowAdvancedLinkControls) ||
-                    isBusiness ||
-                    isDatarooms ||
-                    isDataroomsPlus
-                  }
-                  handleUpgradeStateChange={handleUpgradeStateChange}
                   presets={null}
                 />
               </div>
@@ -274,62 +199,20 @@ export default function NewPreset() {
                 <WatermarkSection
                   data={data}
                   setData={setData}
-                  isAllowed={
-                    isTrial ||
-                    isDatarooms ||
-                    isDataroomsPlus ||
-                    allowWatermarkOnBusiness
-                  }
-                  handleUpgradeStateChange={handleUpgradeStateChange}
                   presets={null}
                 />
-                <ScreenshotProtectionSection
-                  data={data}
-                  setData={setData}
-                  isAllowed={
-                    isTrial ||
-                    (isPro && allowAdvancedLinkControls) ||
-                    isBusiness ||
-                    isDatarooms ||
-                    isDataroomsPlus
-                  }
-                  handleUpgradeStateChange={handleUpgradeStateChange}
-                />
-                <AgreementSection
-                  data={data}
-                  setData={setData}
-                  isAllowed={isTrial || isDatarooms || isDataroomsPlus}
-                  handleUpgradeStateChange={handleUpgradeStateChange}
-                />
+                <ScreenshotProtectionSection data={data} setData={setData} />
+                <AgreementSection data={data} setData={setData} />
                 <CustomFieldsSection
                   data={data}
                   setData={setData}
-                  isAllowed={
-                    isTrial ||
-                    (isPro && allowAdvancedLinkControls) ||
-                    isBusiness ||
-                    isDatarooms ||
-                    isDataroomsPlus
-                  }
-                  handleUpgradeStateChange={handleUpgradeStateChange}
                   presets={null}
                 />
               </div>
 
               <div className="rounded-lg border p-6">
                 <h3 className="mb-4 text-lg font-medium">Branding</h3>
-                <ProBannerSection
-                  data={data}
-                  setData={setData}
-                  isAllowed={
-                    isTrial ||
-                    (isPro && allowAdvancedLinkControls) ||
-                    isBusiness ||
-                    isDatarooms ||
-                    isDataroomsPlus
-                  }
-                  handleUpgradeStateChange={handleUpgradeStateChange}
-                />
+                <ProBannerSection data={data} setData={setData} />
               </div>
             </div>
 
@@ -361,13 +244,6 @@ export default function NewPreset() {
           </div>
         </form>
       </main>
-      <UpgradePlanModal
-        clickedPlan={upgradePlan}
-        open={openUpgradeModal}
-        setOpen={setOpenUpgradeModal}
-        trigger={trigger}
-        highlightItem={highlightItem}
-      />
     </AppLayout>
   );
 }

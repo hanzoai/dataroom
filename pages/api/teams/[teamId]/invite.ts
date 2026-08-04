@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { getLimits } from "@/lib/billing/limits/server";
 import { getServerSession } from "next-auth";
 
 import { hashToken } from "@/lib/api/auth/token";
@@ -82,19 +81,6 @@ export default async function handle(
       }
 
       const teamUsers = team.users;
-
-      // Check if the user has reached the limit of users in the team
-      const limits = await getLimits({
-        teamId,
-        userId,
-      });
-
-      if (limits && teamUsers.length >= limits.users) {
-        res
-          .status(403)
-          .json("You have reached the limit of users in your team");
-        return;
-      }
 
       // check if user is already in the team
       const isExistingMember = teamUsers?.some(

@@ -41,10 +41,8 @@ export type DEFAULT_DATAROOM_VIEW_TYPE = {
   verificationToken?: string;
   viewerEmail?: string;
   viewerId?: string;
-  conversationsEnabled?: boolean;
   enableVisitorUpload?: boolean;
   isTeamMember?: boolean;
-  agentsEnabled?: boolean;
   dataroomName?: string;
 };
 
@@ -153,10 +151,8 @@ export default function DataroomView({
           verificationToken,
           viewerEmail,
           viewerId,
-          conversationsEnabled,
           enableVisitorUpload,
           isTeamMember,
-          agentsEnabled,
           dataroomName,
         } = fetchData as DEFAULT_DATAROOM_VIEW_TYPE;
 
@@ -190,10 +186,8 @@ export default function DataroomView({
           isPreview,
           viewerEmail,
           viewerId,
-          conversationsEnabled,
           enableVisitorUpload,
           isTeamMember,
-          agentsEnabled,
           dataroomName,
         });
         setSubmitted(true);

@@ -4,8 +4,6 @@ import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { DocumentAIDialog } from "@/features/ai/components/document-ai-dialog";
-import { PlanEnum } from "@/lib/billing/legacy/constants";
 import { Document, DocumentVersion } from "@prisma/client";
 import {
   ArrowRightIcon,
@@ -27,9 +25,7 @@ import { toast } from "sonner";
 import { mutate } from "swr";
 
 import { getFile } from "@/lib/files/get-file";
-import { usePlan } from "@/lib/swr/use-billing";
 import useDataroomsSimple from "@/lib/swr/use-datarooms-simple";
-import { useTeamAI } from "@/lib/swr/use-team-ai";
 import {
   DocumentWithLinksAndLinkCountAndViewCount,
   DocumentWithVersion,
@@ -40,7 +36,6 @@ import { fileIcon } from "@/lib/utils/get-file-icon";
 
 import FileUp from "@/components/shared/icons/file-up";
 import MoreVertical from "@/components/shared/icons/more-vertical";
-import PapermarkSparkle from "@/components/shared/icons/papermark-sparkle";
 import { Button } from "@/components/ui/button";
 import {
   Collapsible,
@@ -57,8 +52,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import PlanBadge from "../billing/plan-badge";
-import { UpgradePlanModal } from "../billing/upgrade-plan-modal";
 import AdvancedSheet from "../shared/icons/advanced-sheet";
 import PortraitLandscape from "../shared/icons/portrait-landscape";
 import LoadingSpinner from "../ui/loading-spinner";
@@ -85,8 +78,6 @@ export default function DocumentHeader({
   const { theme, systemTheme } = useTheme();
   const isLight =
     theme === "light" || (theme === "system" && systemTheme === "light");
-  const { isPro, isFree, isTrial, isBusiness, isDatarooms } = usePlan();
-  const { canUseAI, isAIEnabled } = useTeamAI();
   const [isEditingName, setIsEditingName] = useState<boolean>(false);
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const [isFirstClick, setIsFirstClick] = useState<boolean>(false);
@@ -94,11 +85,7 @@ export default function DocumentHeader({
   const [addDataRoomOpen, setAddDataRoomOpen] = useState<boolean>(false);
   const [addDocumentVersion, setAddDocumentVersion] = useState<boolean>(false);
   const [openAddDocModal, setOpenAddDocModal] = useState<boolean>(false);
-  const [planModalOpen, setPlanModalOpen] = useState<boolean>(false);
-  const [planModalTrigger, setPlanModalTrigger] = useState<string>("");
-  const [selectedPlan, setSelectedPlan] = useState<PlanEnum>(PlanEnum.Pro);
   const [exportModalOpen, setExportModalOpen] = useState<boolean>(false);
-  const [aiDialogOpen, setAiDialogOpen] = useState<boolean>(false);
   const nameRef = useRef<HTMLHeadingElement>(null);
   const enterPressedRef = useRef<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
@@ -113,12 +100,6 @@ export default function DocumentHeader({
 
   // Check if document is in any datarooms
   const dataroomCount = prismaDocument.datarooms?.length || 0;
-
-  const handleUpgradeClick = (plan: PlanEnum, trigger: string) => {
-    setSelectedPlan(plan);
-    setPlanModalTrigger(trigger);
-    setPlanModalOpen(true);
-  };
 
   const handleCloseAlert = (id: string) => {
     const alert = document.getElementById(id);
@@ -197,79 +178,6 @@ export default function DocumentHeader({
     }
   };
 
-  const [enablingAI, setEnablingAI] = useState<boolean>(false);
-
-  // Enable AI agents and automatically index the document
-  const enableAIAgents = async () => {
-    if (!canUseAI) {
-      toast.error(
-        "AI agents are not available. Please enable them in team settings first.",
-      );
-      return;
-    }
-
-    setEnablingAI(true);
-
-    try {
-      // Step 1: Enable AI agents on the document
-      const enableResponse = await fetch(
-        `/api/teams/${teamId}/documents/${prismaDocument.id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ agentsEnabled: true }),
-        },
-      );
-
-      if (!enableResponse.ok) {
-        throw new Error("Failed to enable AI agents");
-      }
-
-      // Step 2: Index the document automatically
-      const indexResponse = await fetch(
-        `/api/ai/store/teams/${teamId}/documents/${prismaDocument.id}`,
-        {
-          method: "POST",
-        },
-      );
-
-      if (!indexResponse.ok) {
-        // If indexing fails, still keep AI enabled but show warning
-        let errorMessage =
-          "AI enabled, but document indexing failed. You can re-index from settings.";
-        try {
-          const error = await indexResponse.json();
-          if (error.error) {
-            errorMessage = error.error;
-          }
-        } catch {
-          // JSON parsing failed, try to get raw text
-          try {
-            const text = await indexResponse.text();
-            if (text) {
-              errorMessage = text;
-            }
-          } catch {
-            // Ignore text parsing errors, use default message
-          }
-        }
-        toast.warning(errorMessage);
-      } else {
-        toast.success("AI agents enabled and document indexed successfully");
-      }
-
-      // Refresh document data
-      mutate(`/api/teams/${teamId}/documents/${prismaDocument.id}`);
-    } catch (error) {
-      console.error("Error enabling AI agents:", error);
-      toast.error("Failed to enable AI agents. Please try again.");
-    } finally {
-      setEnablingAI(false);
-    }
-  };
-
   const changeDocumentOrientation = async () => {
     setOrientationLoading(true);
     try {
@@ -338,15 +246,6 @@ export default function DocumentHeader({
             : "Failed to disable advanced Excel mode"),
       },
     );
-  };
-
-  // export method to fetch the visits data and convert to csv.
-  const exportVisitCounts = (document: Document) => {
-    if (isFree) {
-      toast.error("This feature is not available for your plan");
-      return;
-    }
-    setExportModalOpen(true);
   };
 
   // Make a document download only or viewable
@@ -616,41 +515,6 @@ export default function DocumentHeader({
               </AddDocumentModal>
             )}
 
-          {/* AI Agents Button */}
-          {isAIEnabled &&
-            prismaDocument.type !== "notion" &&
-            primaryVersion.type !== "link" &&
-            prismaDocument.type !== "zip" &&
-            primaryVersion.type !== "video" &&
-            (prismaDocument.agentsEnabled ? (
-              <ButtonTooltip content="AI Agents Settings">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="hidden size-8 md:flex lg:size-9"
-                  onClick={() => setAiDialogOpen(true)}
-                >
-                  <PapermarkSparkle className="h-5 w-5 text-emerald-500" />
-                </Button>
-              </ButtonTooltip>
-            ) : (
-              <ButtonTooltip content="Enable AI Agents">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="hidden size-8 md:flex lg:size-9"
-                  onClick={enableAIAgents}
-                  disabled={enablingAI}
-                >
-                  {enablingAI ? (
-                    <LoadingSpinner className="h-5 w-5" />
-                  ) : (
-                    <PapermarkSparkle className="h-5 w-5" />
-                  )}
-                </Button>
-              </ButtonTooltip>
-            ))}
-
           <div className="flex items-center gap-x-1">
             {actionRows.map((row, i) => (
               <ul
@@ -705,8 +569,7 @@ export default function DocumentHeader({
                 <DropdownMenuSeparator />
               </DropdownMenuGroup>
               {prismaDocument.type === "sheet" &&
-                supportsAdvancedExcelMode(primaryVersion.contentType) &&
-                (isPro || isBusiness || isDatarooms || isTrial) && (
+                supportsAdvancedExcelMode(primaryVersion.contentType) && (
                   <DropdownMenuItem
                     onClick={() =>
                       toggleAdvancedExcel(
@@ -728,50 +591,12 @@ export default function DocumentHeader({
                 </DropdownMenuItem>
               )}
 
-              {/* AI Agents - only show when team has AI enabled */}
-              {isAIEnabled &&
-                prismaDocument.type !== "notion" &&
-                primaryVersion.type !== "link" &&
-                prismaDocument.type !== "zip" &&
-                primaryVersion.type !== "video" &&
-                (prismaDocument.agentsEnabled ? (
-                  <DropdownMenuItem
-                    onClick={() => {
-                      setAiDialogOpen(true);
-                      setMenuOpen(false);
-                    }}
-                  >
-                    <PapermarkSparkle className="mr-2 h-4 w-4 text-emerald-500" />
-                    AI Agents Settings
-                  </DropdownMenuItem>
-                ) : (
-                  <DropdownMenuItem
-                    onClick={() => {
-                      enableAIAgents();
-                      setMenuOpen(false);
-                    }}
-                    disabled={enablingAI}
-                  >
-                    <PapermarkSparkle className="mr-2 h-4 w-4" />
-                    {enablingAI ? "Enabling AI..." : "Enable AI Agents"}
-                  </DropdownMenuItem>
-                ))}
-
               {primaryVersion.type !== "notion" &&
                 primaryVersion.type !== "link" &&
                 primaryVersion.type !== "zip" &&
                 primaryVersion.type !== "map" &&
                 primaryVersion.type !== "email" && (
-                  <DropdownMenuItem
-                    onClick={() =>
-                      isFree
-                        ? handleUpgradeClick(
-                            PlanEnum.Business,
-                            "download-only-document",
-                          )
-                        : toggleDownloadOnly()
-                    }
-                  >
+                  <DropdownMenuItem onClick={toggleDownloadOnly}>
                     {prismaDocument.downloadOnly ? (
                       <>
                         <ViewIcon className="mr-2 h-4 w-4" />
@@ -780,8 +605,7 @@ export default function DocumentHeader({
                     ) : (
                       <>
                         <CloudDownloadIcon className="mr-2 h-4 w-4" />
-                        Set download only{" "}
-                        {isFree && <PlanBadge className="ml-2" plan="pro" />}
+                        Set download only
                       </>
                     )}
                   </DropdownMenuItem>
@@ -810,16 +634,9 @@ export default function DocumentHeader({
               <DropdownMenuSeparator />
 
               {/* Export views in CSV */}
-              <DropdownMenuItem
-                onClick={() =>
-                  isFree
-                    ? handleUpgradeClick(PlanEnum.Pro, "export-document-visits")
-                    : exportVisitCounts(prismaDocument)
-                }
-              >
+              <DropdownMenuItem onClick={() => setExportModalOpen(true)}>
                 <FileDownIcon className="mr-2 h-4 w-4" />
-                Export views{" "}
-                {isFree && <PlanBadge className="ml-2" plan="pro" />}
+                Export views
               </DropdownMenuItem>
 
               {/* Download latest version */}
@@ -906,60 +723,9 @@ export default function DocumentHeader({
         </div>
       )}
 
-      {isFree && prismaDocument.hasPageLinks && (
-        <AlertBanner
-          id="in-document-links-alert"
-          variant="destructive"
-          title="In-document links detected"
-          description={
-            <>
-              External in-document links are not available on the free plan.{" "}
-              <span
-                className="cursor-pointer underline underline-offset-4 hover:text-destructive/80"
-                onClick={() =>
-                  handleUpgradeClick(PlanEnum.Pro, "in-document-links")
-                }
-              >
-                Upgrade
-              </span>{" "}
-              to a higher plan to use this feature.
-            </>
-          }
-          onClose={() => handleCloseAlert("in-document-links-alert")}
-        />
-      )}
-
-      {prismaDocument.type === "sheet" &&
-        supportsAdvancedExcelMode(primaryVersion.contentType) &&
-        isFree &&
-        !isTrial && (
-          <AlertBanner
-            id="advanced-excel-alert"
-            variant="default"
-            title="Advanced Excel mode"
-            description={
-              <>
-                You can turn on advanced excel mode by{" "}
-                <span
-                  className="hover:text-primary/ 80 cursor-pointer underline underline-offset-4"
-                  onClick={() =>
-                    handleUpgradeClick(PlanEnum.Pro, "advanced-excel-mode")
-                  }
-                >
-                  upgrading
-                </span>{" "}
-                to Pro plan to preserve the file formatting. This uses the
-                Microsoft Office viewer.
-              </>
-            }
-            onClose={() => handleCloseAlert("advanced-excel-alert")}
-          />
-        )}
-
       {prismaDocument.type === "sheet" &&
         !prismaDocument.advancedExcelEnabled &&
-        supportsAdvancedExcelMode(primaryVersion.contentType) &&
-        (isPro || isBusiness || isDatarooms || isTrial) && (
+        supportsAdvancedExcelMode(primaryVersion.contentType) && (
           <AlertBanner
             id="enable-advanced-excel-alert"
             variant="default"
@@ -990,15 +756,6 @@ export default function DocumentHeader({
         />
       ) : null}
 
-      {planModalOpen ? (
-        <UpgradePlanModal
-          clickedPlan={selectedPlan}
-          trigger={planModalTrigger}
-          open={planModalOpen}
-          setOpen={setPlanModalOpen}
-        />
-      ) : null}
-
       {exportModalOpen && (
         <ExportVisitsModal
           document={prismaDocument}
@@ -1006,16 +763,6 @@ export default function DocumentHeader({
           onClose={() => setExportModalOpen(false)}
         />
       )}
-
-      {/* AI Agents Dialog */}
-      <DocumentAIDialog
-        open={aiDialogOpen}
-        onOpenChange={setAiDialogOpen}
-        documentId={prismaDocument.id}
-        teamId={teamId}
-        agentsEnabled={prismaDocument.agentsEnabled}
-        vectorStoreFileId={primaryVersion.vectorStoreFileId}
-      />
     </header>
   );
 }

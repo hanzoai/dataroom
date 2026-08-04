@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { isTeamPausedById } from "@/lib/billing/paused";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { Prisma } from "@prisma/client";
 import { waitUntil } from "@vercel/functions";
@@ -43,15 +42,6 @@ export default async function handle(
 
       if (!teamAccess) {
         return res.status(401).end("Unauthorized");
-      }
-
-      // Check if team is paused
-      const teamIsPaused = await isTeamPausedById(teamId);
-      if (teamIsPaused) {
-        return res.status(403).json({
-          error:
-            "Team is currently paused. New link creation is not available.",
-        });
       }
 
       const link = await prisma.link.findUnique({

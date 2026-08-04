@@ -1,10 +1,10 @@
-import { useRouter } from "next/router";
-
 import { useState } from "react";
 
 import { useTeam } from "@/context/team-context";
 import { toast } from "sonner";
 import { mutate } from "swr";
+
+import { useAnalytics } from "@/lib/analytics";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -18,9 +18,6 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-import { useAnalytics } from "@/lib/analytics";
-import { usePlan } from "@/lib/swr/use-billing";
 
 export function AddViewerModal({
   dataroomId,
@@ -38,8 +35,6 @@ export function AddViewerModal({
   const [loading, setLoading] = useState<boolean>(false);
   const teamInfo = useTeam();
   const analytics = useAnalytics();
-  const { trial } = usePlan();
-  const isTrial = !!trial;
 
   // Email validation regex pattern
   const validateEmail = (email: string) => {
@@ -118,13 +113,6 @@ export function AddViewerModal({
     event.stopPropagation();
 
     if (emails.length === 0) return;
-
-    if (isTrial) {
-      toast.error(
-        "You are on a trial plan. You cannot send email invitations to prevent spamming.",
-      );
-      return;
-    }
 
     if (emails.length > 5) {
       toast.error(

@@ -2,16 +2,12 @@ import Link from "next/link";
 
 import { Dispatch, SetStateAction, useMemo, useState } from "react";
 
-import { PlanEnum } from "@/lib/billing/legacy/constants";
 import { CircleHelpIcon, Tag } from "lucide-react";
 import { toast } from "sonner";
 import { mutate } from "swr";
 
-import { usePlan } from "@/lib/swr/use-billing";
 import { useTags } from "@/lib/swr/use-tags";
-import { TagColorProps } from "@/lib/types";
 
-import { UpgradePlanModal } from "@/components/billing/upgrade-plan-modal";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -68,15 +64,9 @@ export default function DataroomTagSection({
   const [selectedValues, setSelectedValues] = useState<string[]>(
     initialTags?.map((t) => t.tag.id) || [],
   );
-  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const { isFree } = usePlan();
 
-  const {
-    tagCount,
-    tags: availableTags,
-    loading: loadingTags,
-  } = useTags({
+  const { tags: availableTags, loading: loadingTags } = useTags({
     query: {
       sortBy: "createdAt",
       sortOrder: "desc",
@@ -135,12 +125,6 @@ export default function DataroomTagSection({
   };
 
   const createTag = async (tag: string) => {
-    if (isFree && tagCount && tagCount >= 5) {
-      setShowUpgradeModal(true);
-      toast.error("You have reached the maximum number of tags.");
-      return false;
-    }
-
     const res = await fetch(`/api/teams/${teamId}/tags`, {
       method: "POST",
       headers: {
@@ -171,68 +155,58 @@ export default function DataroomTagSection({
   };
 
   return (
-    <>
-      <Card className="bg-transparent">
-        <CardHeader>
-          <CardTitle>Tags</CardTitle>
-          <CardDescription>
-            Organize your dataroom by adding tags for better categorization and
-            filtering
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex justify-between">
-            <div className="flex items-center gap-2">
-              <Label htmlFor="dataroom-tags">Tags</Label>
-              <BadgeTooltip content="Organize datarooms by tags to easily filter and find them">
-                <CircleHelpIcon className="h-4 w-4 shrink-0 text-muted-foreground hover:text-foreground" />
-              </BadgeTooltip>
-            </div>
-            <Link
-              href={`/settings/tags`}
-              className="text-xs text-muted-foreground hover:text-foreground hover:underline"
-            >
-              Manage
-            </Link>
+    <Card className="bg-transparent">
+      <CardHeader>
+        <CardTitle>Tags</CardTitle>
+        <CardDescription>
+          Organize your dataroom by adding tags for better categorization and
+          filtering
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="flex justify-between">
+          <div className="flex items-center gap-2">
+            <Label htmlFor="dataroom-tags">Tags</Label>
+            <BadgeTooltip content="Organize datarooms by tags to easily filter and find them">
+              <CircleHelpIcon className="h-4 w-4 shrink-0 text-muted-foreground hover:text-foreground" />
+            </BadgeTooltip>
           </div>
-          <div className="mt-2 flex gap-2">
-            <MultiSelect
-              loading={loadingTags}
-              options={options ?? []}
-              value={selectedValues}
-              setIsPopoverOpen={setIsPopoverOpen}
-              isPopoverOpen={isPopoverOpen}
-              onValueChange={handleValueChange}
-              placeholder="Select tags..."
-              maxCount={3}
-              searchPlaceholder="Search or add tags..."
-              onCreate={(search) => createTag(search)}
-              popoverClassName="sm:w-[400px]"
-            />
-            <Button
-              onClick={handleSave}
-              loading={isSaving}
-              disabled={!hasChanges || isSaving}
-              size="default"
-            >
-              Save
-            </Button>
-          </div>
-        </CardContent>
-        <CardFooter className="flex items-center justify-between rounded-b-lg border-t bg-muted px-6 py-3">
-          <p className="text-sm text-muted-foreground transition-colors">
-            Tags help you organize and filter datarooms across your workspace.
-          </p>
-        </CardFooter>
-      </Card>
-      {showUpgradeModal && (
-        <UpgradePlanModal
-          clickedPlan={PlanEnum.Pro}
-          trigger="create_tag"
-          open={showUpgradeModal}
-          setOpen={setShowUpgradeModal}
-        />
-      )}
-    </>
+          <Link
+            href={`/settings/tags`}
+            className="text-xs text-muted-foreground hover:text-foreground hover:underline"
+          >
+            Manage
+          </Link>
+        </div>
+        <div className="mt-2 flex gap-2">
+          <MultiSelect
+            loading={loadingTags}
+            options={options ?? []}
+            value={selectedValues}
+            setIsPopoverOpen={setIsPopoverOpen}
+            isPopoverOpen={isPopoverOpen}
+            onValueChange={handleValueChange}
+            placeholder="Select tags..."
+            maxCount={3}
+            searchPlaceholder="Search or add tags..."
+            onCreate={(search) => createTag(search)}
+            popoverClassName="sm:w-[400px]"
+          />
+          <Button
+            onClick={handleSave}
+            loading={isSaving}
+            disabled={!hasChanges || isSaving}
+            size="default"
+          >
+            Save
+          </Button>
+        </div>
+      </CardContent>
+      <CardFooter className="flex items-center justify-between rounded-b-lg border-t bg-muted px-6 py-3">
+        <p className="text-sm text-muted-foreground transition-colors">
+          Tags help you organize and filter datarooms across your workspace.
+        </p>
+      </CardFooter>
+    </Card>
   );
 }

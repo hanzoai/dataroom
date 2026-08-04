@@ -1,56 +1,74 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { waitUntil } from "@vercel/functions";
+
 import { processDocument } from "@/lib/api/documents/process-document";
 import { verifyDataroomSession } from "@/lib/auth/dataroom-auth";
 import { DocumentData } from "@/lib/documents/create-document";
 import prisma from "@/lib/prisma";
 import { sendDataroomUploadNotificationTask } from "@/lib/trigger/dataroom-upload-notification";
-import { sanitizePlainText } from "@/lib/utils/sanitize-html";
 import { supportsAdvancedExcelMode } from "@/lib/utils/get-content-type";
-import { runs } from "@trigger.dev/sdk/v3";
-import { waitUntil } from "@vercel/functions";
+import { sanitizePlainText } from "@/lib/utils/sanitize-html";
 
 /**
- * GET /api/links/[id]/upload?dataroomId=xxx
- * Returns the viewer's previously uploaded documents for this dataroom.
+ * Visitor uploads into a data room, from the viewer surface.
+ *
+ * Authorisation is the dataroom session cookie plus the link's own
+ * `enableUpload` switch — there is no logged-in team user on this path, so
+ * every read and write below is scoped by the (link, dataroom, viewer) triple
+ * the session proves.
  */
+
+/** Rendered file types only become viewable once the pipeline has paged them. */
+const NEEDS_RENDERING = new Set(["pdf", "docs", "slides"]);
+
+/** Debounce window for the "someone uploaded" email to the team. */
+const NOTIFICATION_DELAY_MS = 5 * 60 * 1000;
+
+type Session = { viewerId: string; viewId: string };
+
+/** Resolve the dataroom session, or the response to send instead. */
+async function authorize(
+  request: NextRequest,
+  linkId: string,
+  dataroomId: string | null,
+): Promise<{ session: Session; dataroomId: string } | NextResponse> {
+  if (!linkId || !dataroomId) {
+    return NextResponse.json(
+      { message: "Missing required parameters" },
+      { status: 400 },
+    );
+  }
+
+  const session = await verifyDataroomSession(request, linkId, dataroomId);
+  if (!session?.viewerId) {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  }
+
+  return {
+    session: { viewerId: session.viewerId, viewId: session.viewId },
+    dataroomId,
+  };
+}
+
+/** GET — the uploads this viewer has already made through this link. */
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } },
 ) {
+  const auth = await authorize(
+    request,
+    params.id,
+    request.nextUrl.searchParams.get("dataroomId"),
+  );
+  if (auth instanceof NextResponse) return auth;
+
   try {
-    const linkId = params.id;
-    const dataroomId = request.nextUrl.searchParams.get("dataroomId");
-
-    if (!linkId || !dataroomId) {
-      return NextResponse.json(
-        { message: "Missing required parameters" },
-        { status: 400 },
-      );
-    }
-
-    // Verify the dataroom session
-    const dataroomSession = await verifyDataroomSession(
-      request,
-      linkId,
-      dataroomId,
-    );
-
-    if (!dataroomSession || !dataroomSession.viewerId) {
-      return NextResponse.json(
-        { message: "Unauthorized" },
-        { status: 401 },
-      );
-    }
-
-    const { viewerId } = dataroomSession;
-
-    // Fetch the viewer's uploads for this dataroom
     const uploads = await prisma.documentUpload.findMany({
       where: {
-        viewerId,
-        dataroomId,
-        linkId,
+        viewerId: auth.session.viewerId,
+        dataroomId: auth.dataroomId,
+        linkId: params.id,
       },
       select: {
         id: true,
@@ -60,48 +78,40 @@ export async function GET(
         uploadedAt: true,
         document: {
           select: {
-            id: true,
             name: true,
             type: true,
             versions: {
               where: { isPrimary: true },
-              select: {
-                id: true,
-                hasPages: true,
-              },
+              select: { id: true, hasPages: true },
               take: 1,
             },
           },
         },
-        dataroomDocument: {
-          select: {
-            folderId: true,
-          },
-        },
+        dataroomDocument: { select: { folderId: true } },
       },
       orderBy: { uploadedAt: "desc" },
     });
 
-    const formattedUploads = uploads.map((upload) => {
-      const fileType = upload.document?.type ?? "";
-      const hasPages = upload.document?.versions?.[0]?.hasPages ?? false;
-      const needsProcessing = ["pdf", "docs", "slides"].includes(fileType);
-      const isComplete = !needsProcessing || hasPages;
-
-      return {
-        id: upload.id,
-        documentId: upload.documentId,
-        dataroomDocumentId: upload.dataroomDocumentId,
-        documentVersionId: upload.document?.versions?.[0]?.id ?? null,
-        name: upload.originalFilename ?? upload.document?.name ?? "Unknown",
-        fileType,
-        folderId: upload.dataroomDocument?.folderId ?? null,
-        uploadedAt: upload.uploadedAt,
-        status: isComplete ? "complete" : "processing",
-      };
+    return NextResponse.json({
+      uploads: uploads.map((upload) => {
+        const version = upload.document?.versions[0];
+        const fileType = upload.document?.type ?? "";
+        return {
+          id: upload.id,
+          documentId: upload.documentId,
+          dataroomDocumentId: upload.dataroomDocumentId,
+          documentVersionId: version?.id ?? null,
+          name: upload.originalFilename ?? upload.document?.name ?? "Unknown",
+          fileType,
+          folderId: upload.dataroomDocument?.folderId ?? null,
+          uploadedAt: upload.uploadedAt,
+          status:
+            !NEEDS_RENDERING.has(fileType) || version?.hasPages
+              ? "complete"
+              : "processing",
+        };
+      }),
     });
-
-    return NextResponse.json({ uploads: formattedUploads });
   } catch (error) {
     console.error("Error fetching viewer uploads:", error);
     return NextResponse.json(
@@ -111,231 +121,148 @@ export async function GET(
   }
 }
 
+/** POST — record a file the viewer just pushed to storage. */
 export async function POST(
   request: NextRequest,
   { params }: { params: { id: string } },
 ) {
-  try {
-    const linkId = params.id;
-    const body = await request.json();
-    const { documentData, dataroomId, folderId } = body as {
-      documentData: DocumentData;
-      dataroomId: string;
-      folderId?: string;
-    };
+  const linkId = params.id;
+  const { documentData, dataroomId, folderId } = (await request.json()) as {
+    documentData?: DocumentData;
+    dataroomId?: string;
+    folderId?: string;
+  };
 
-    if (!linkId || !documentData || !dataroomId) {
-      return NextResponse.json(
-        { message: "Missing required parameters" },
-        { status: 400 },
-      );
-    }
-
-    // 0. Verify the dataroom session
-    const dataroomSession = await verifyDataroomSession(
-      request,
-      linkId,
-      dataroomId,
+  const auth = await authorize(request, linkId, dataroomId ?? null);
+  if (auth instanceof NextResponse) return auth;
+  if (!documentData) {
+    return NextResponse.json(
+      { message: "Missing required parameters" },
+      { status: 400 },
     );
+  }
 
-    if (!dataroomSession || !dataroomSession.viewerId) {
-      return NextResponse.json(
-        { message: "You need to be logged in to upload a document." },
-        { status: 401 },
-      );
-    }
-
-    // Check if the link exists and has visitor upload enabled
+  try {
     const link = await prisma.link.findUnique({
-      where: { id: linkId, dataroomId },
+      where: { id: linkId, dataroomId: auth.dataroomId },
       select: {
-        id: true,
-        name: true,
         enableUpload: true,
         enableNotification: true,
         uploadFolderId: true,
-        dataroomId: true,
         teamId: true,
-        team: {
-          select: {
-            plan: true,
-            enableExcelAdvancedMode: true,
-          },
-        },
+        team: { select: { plan: true, enableExcelAdvancedMode: true } },
       },
     });
 
-    if (
-      !link ||
-      !link.enableUpload ||
-      link.dataroomId !== dataroomId ||
-      !link.teamId
-    ) {
+    if (!link?.enableUpload || !link.teamId) {
       return NextResponse.json(
         { message: "Uploads not allowed for this link" },
         { status: 403 },
       );
     }
 
-    const { viewerId, viewId } = dataroomSession;
-
-    // Check if the viewer exists
+    // The session proves a viewer id; confirm it still belongs to this team.
     const viewer = await prisma.viewer.findUnique({
       where: {
-        id: viewerId,
+        id: auth.session.viewerId,
         teamId: link.teamId,
-        views: { some: { id: viewId } },
+        views: { some: { id: auth.session.viewId } },
       },
       select: { id: true },
     });
-
     if (!viewer) {
-      return NextResponse.json(
-        { message: "Viewer not found" },
-        { status: 404 },
-      );
+      return NextResponse.json({ message: "Viewer not found" }, { status: 404 });
     }
 
-    if (typeof documentData.name !== "string") {
+    const name = sanitizePlainText(String(documentData.name ?? ""));
+    if (!name || name.length > 255) {
       return NextResponse.json(
         { message: "Document name is required" },
         { status: 400 },
       );
     }
 
-    const sanitizedDocumentName = sanitizePlainText(documentData.name);
-    if (!sanitizedDocumentName) {
-      return NextResponse.json(
-        { message: "Document name is required" },
-        { status: 400 },
-      );
-    }
+    // Uploads land in the link's designated folder when it has one, otherwise
+    // wherever the viewer was browsing.
+    const uploadFolder = link.uploadFolderId
+      ? await prisma.dataroomFolder.findUnique({
+          where: { id: link.uploadFolderId, dataroomId: auth.dataroomId },
+          select: { id: true },
+        })
+      : null;
+    const targetFolderId = uploadFolder?.id ?? folderId ?? null;
 
-    if (sanitizedDocumentName.length > 255) {
-      return NextResponse.json(
-        { message: "Document name too long" },
-        { status: 400 },
-      );
-    }
-
-    const updatedDocumentData = {
-      ...documentData,
-      name: sanitizedDocumentName,
-      enableExcelAdvancedMode: documentData.supportedFileType === "sheet" &&
-        link.team?.enableExcelAdvancedMode &&
-        supportsAdvancedExcelMode(documentData.contentType),
-    };
-
-    // 1. Create the document
     const document = await processDocument({
-      documentData: updatedDocumentData,
+      documentData: {
+        ...documentData,
+        name,
+        enableExcelAdvancedMode:
+          documentData.supportedFileType === "sheet" &&
+          !!link.team?.enableExcelAdvancedMode &&
+          supportsAdvancedExcelMode(documentData.contentType),
+      },
       teamId: link.teamId,
       teamPlan: link.team?.plan ?? "free",
       isExternalUpload: true,
     });
 
-    // 2. Create the dataroom document
-    // If folderId is provided and link has no uploadFolderId, use folderId as the dataroomFolderId
-    // Otherwise, use the link's uploadFolderId
-    // or null if it doesn't exist
-    let dataroomFolderId: string | null = folderId ?? null;
-    if (link.uploadFolderId) {
-      const dataroomFolder = await prisma.dataroomFolder.findUnique({
-        where: {
-          id: link.uploadFolderId,
-          dataroomId,
-        },
-        select: {
-          id: true,
-        },
-      });
-      dataroomFolderId = dataroomFolder?.id ?? null;
-    }
-
-    const newDataroomDocument = await prisma.dataroomDocument.create({
+    const dataroomDocument = await prisma.dataroomDocument.create({
       data: {
-        dataroomId: dataroomId,
+        dataroomId: auth.dataroomId,
         documentId: document.id,
-        folderId: dataroomFolderId,
+        folderId: targetFolderId,
       },
     });
 
-    // 3. Create the DocumentUpload record to track the upload details
     await prisma.documentUpload.create({
       data: {
         documentId: document.id,
-        viewerId: viewerId,
-        viewId: viewId,
-        linkId: linkId,
+        viewerId: auth.session.viewerId,
+        viewId: auth.session.viewId,
+        linkId,
         originalFilename: document.name,
         fileSize: documentData.fileSize ?? 0,
         numPages: document.numPages,
         mimeType: document.contentType,
-        dataroomId: dataroomId,
-        dataroomDocumentId: newDataroomDocument.id,
+        dataroomId: auth.dataroomId,
+        dataroomDocumentId: dataroomDocument.id,
         teamId: link.teamId,
       },
     });
 
-    // 4. Send upload notification to team if enabled
     if (link.enableNotification) {
-      try {
-        // Cancel any existing pending notification runs for this viewer+dataroom+link
-        // Note: runs.list tag filter uses OR logic, so we must post-filter
-        // to ensure we only cancel runs matching ALL three tags
-        const requiredTags = [
-          `dataroom_${dataroomId}`,
-          `link_${linkId}`,
-          `viewer_${viewerId}`,
-        ];
-        const allRuns = await runs.list({
-          taskIdentifier: ["send-dataroom-upload-notification"],
-          tag: requiredTags,
-          status: ["DELAYED", "QUEUED"],
-          period: "10m",
-        });
-
-        const matchingRuns = allRuns.data.filter((run) =>
-          requiredTags.every((tag) => run.tags?.includes(tag)),
-        );
-
-        await Promise.all(matchingRuns.map((run) => runs.cancel(run.id)));
-
-        // Trigger a new notification with 5-minute delay to batch uploads
-        waitUntil(
-          sendDataroomUploadNotificationTask.trigger(
+      // One delayed notification per viewer per link: the idempotency key is
+      // the batch, so a burst of uploads collapses into a single email and we
+      // never have to hunt down and cancel already-scheduled runs.
+      waitUntil(
+        sendDataroomUploadNotificationTask
+          .trigger(
             {
-              dataroomId,
+              dataroomId: auth.dataroomId,
               linkId,
-              viewerId,
+              viewerId: auth.session.viewerId,
               teamId: link.teamId,
             },
             {
-              idempotencyKey: `upload-notification-${link.teamId}-${dataroomId}-${linkId}-${viewerId}-${newDataroomDocument.id}`,
-              tags: [
-                `team_${link.teamId}`,
-                `dataroom_${dataroomId}`,
-                `link_${linkId}`,
-                `viewer_${viewerId}`,
-              ],
-              delay: new Date(Date.now() + 5 * 60 * 1000), // 5 minute delay
+              idempotencyKey: `upload-notification-${linkId}-${auth.session.viewerId}`,
+              idempotencyKeyTTL: `${NOTIFICATION_DELAY_MS / 1000}s`,
+              delay: new Date(Date.now() + NOTIFICATION_DELAY_MS),
             },
-          ),
-        );
-      } catch (error) {
-        console.error("Error triggering upload notification:", error);
-      }
+          )
+          .catch((error) => {
+            console.error("Error triggering upload notification:", error);
+          }),
+      );
     }
 
-    // Return document data for optimistic UI rendering
     return NextResponse.json({
       success: true,
       document: {
         id: document.id,
         name: document.name,
-        dataroomDocumentId: newDataroomDocument.id,
+        dataroomDocumentId: dataroomDocument.id,
         documentVersionId: document.versions[0]?.id,
-        folderId: dataroomFolderId,
+        folderId: targetFolderId,
         fileType: document.type,
         hasPages: (document.numPages ?? 0) > 0,
         createdAt: document.createdAt,

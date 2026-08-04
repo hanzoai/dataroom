@@ -7,10 +7,8 @@ import { BookOpenIcon, EyeIcon } from "lucide-react";
 import { toast } from "sonner";
 import { mutate } from "swr";
 
-import { usePlan } from "@/lib/swr/use-billing";
 import { uploadImage } from "@/lib/utils";
 
-import PlanBadge from "@/components/billing/plan-badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -247,73 +245,6 @@ function generateIntroductionContent(
 
   // Placeholder for navigation screenshot
 
-  // Q&A and Conversations section
-  content.push({
-    type: "heading",
-    attrs: { level: 2 },
-    content: [{ type: "text", text: "Q&A and Conversations" }],
-  });
-
-  content.push({
-    type: "paragraph",
-    content: [
-      {
-        type: "text",
-        text: "Have questions about specific documents? You can start a conversation directly within the data room. Use the chat feature to ask questions and get answers from our team.",
-      },
-    ],
-  });
-
-  content.push({
-    type: "bulletList",
-    content: [
-      {
-        type: "listItem",
-        content: [
-          {
-            type: "paragraph",
-            content: [
-              {
-                type: "text",
-                text: "Click the chat icon to start a new conversation",
-              },
-            ],
-          },
-        ],
-      },
-      {
-        type: "listItem",
-        content: [
-          {
-            type: "paragraph",
-            content: [
-              {
-                type: "text",
-                text: "Ask questions about any document or section",
-              },
-            ],
-          },
-        ],
-      },
-      {
-        type: "listItem",
-        content: [
-          {
-            type: "paragraph",
-            content: [
-              {
-                type: "text",
-                text: "Receive timely responses from our team",
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  });
-
-  // Placeholder for conversations screenshot
-
   // Need Help section
   content.push({
     type: "heading",
@@ -489,7 +420,6 @@ export default function IntroductionSettings({
 }: IntroductionSettingsProps) {
   const teamInfo = useTeam();
   const teamId = teamInfo?.currentTeam?.id;
-  const { isDataroomsPlus, isTrial } = usePlan();
 
   const [isFetching, setIsFetching] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -501,7 +431,6 @@ export default function IntroductionSettings({
   const [showPreview, setShowPreview] = useState(false);
   const [dataroomName, setDataroomName] = useState<string>("Data Room");
 
-  const isFeatureAvailable = isDataroomsPlus || isTrial;
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const hasInitialLoadRef = useRef(false);
   const skipNextAutosaveRef = useRef(false);
@@ -573,7 +502,7 @@ export default function IntroductionSettings({
   // Auto-save function
   const saveSettings = useCallback(
     async (enabled: boolean, content: any) => {
-      if (!teamId || !isFeatureAvailable) return;
+      if (!teamId) return;
 
       setIsSaving(true);
       try {
@@ -603,7 +532,7 @@ export default function IntroductionSettings({
         setIsSaving(false);
       }
     },
-    [teamId, dataroomId, isFeatureAvailable],
+    [teamId, dataroomId],
   );
 
   // Debounced auto-save on content change
@@ -642,10 +571,6 @@ export default function IntroductionSettings({
   };
 
   const handleToggle = (checked: boolean) => {
-    if (!isFeatureAvailable) {
-      toast.error("This feature is only available on Data Rooms Plus plan");
-      return;
-    }
     setIntroductionEnabled(checked);
     if (checked) {
       toast.success("Introduction page enabled");
@@ -670,7 +595,6 @@ export default function IntroductionSettings({
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           Introduction Page{" "}
-          {!isFeatureAvailable && <PlanBadge plan="data rooms plus" />}
           {isSaving && (
             <span className="text-xs font-normal text-muted-foreground">
               Saving...
@@ -716,7 +640,6 @@ export default function IntroductionSettings({
               id="introduction-toggle"
               checked={introductionEnabled}
               onCheckedChange={handleToggle}
-              disabled={!isFeatureAvailable}
             />
           </div>
         </div>

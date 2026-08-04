@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { PlanEnum } from "@/lib/billing/legacy/constants";
 import { Check, CircleHelpIcon, UploadIcon } from "lucide-react";
 import { HexColorInput, HexColorPicker } from "react-colorful";
 import sanitizeHtml from "sanitize-html";
@@ -11,11 +10,9 @@ import { toast } from "sonner";
 import { mutate } from "swr";
 import { useDebounce } from "use-debounce";
 
-import { usePlan } from "@/lib/swr/use-billing";
 import { useBrand } from "@/lib/swr/use-brand";
 import { cn, convertDataUrlToFile, uploadImage } from "@/lib/utils";
 
-import { UpgradePlanModal } from "@/components/billing/upgrade-plan-modal";
 import AppLayout from "@/components/layouts/app";
 import { NavMenu } from "@/components/navigation-menu";
 import { Button } from "@/components/ui/button";
@@ -31,13 +28,11 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { BadgeTooltip } from "@/components/ui/tooltip";
-import { UpgradeButton } from "@/components/ui/upgrade-button";
 
 export default function Branding() {
   const teamInfo = useTeam();
   const router = useRouter();
   const { brand } = useBrand();
-  const { plan, isTrial, isBusiness, isDatarooms, isDataroomsPlus } = usePlan();
 
   const [brandColor, setBrandColor] = useState<string>("#000000");
   const [accentColor, setAccentColor] = useState<string>("#030712");
@@ -62,10 +57,6 @@ export default function Branding() {
   const [welcomeMessageError, setWelcomeMessageError] = useState<string | null>(
     null,
   );
-
-  // Check if user has access to dataroom branding features
-  const hasDataroomAccess =
-    isBusiness || isDatarooms || isDataroomsPlus || isTrial;
 
   // Welcome message validation
   const MAX_WELCOME_MESSAGE_LENGTH = 80; // Roughly 2 lines of text
@@ -204,8 +195,7 @@ export default function Branding() {
       accentColor: accentColor,
       applyAccentColorToDataroomView,
       logo: logoBlobUrl,
-      // Only include banner if user has dataroom access (Business+)
-      ...(hasDataroomAccess && { banner: bannerBlobUrl }),
+      banner: bannerBlobUrl,
     };
 
     const res = await fetch(
@@ -427,125 +417,123 @@ export default function Branding() {
                   </CardContent>
                 </Card>
 
-                {/* Banner Card - Only for Business+ users */}
-                {hasDataroomAccess && (
-                  <Card>
-                    <CardContent className="pt-6">
-                      <div className="space-y-2">
-                        <Label htmlFor="banner">
-                          Banner{" "}
-                          <span className="font-normal text-muted-foreground">
-                            (for data rooms, max 2 MB)
-                          </span>
-                        </Label>
-                        <label
-                          htmlFor="banner"
-                          className="group relative mt-2 flex h-32 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 transition-all hover:border-gray-400 hover:bg-gray-100"
-                        >
-                          <div
-                            className="absolute z-[5] h-full w-full rounded-lg"
-                            onDragOver={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              setBannerDragActive(true);
-                            }}
-                            onDragEnter={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              setBannerDragActive(true);
-                            }}
-                            onDragLeave={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              setBannerDragActive(false);
-                            }}
-                            onDrop={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              setBannerDragActive(false);
-                              setBannerError(null);
-                              const file =
-                                e.dataTransfer.files && e.dataTransfer.files[0];
-                              if (file) {
-                                if (file.size / 1024 / 1024 > 2) {
-                                  setBannerError("File size too big (max 2MB)");
-                                } else if (
-                                  file.type !== "image/png" &&
-                                  file.type !== "image/jpeg"
-                                ) {
-                                  setBannerError(
-                                    "File type not supported (.png or .jpg only)",
-                                  );
-                                } else {
-                                  const reader = new FileReader();
-                                  reader.onload = (e) => {
-                                    const dataUrl = e.target?.result as string;
-                                    setBanner(dataUrl);
-                                    const blob = convertDataUrlToFile({
-                                      dataUrl,
-                                    });
-                                    const blobUrl = URL.createObjectURL(blob);
-                                    setBannerBlobUrl(blobUrl);
-                                  };
-                                  reader.readAsDataURL(file);
-                                }
+                {/* Banner Card */}
+                <Card>
+                  <CardContent className="pt-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="banner">
+                        Banner{" "}
+                        <span className="font-normal text-muted-foreground">
+                          (for data rooms, max 2 MB)
+                        </span>
+                      </Label>
+                      <label
+                        htmlFor="banner"
+                        className="group relative mt-2 flex h-32 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 transition-all hover:border-gray-400 hover:bg-gray-100"
+                      >
+                        <div
+                          className="absolute z-[5] h-full w-full rounded-lg"
+                          onDragOver={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setBannerDragActive(true);
+                          }}
+                          onDragEnter={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setBannerDragActive(true);
+                          }}
+                          onDragLeave={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setBannerDragActive(false);
+                          }}
+                          onDrop={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setBannerDragActive(false);
+                            setBannerError(null);
+                            const file =
+                              e.dataTransfer.files && e.dataTransfer.files[0];
+                            if (file) {
+                              if (file.size / 1024 / 1024 > 2) {
+                                setBannerError("File size too big (max 2MB)");
+                              } else if (
+                                file.type !== "image/png" &&
+                                file.type !== "image/jpeg"
+                              ) {
+                                setBannerError(
+                                  "File type not supported (.png or .jpg only)",
+                                );
+                              } else {
+                                const reader = new FileReader();
+                                reader.onload = (e) => {
+                                  const dataUrl = e.target?.result as string;
+                                  setBanner(dataUrl);
+                                  const blob = convertDataUrlToFile({
+                                    dataUrl,
+                                  });
+                                  const blobUrl = URL.createObjectURL(blob);
+                                  setBannerBlobUrl(blobUrl);
+                                };
+                                reader.readAsDataURL(file);
                               }
-                            }}
-                          />
-                          {!banner ? (
-                            <div
-                              className={cn(
-                                "flex flex-col items-center justify-center gap-2",
-                                bannerDragActive && "scale-105",
-                              )}
-                            >
-                              <UploadIcon
-                                className="h-8 w-8 text-gray-400"
-                                aria-hidden="true"
-                              />
-                              <p className="text-xs text-muted-foreground">
-                                Upload banner image
-                              </p>
-                            </div>
-                          ) : (
-                            <div className="relative flex h-full w-full items-center justify-center p-4">
-                              <img
-                                src={banner}
-                                alt="Banner preview"
-                                className="max-h-full max-w-full object-cover"
-                              />
-                            </div>
-                          )}
-                        </label>
-                        <input
-                          id="banner"
-                          name="banner"
-                          type="file"
-                          accept="image/jpeg,image/png"
-                          className="sr-only"
-                          onChange={onChangeBanner}
+                            }
+                          }}
                         />
-                        {bannerError && (
-                          <p className="text-sm text-red-500">{bannerError}</p>
-                        )}
-                        {banner && (
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => {
-                              setBanner(null);
-                              setBannerBlobUrl(null);
-                            }}
-                            className="text-xs"
+                        {!banner ? (
+                          <div
+                            className={cn(
+                              "flex flex-col items-center justify-center gap-2",
+                              bannerDragActive && "scale-105",
+                            )}
                           >
-                            Remove banner
-                          </Button>
+                            <UploadIcon
+                              className="h-8 w-8 text-gray-400"
+                              aria-hidden="true"
+                            />
+                            <p className="text-xs text-muted-foreground">
+                              Upload banner image
+                            </p>
+                          </div>
+                        ) : (
+                          <div className="relative flex h-full w-full items-center justify-center p-4">
+                            <img
+                              src={banner}
+                              alt="Banner preview"
+                              className="max-h-full max-w-full object-cover"
+                            />
+                          </div>
                         )}
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
+                      </label>
+                      <input
+                        id="banner"
+                        name="banner"
+                        type="file"
+                        accept="image/jpeg,image/png"
+                        className="sr-only"
+                        onChange={onChangeBanner}
+                      />
+                      {bannerError && (
+                        <p className="text-sm text-red-500">{bannerError}</p>
+                      )}
+                      {banner && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            setBanner(null);
+                            setBannerBlobUrl(null);
+                          }}
+                          className="text-xs"
+                        >
+                          Remove banner
+                        </Button>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
 
                 {/* Brand Color Card */}
                 <Card>
@@ -660,35 +648,32 @@ export default function Branding() {
                           )}
                         </div>
                       </div>
-                      {hasDataroomAccess && (
-                        <div className="rounded-md border border-border/70 p-3">
-                          <div className="flex items-start space-x-3">
-                            <Checkbox
-                              id="global-apply-accent-to-dataroom-view"
-                              checked={applyAccentColorToDataroomView}
-                              onCheckedChange={(checked) =>
-                                setApplyAccentColorToDataroomView(
-                                  checked === true,
-                                )
-                              }
-                              className="mt-0.5"
-                            />
-                            <div className="space-y-1">
-                              <Label
-                                htmlFor="global-apply-accent-to-dataroom-view"
-                                className="cursor-pointer text-sm font-medium"
-                              >
-                                Apply background color to dataroom view by
-                                default
-                              </Label>
-                              <p className="text-xs text-muted-foreground">
-                                Dataroom-specific branding can still override
-                                this.
-                              </p>
-                            </div>
+                      <div className="rounded-md border border-border/70 p-3">
+                        <div className="flex items-start space-x-3">
+                          <Checkbox
+                            id="global-apply-accent-to-dataroom-view"
+                            checked={applyAccentColorToDataroomView}
+                            onCheckedChange={(checked) =>
+                              setApplyAccentColorToDataroomView(
+                                checked === true,
+                              )
+                            }
+                            className="mt-0.5"
+                          />
+                          <div className="space-y-1">
+                            <Label
+                              htmlFor="global-apply-accent-to-dataroom-view"
+                              className="cursor-pointer text-sm font-medium"
+                            >
+                              Apply background color to dataroom view by default
+                            </Label>
+                            <p className="text-xs text-muted-foreground">
+                              Dataroom-specific branding can still override
+                              this.
+                            </p>
                           </div>
                         </div>
-                      )}
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -744,23 +729,14 @@ export default function Branding() {
 
               {/* Action Buttons - Always Visible */}
               <div className="flex items-center gap-4 border-t bg-background pt-4">
-                {plan === "free" && !isTrial ? (
-                  <UpgradeButton
-                    text="Save changes"
-                    clickedPlan={PlanEnum.Pro}
-                    trigger="branding_page"
-                    highlightItem={["custom-branding"]}
-                  />
-                ) : (
-                  <Button
-                    onClick={saveBranding}
-                    loading={isLoading}
-                    disabled={!!welcomeMessageError}
-                    className="bg-black text-white hover:bg-gray-800"
-                  >
-                    Save changes
-                  </Button>
-                )}
+                <Button
+                  onClick={saveBranding}
+                  loading={isLoading}
+                  disabled={!!welcomeMessageError}
+                  className="bg-black text-white hover:bg-gray-800"
+                >
+                  Save changes
+                </Button>
                 <Button
                   variant="ghost"
                   onClick={handleDelete}
@@ -778,20 +754,13 @@ export default function Branding() {
             <div className="flex-1 lg:pl-4">
               <Tabs defaultValue="document-view" className="w-full">
                 <div className="w-full overflow-x-auto">
-                  <TabsList
-                    className={cn(
-                      "grid w-full",
-                      hasDataroomAccess ? "grid-cols-3" : "grid-cols-2",
-                    )}
-                  >
+                  <TabsList className="grid w-full grid-cols-3">
                     <TabsTrigger value="document-view">
                       Document View
                     </TabsTrigger>
-                    {hasDataroomAccess && (
-                      <TabsTrigger value="dataroom-view">
-                        Dataroom View
-                      </TabsTrigger>
-                    )}
+                    <TabsTrigger value="dataroom-view">
+                      Dataroom View
+                    </TabsTrigger>
                     <TabsTrigger value="front-page">Front Page</TabsTrigger>
                   </TabsList>
                 </div>
@@ -862,75 +831,73 @@ export default function Branding() {
                     </div>
                   </div>
                 </TabsContent>
-                {hasDataroomAccess && (
-                  <TabsContent value="dataroom-view" className="mt-6">
-                    <div className="flex justify-center">
-                      <div
-                        className="relative w-full max-w-[698px] rounded-lg bg-gray-200 p-1 shadow-lg"
-                        style={{ height: "450px" }}
-                      >
-                        <div className="relative flex h-full flex-col overflow-hidden rounded-lg bg-gray-100">
-                          <div className="mx-auto flex h-7 shrink-0 items-center justify-center">
-                            <div className="pointer-events-none absolute left-3">
-                              <div className="flex flex-row flex-nowrap justify-start">
-                                <div className="pointer-events-auto">
-                                  <div className="mr-1 inline-block size-2 rounded-full bg-gray-300"></div>
-                                </div>
-                                <div className="pointer-events-auto">
-                                  <div className="mr-1 inline-block size-2 rounded-full bg-gray-300"></div>
-                                </div>
-                                <div className="pointer-events-auto">
-                                  <div className="mr-1 inline-block size-2 rounded-full bg-gray-300"></div>
-                                </div>
+                <TabsContent value="dataroom-view" className="mt-6">
+                  <div className="flex justify-center">
+                    <div
+                      className="relative w-full max-w-[698px] rounded-lg bg-gray-200 p-1 shadow-lg"
+                      style={{ height: "450px" }}
+                    >
+                      <div className="relative flex h-full flex-col overflow-hidden rounded-lg bg-gray-100">
+                        <div className="mx-auto flex h-7 shrink-0 items-center justify-center">
+                          <div className="pointer-events-none absolute left-3">
+                            <div className="flex flex-row flex-nowrap justify-start">
+                              <div className="pointer-events-auto">
+                                <div className="mr-1 inline-block size-2 rounded-full bg-gray-300"></div>
                               </div>
-                            </div>
-                            <div className="flex items-center justify-center rounded-xl bg-white p-1 px-2 opacity-70">
-                              <div
-                                aria-hidden="true"
-                                className="mr-1 mt-0.5 flex text-muted-foreground"
-                              >
-                                <svg
-                                  aria-hidden="true"
-                                  height="8"
-                                  width="8"
-                                  viewBox="0 0 16 16"
-                                  fill="currentColor"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path d="M8.75 11.25a1.25 1.25 0 1 0-1.5 0v1a.75.75 0 0 0 1.5 0v-1Z"></path>
-                                  <path
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                    d="M3.5 4v2h-1a1 1 0 0 0-1 1v6a3 3 0 0 0 3 3h7a3 3 0 0 0 3-3V7a1 1 0 0 0-1-1h-1V4a4 4 0 0 0-4-4h-1a4 4 0 0 0-4 4ZM11 6V4a2.5 2.5 0 0 0-2.5-2.5h-1A2.5 2.5 0 0 0 5 4v2h6Zm-8 7V7.5h10V13a1.5 1.5 0 0 1-1.5 1.5h-7A1.5 1.5 0 0 1 3 13Z"
-                                  ></path>
-                                </svg>
+                              <div className="pointer-events-auto">
+                                <div className="mr-1 inline-block size-2 rounded-full bg-gray-300"></div>
                               </div>
-                              <span className="whitespace-normal text-xs text-muted-foreground">
-                                dataroom.hanzo.ai/view/...
-                              </span>
+                              <div className="pointer-events-auto">
+                                <div className="mr-1 inline-block size-2 rounded-full bg-gray-300"></div>
+                              </div>
                             </div>
                           </div>
-                          <div className="relative min-h-0 flex-1 overflow-x-auto">
-                            <div className="relative h-full max-w-[1396px]">
-                              <iframe
-                                key={`dataroom-view-${debouncedBrandColor}-${debouncedAccentColor}-${banner}-${applyAccentColorToDataroomView}`}
-                                name="dataroom-view"
-                                id="dataroom-view"
-                                src={`/room_ppreview_demo?brandColor=${encodeURIComponent(debouncedBrandColor)}&accentColor=${encodeURIComponent(debouncedAccentColor)}&applyAccentColorToDataroomView=${applyAccentColorToDataroomView ? "1" : "0"}&brandLogo=${blobUrl ? encodeURIComponent(blobUrl) : logo ? encodeURIComponent(logo) : ""}&brandBanner=${banner === "no-banner" ? encodeURIComponent("no-banner") : bannerBlobUrl ? encodeURIComponent(bannerBlobUrl) : banner ? encodeURIComponent(banner) : ""}`}
-                                className="absolute left-0 top-0 h-full w-full origin-top-left scale-50 overflow-hidden rounded-b-lg border-0 bg-white"
-                                style={{
-                                  width: "200%",
-                                  height: "200%",
-                                  pointerEvents: "none",
-                                }}
-                              />
+                          <div className="flex items-center justify-center rounded-xl bg-white p-1 px-2 opacity-70">
+                            <div
+                              aria-hidden="true"
+                              className="mr-1 mt-0.5 flex text-muted-foreground"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                height="8"
+                                width="8"
+                                viewBox="0 0 16 16"
+                                fill="currentColor"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path d="M8.75 11.25a1.25 1.25 0 1 0-1.5 0v1a.75.75 0 0 0 1.5 0v-1Z"></path>
+                                <path
+                                  fillRule="evenodd"
+                                  clipRule="evenodd"
+                                  d="M3.5 4v2h-1a1 1 0 0 0-1 1v6a3 3 0 0 0 3 3h7a3 3 0 0 0 3-3V7a1 1 0 0 0-1-1h-1V4a4 4 0 0 0-4-4h-1a4 4 0 0 0-4 4ZM11 6V4a2.5 2.5 0 0 0-2.5-2.5h-1A2.5 2.5 0 0 0 5 4v2h6Zm-8 7V7.5h10V13a1.5 1.5 0 0 1-1.5 1.5h-7A1.5 1.5 0 0 1 3 13Z"
+                                ></path>
+                              </svg>
                             </div>
+                            <span className="whitespace-normal text-xs text-muted-foreground">
+                              dataroom.hanzo.ai/view/...
+                            </span>
+                          </div>
+                        </div>
+                        <div className="relative min-h-0 flex-1 overflow-x-auto">
+                          <div className="relative h-full max-w-[1396px]">
+                            <iframe
+                              key={`dataroom-view-${debouncedBrandColor}-${debouncedAccentColor}-${banner}-${applyAccentColorToDataroomView}`}
+                              name="dataroom-view"
+                              id="dataroom-view"
+                              src={`/room_ppreview_demo?brandColor=${encodeURIComponent(debouncedBrandColor)}&accentColor=${encodeURIComponent(debouncedAccentColor)}&applyAccentColorToDataroomView=${applyAccentColorToDataroomView ? "1" : "0"}&brandLogo=${blobUrl ? encodeURIComponent(blobUrl) : logo ? encodeURIComponent(logo) : ""}&brandBanner=${banner === "no-banner" ? encodeURIComponent("no-banner") : bannerBlobUrl ? encodeURIComponent(bannerBlobUrl) : banner ? encodeURIComponent(banner) : ""}`}
+                              className="absolute left-0 top-0 h-full w-full origin-top-left scale-50 overflow-hidden rounded-b-lg border-0 bg-white"
+                              style={{
+                                width: "200%",
+                                height: "200%",
+                                pointerEvents: "none",
+                              }}
+                            />
                           </div>
                         </div>
                       </div>
                     </div>
-                  </TabsContent>
-                )}
+                  </div>
+                </TabsContent>
                 <TabsContent value="front-page" className="mt-6">
                   <div className="flex justify-center">
                     <div

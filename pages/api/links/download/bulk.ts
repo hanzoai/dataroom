@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { getTeamStorageConfigById } from "@/features/storage/config";
+import { getStorageConfig } from "@/lib/storage/config";
 import { ItemType, ViewType } from "@prisma/client";
 
 import { verifyDataroomSessionInPagesRouter } from "@/lib/auth/dataroom-auth";
@@ -425,7 +425,7 @@ export default async function handle(
     }
 
     const teamId = view.dataroom!.teamId;
-    const storageConfig = await getTeamStorageConfigById(teamId);
+    const storageConfig = getStorageConfig();
     const sendEmail =
       !!emailNotification && !!view.viewerEmail && !!session.verified;
 

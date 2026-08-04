@@ -3,7 +3,6 @@ const nextConfig = {
   output: process.env.DOCKER_OUTPUT ? "standalone" : undefined,
   reactStrictMode: true,
   pageExtensions: ["js", "jsx", "ts", "tsx", "mdx"],
-  transpilePackages: ["@boxyhq/saml-jackson"],
   images: {
     minimumCacheTTL: 2592000, // 30 days
     remotePatterns: prepareRemotePatterns(),
@@ -170,15 +169,6 @@ const nextConfig = {
   experimental: {
     outputFileTracingIncludes: {
       "/api/mupdf/*": ["./node_modules/mupdf/dist/*.wasm"],
-      // Jackson SAML routes need jose + openid-client for crypto
-      "/api/auth/saml/token": [
-        "./node_modules/jose/**/*",
-        "./node_modules/openid-client/**/*",
-      ],
-      "/api/auth/saml/userinfo": [
-        "./node_modules/jose/**/*",
-        "./node_modules/openid-client/**/*",
-      ],
     },
     missingSuspenseWithCSRBailout: false,
   },
@@ -189,20 +179,6 @@ const nextConfig = {
       ...config.resolve.alias,
       "@google-cloud/kms": false,
       "@google-cloud/secret-manager": false,
-      // Jackson pulls TypeORM/Mongo optional drivers we don't use (Postgres-only setup).
-      // Aliasing prevents noisy module resolution warnings in dev/build.
-      mysql: false,
-      "react-native-sqlite-storage": false,
-      aws4: false,
-      "@sap/hana-client": false,
-      "@sap/hana-client/extension/Stream": false,
-      "hdb-pool": false,
-    };
-
-    // Suppress critical dependency warnings from Jackson's dynamic requires
-    config.module = {
-      ...config.module,
-      exprContextCritical: false,
     };
 
     return config;

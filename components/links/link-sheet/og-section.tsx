@@ -15,25 +15,15 @@ import { Textarea } from "@/components/ui/textarea";
 
 import { DEFAULT_LINK_TYPE } from ".";
 import LinkItem from "./link-item";
-import { LinkUpgradeOptions } from "./link-options";
 
 export default function OGSection({
   data,
   setData,
-  isAllowed,
-  handleUpgradeStateChange,
   editLink,
   presets,
 }: {
   data: DEFAULT_LINK_TYPE;
   setData: React.Dispatch<React.SetStateAction<DEFAULT_LINK_TYPE>>;
-  isAllowed: boolean;
-  handleUpgradeStateChange: ({
-    state,
-    trigger,
-    plan,
-    highlightItem,
-  }: LinkUpgradeOptions) => void;
   editLink: boolean;
   presets: LinkPreset | null;
 }) {
@@ -142,16 +132,6 @@ export default function OGSection({
         link="https://dataroom.hanzo.ai/help/article/change-social-media-cards"
         enabled={enableCustomMetatag}
         action={handleCustomMetatag}
-        isAllowed={isAllowed}
-        requiredPlan="Business"
-        upgradeAction={() =>
-          handleUpgradeStateChange({
-            state: true,
-            trigger: "link_sheet_og_section",
-            plan: "Business",
-            highlightItem: ["custom-social-cards"],
-          })
-        }
         resetAction={resetMetatags}
       />
 

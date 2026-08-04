@@ -2,10 +2,12 @@ import Link from "next/link";
 
 import { useState } from "react";
 
-import { PlanEnum } from "@/lib/billing/legacy/constants";
-import { CircleHelpIcon, InfoIcon, UsersIcon } from "lucide-react";
+import { CircleHelpIcon, UsersIcon } from "lucide-react";
 
-import { UpgradePlanModal } from "@/components/billing/upgrade-plan-modal";
+import { useDataroom } from "@/lib/swr/use-dataroom";
+import useDataroomGroups from "@/lib/swr/use-dataroom-groups";
+import { cn } from "@/lib/utils";
+
 import { DataroomHeader } from "@/components/datarooms/dataroom-header";
 import { DataroomNavigation } from "@/components/datarooms/dataroom-navigation";
 import { AddGroupModal } from "@/components/datarooms/groups/add-group-modal";
@@ -16,13 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BadgeTooltip } from "@/components/ui/tooltip";
 
-import { usePlan } from "@/lib/swr/use-billing";
-import { useDataroom } from "@/lib/swr/use-dataroom";
-import useDataroomGroups from "@/lib/swr/use-dataroom-groups";
-import { cn } from "@/lib/utils";
-
 export default function DataroomGroupPage() {
-  const { isDatarooms, isDataroomsPlus, isTrial } = usePlan();
   const { dataroom } = useDataroom();
   const { viewerGroups, loading } = useDataroomGroups();
 
@@ -32,19 +28,9 @@ export default function DataroomGroupPage() {
     return <div>Loading...</div>;
   }
 
-  const ButtonComponent = () => {
-    if (isDatarooms || isDataroomsPlus || isTrial) {
-      return <Button onClick={() => setModalOpen(true)}>Create group</Button>;
-    }
-    return (
-      <UpgradePlanModal
-        clickedPlan={PlanEnum.DataRooms}
-        trigger="create_group_button"
-      >
-        <Button>Upgrade to create group</Button>
-      </UpgradePlanModal>
-    );
-  };
+  const ButtonComponent = () => (
+    <Button onClick={() => setModalOpen(true)}>Create group</Button>
+  );
 
   return (
     <AppLayout>

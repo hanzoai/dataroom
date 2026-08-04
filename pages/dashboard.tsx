@@ -8,7 +8,6 @@ import { BarChart3 } from "lucide-react";
 import { toast } from "sonner";
 import useSWR from "swr";
 
-import { usePlan } from "@/lib/swr/use-billing";
 import { fetcher } from "@/lib/utils";
 
 import { AnalyticsCard } from "@/components/analytics/analytics-card";
@@ -44,15 +43,11 @@ export const defaultRange = {
 export default function DashboardPage() {
   const router = useRouter();
   const teamInfo = useTeam();
-  const { plan, trial } = usePlan();
   const slug = useRef<boolean>(false);
   const [customRange, setCustomRange] = useState<{
     start: Date;
     end: Date;
   }>(defaultRange);
-
-  // Check if user has access to data beyond 30 days
-  const isPremium = plan !== "free" || !!trial;
 
   const {
     interval = "7d",
@@ -132,7 +127,6 @@ export default function DashboardPage() {
             setCustomRange={setCustomRange}
             onCustomRangeComplete={handleCustomRangeComplete}
             slug={slug}
-            isPremium={isPremium}
           />
         </div>
 

@@ -69,11 +69,7 @@ export default function DataroomAnalyticsPage() {
                 </p>
               </div>
             </div>
-            <LinksTable
-              links={links}
-              targetType={"DATAROOM"}
-              dataroomName={dataroom.name}
-            />
+            <LinksTable links={links} targetType={"DATAROOM"} />
             <LinkSheet
               linkType={"DATAROOM_LINK"}
               isOpen={isLinkSheetOpen}

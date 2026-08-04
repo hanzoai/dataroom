@@ -1,30 +1,22 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import { useState } from "react";
-
 import { useTeam } from "@/context/team-context";
-import { PlanEnum } from "@/lib/billing/legacy/constants";
 import { LinkPreset } from "@prisma/client";
 import { format } from "date-fns";
-import { CircleHelpIcon, CrownIcon, PlusIcon } from "lucide-react";
+import { CircleHelpIcon, PlusIcon } from "lucide-react";
 import useSWR from "swr";
 
-import { usePlan } from "@/lib/swr/use-billing";
-import { fetcher, formatExpirationTime } from "@/lib/utils";
+import { fetcher } from "@/lib/utils";
 
-import { UpgradePlanModal } from "@/components/billing/upgrade-plan-modal";
 import AppLayout from "@/components/layouts/app";
 import { SettingsHeader } from "@/components/settings/settings-header";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { BadgeTooltip } from "@/components/ui/tooltip";
 
 export default function Presets() {
   const router = useRouter();
   const teamInfo = useTeam();
-
-  const { isBusiness, isDatarooms, isDataroomsPlus, isTrial } = usePlan();
 
   const {
     data: presets,
@@ -36,8 +28,6 @@ export default function Presets() {
       : null,
     fetcher,
   );
-
-  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   return (
     <AppLayout>
@@ -56,17 +46,10 @@ export default function Presets() {
                 </BadgeTooltip>
               </p>
             </div>
-            {isTrial || isBusiness || isDatarooms || isDataroomsPlus ? (
-              <Button onClick={() => router.push("/settings/presets/new")}>
-                <PlusIcon className="mr-1.5 h-4 w-4" />
-                Create Preset
-              </Button>
-            ) : (
-              <Button onClick={() => setShowUpgradeModal(true)}>
-                <CrownIcon className="mr-1.5 h-4 w-4" />
-                Upgrade to create presets
-              </Button>
-            )}
+            <Button onClick={() => router.push("/settings/presets/new")}>
+              <PlusIcon className="mr-1.5 h-4 w-4" />
+              Create Preset
+            </Button>
           </div>
 
           {/* Presets List */}
@@ -86,21 +69,12 @@ export default function Presets() {
                   when creating links.
                 </p>
               </div>
-              {isTrial || isBusiness || isDatarooms || isDataroomsPlus ? (
-                <Button
-                  variant="outline"
-                  onClick={() => router.push("/settings/presets/new")}
-                >
-                  Create your first preset
-                </Button>
-              ) : (
-                <Button
-                  variant="outline"
-                  onClick={() => setShowUpgradeModal(true)}
-                >
-                  Upgrade to create presets
-                </Button>
-              )}
+              <Button
+                variant="outline"
+                onClick={() => router.push("/settings/presets/new")}
+              >
+                Create your first preset
+              </Button>
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-3">
@@ -131,12 +105,6 @@ export default function Presets() {
           )}
         </div>
       </main>
-      <UpgradePlanModal
-        clickedPlan={PlanEnum.Business}
-        trigger="presets_page"
-        open={showUpgradeModal}
-        setOpen={setShowUpgradeModal}
-      />
     </AppLayout>
   );
 }

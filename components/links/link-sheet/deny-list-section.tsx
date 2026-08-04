@@ -10,24 +10,14 @@ import { Textarea } from "@/components/ui/textarea";
 
 import { DEFAULT_LINK_TYPE } from ".";
 import LinkItem from "./link-item";
-import { LinkUpgradeOptions } from "./link-options";
 
 export default function DenyListSection({
   data,
   setData,
-  isAllowed,
-  handleUpgradeStateChange,
   presets,
 }: {
   data: DEFAULT_LINK_TYPE;
   setData: React.Dispatch<React.SetStateAction<DEFAULT_LINK_TYPE>>;
-  isAllowed: boolean;
-  handleUpgradeStateChange: ({
-    state,
-    trigger,
-    plan,
-    highlightItem,
-  }: LinkUpgradeOptions) => void;
   presets: LinkPreset | null;
 }) {
   const { emailProtected, denyList } = data;
@@ -50,11 +40,11 @@ export default function DenyListSection({
   }, [emailProtected, enabled, setData]);
 
   useEffect(() => {
-    if (isAllowed && presets?.denyList && presets.denyList.length > 0) {
+    if (presets?.denyList && presets.denyList.length > 0) {
       setEnabled(true);
       setDenyListInput(presets.denyList?.join("\n") || "");
     }
-  }, [presets, isAllowed]);
+  }, [presets]);
 
   const handleEnableDenyList = () => {
     const updatedEnabled = !enabled;
@@ -98,16 +88,6 @@ export default function DenyListSection({
           enabled={enabled}
           link="https://dataroom.hanzo.ai/help/article/block-list"
           action={handleEnableDenyList}
-          isAllowed={isAllowed}
-          requiredPlan="business"
-          upgradeAction={() =>
-            handleUpgradeStateChange({
-              state: true,
-              trigger: "link_sheet_denylist_section",
-              plan: "Business",
-              highlightItem: ["allow-block"],
-            })
-          }
         />
 
         {enabled && (

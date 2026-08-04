@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { PlanEnum } from "@/lib/billing/legacy/constants";
 import { toast } from "sonner";
 import { mutate } from "swr";
 import { z } from "zod";
@@ -16,7 +15,6 @@ import {
 } from "@/lib/constants/folder-constants";
 import { safeSlugify } from "@/lib/utils";
 import { useAnalytics } from "@/lib/analytics";
-import { usePlan } from "@/lib/swr/use-billing";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -31,7 +29,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-import { UpgradePlanModal } from "../billing/upgrade-plan-modal";
 import { FolderIconColorPicker } from "./folder-icon-picker";
 
 export function AddFolderModal({
@@ -57,7 +54,6 @@ export function AddFolderModal({
   const [open, setOpen] = useState<boolean>(false);
 
   const teamInfo = useTeam();
-  const { isFree, isTrial } = usePlan();
   const analytics = useAnalytics();
 
   /** current folder name */
@@ -154,21 +150,6 @@ export function AddFolderModal({
       setOpen(false);
     }
   };
-
-  // If the team is on a free plan, show the upgrade modal
-  if (isFree && !isTrial) {
-    if (children) {
-      return (
-        <UpgradePlanModal
-          clickedPlan={PlanEnum.Pro}
-          trigger={"add_folder_button"}
-          highlightItem={["folder", "multi-file"]}
-        >
-          {children}
-        </UpgradePlanModal>
-      );
-    }
-  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

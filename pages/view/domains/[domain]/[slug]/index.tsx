@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 
 import { useEffect, useState } from "react";
 
-import WorkflowAccessView from "@/features/workflows/components/workflow-access-view";
 import NotFound from "@/pages/404";
 import { Brand, DataroomBrand } from "@prisma/client";
 import Cookies from "js-cookie";
@@ -44,14 +43,6 @@ type DataroomLinkData = {
   brand: DataroomBrand | null;
 };
 
-type WorkflowLinkData = {
-  linkType: "WORKFLOW_LINK";
-  entryLinkId: string;
-  domain: string;
-  slug: string;
-  brand: Brand | null;
-};
-
 export const getStaticProps = async (context: GetStaticPropsContext) => {
   const { domain: domainParam, slug: slugParam } = context.params as {
     domain: string;
@@ -83,44 +74,9 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
       };
     }
 
-    // Handle workflow links - minimal props needed
+    // Workflow links are no longer served.
     if (linkType === "WORKFLOW_LINK") {
-      return {
-        props: {
-          linkData: {
-            linkType: "WORKFLOW_LINK",
-            entryLinkId: linkId || "",
-            domain,
-            slug,
-            brand: brand || null,
-          },
-          notionData: {
-            rootNotionPageId: null,
-            recordMap: null,
-            theme: null,
-          },
-          meta: {
-            enableCustomMetatag: false,
-            metaTitle: null,
-            metaDescription: null,
-            metaImage: null,
-            metaUrl: `https://${domain}/${slug}`,
-            metaFavicon: "/favicon.ico",
-          },
-          showPoweredByBanner: false,
-          showAccountCreationSlide: false,
-          useAdvancedExcelViewer: false,
-          useCustomAccessForm: false,
-          logoOnAccessForm: false,
-        },
-        revalidate: 60,
-      };
-    }
-
-    if (!link) {
-      return {
-        notFound: true,
-      };
+      return { notFound: true };
     }
 
     // Manage the data for the document link
@@ -312,7 +268,7 @@ export default function ViewPage({
   textSelectionEnabled,
   error,
 }: {
-  linkData: DocumentLinkData | DataroomLinkData | WorkflowLinkData;
+  linkData: DocumentLinkData | DataroomLinkData;
   notionData: {
     rootNotionPageId: string | null;
     recordMap: ExtendedRecordMap | null;
@@ -378,30 +334,6 @@ export default function ViewPage({
     preview?: string;
   };
   const { linkType } = linkData;
-
-  // Render workflow access view for WORKFLOW_LINK
-  if (linkType === "WORKFLOW_LINK") {
-    const { entryLinkId, domain, slug, brand } = linkData as WorkflowLinkData;
-
-    return (
-      <>
-        <CustomMetaTag
-          favicon={meta.metaFavicon}
-          enableBranding={false}
-          title="Access Workflow | Powered by Hanzo Dataroom"
-          description={null}
-          imageUrl={null}
-          url={meta.metaUrl ?? ""}
-        />
-        <WorkflowAccessView
-          entryLinkId={entryLinkId}
-          domain={domain}
-          slug={slug}
-          brand={brand}
-        />
-      </>
-    );
-  }
 
   // Render the document view for DOCUMENT_LINK
   if (linkType === "DOCUMENT_LINK") {

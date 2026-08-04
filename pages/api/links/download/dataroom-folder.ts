@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { getTeamStorageConfigById } from "@/features/storage/config";
+import { getStorageConfig } from "@/lib/storage/config";
 import { ItemType, ViewType } from "@prisma/client";
 
 import { verifyDataroomSessionInPagesRouter } from "@/lib/auth/dataroom-auth";
@@ -422,7 +422,7 @@ export default async function handler(
     }
 
     const teamId = view.link.teamId!;
-    const storageConfig = await getTeamStorageConfigById(teamId);
+    const storageConfig = getStorageConfig();
     const dataroom = await prisma.dataroom.findUnique({
       where: { id: dataroomId },
       select: { name: true },

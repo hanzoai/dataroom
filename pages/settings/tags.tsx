@@ -208,7 +208,6 @@ export default function TagSetting() {
               tagForm={tagForm}
               setTagForm={setTagForm}
               handleSubmit={handleSubmit}
-              tagCount={tagCount}
             >
               <Button>Create Tag</Button>
             </AddTagsModal>

@@ -44,11 +44,7 @@ export default function DataroomGroupLinksPage() {
             {loading ? (
               <div>Loading...</div>
             ) : (
-              <LinksTable
-                links={links}
-                targetType={"DATAROOM"}
-                dataroomName={dataroom.name}
-              />
+              <LinksTable links={links} targetType={"DATAROOM"} />
             )}
           </div>
         </div>

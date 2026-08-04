@@ -1,4 +1,4 @@
-import { BasePlan } from "../swr/use-billing";
+import { BasePlan } from "../types";
 
 type TQueueConfig = {
   name: string;

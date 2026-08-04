@@ -1,23 +1,17 @@
 import { useState } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { useUninvitedMembers } from "@/features/dataroom-invitations/lib/swr/use-dataroom-invitations";
 import {
-  MailCheckIcon,
   MoreHorizontalIcon,
   PlusCircleIcon,
-  SendIcon,
   UserXIcon,
   XIcon,
 } from "lucide-react";
 import { toast } from "sonner";
 import { mutate } from "swr";
 
-import { useFeatureFlags } from "@/lib/hooks/use-feature-flags";
-import { useDataroom } from "@/lib/swr/use-dataroom";
 import { useDataroomGroup } from "@/lib/swr/use-dataroom-groups";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -37,10 +31,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { TimestampTooltip } from "@/components/ui/timestamp-tooltip";
 import { VisitorAvatar } from "@/components/visitors/visitor-avatar";
 
-import { InviteViewersModal } from "@/features/dataroom-invitations/components/invite-viewers-modal";
 import { AddGroupMemberModal } from "./add-member-modal";
 
 export default function GroupMemberTable({
@@ -52,18 +44,10 @@ export default function GroupMemberTable({
 }) {
   const teamInfo = useTeam();
   const teamId = teamInfo?.currentTeam?.id;
-  const { dataroom } = useDataroom();
   const { viewerGroupMembers, viewerGroupDomains, viewerGroupAllowAll } =
     useDataroomGroup();
-  const {
-    uninvitedCount,
-    uninvitedEmails,
-    mutate: mutateUninvited,
-  } = useUninvitedMembers(dataroomId, groupId);
-  const { isFeatureEnabled } = useFeatureFlags();
 
   const [addMembersOpen, setAddMembersOpen] = useState<boolean>(false);
-  const [inviteOpen, setInviteOpen] = useState<boolean>(false);
 
   const groupKey = teamId
     ? `/api/teams/${teamId}/datarooms/${dataroomId}/groups/${groupId}`
@@ -176,36 +160,15 @@ export default function GroupMemberTable({
                 Allow all emails
               </span>
             </div>
-            <div className="flex items-center gap-2">
-              <Button
-                size="sm"
-                onClick={() => setAddMembersOpen(true)}
-                className="h-8 gap-1"
-                disabled={viewerGroupAllowAll}
-              >
-                <PlusCircleIcon className="h-4 w-4" />
-                Add members
-              </Button>
-              {isFeatureEnabled("dataroomInvitations") && (
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  onClick={() => setInviteOpen(true)}
-                  className="relative h-8 gap-1"
-                >
-                  <SendIcon className="h-4 w-4" />
-                  Share invite
-                  {uninvitedCount > 0 ? (
-                    <Badge
-                      variant="secondary"
-                      className="ml-2 h-5 rounded-full px-2 text-xs font-medium"
-                    >
-                      {uninvitedCount}
-                    </Badge>
-                  ) : null}
-                </Button>
-              )}
-            </div>
+            <Button
+              size="sm"
+              onClick={() => setAddMembersOpen(true)}
+              className="h-8 gap-1"
+              disabled={viewerGroupAllowAll}
+            >
+              <PlusCircleIcon className="h-4 w-4" />
+              Add members
+            </Button>
           </div>
         </div>
         <div className="rounded-md border">
@@ -285,7 +248,6 @@ export default function GroupMemberTable({
                     ))}
                   {viewerGroupMembers ? (
                     viewerGroupMembers.map((viewer) => {
-                      const latestInvitation = viewer.viewer.invitations?.[0];
                       return (
                         <TableRow key={viewer.id} className="group/row">
                           {/* Name */}
@@ -298,15 +260,6 @@ export default function GroupMemberTable({
                                 <div className="focus:outline-none">
                                   <p className="flex items-center gap-x-2 overflow-visible text-sm font-medium text-gray-800 dark:text-gray-200">
                                     {viewer.viewer.email}
-                                    {latestInvitation && (
-                                      <TimestampTooltip
-                                        timestamp={latestInvitation.sentAt}
-                                        side="right"
-                                        rows={["local", "utc"]}
-                                      >
-                                        <MailCheckIcon className="h-4 w-4 text-blue-500 hover:text-blue-600" />
-                                      </TimestampTooltip>
-                                    )}
                                   </p>
                                 </div>
                               </div>
@@ -372,27 +325,6 @@ export default function GroupMemberTable({
         open={addMembersOpen}
         setOpen={setAddMembersOpen}
       />
-      {isFeatureEnabled("dataroomInvitations") && (
-        <InviteViewersModal
-          open={inviteOpen}
-          setOpen={(next) => {
-            setInviteOpen(next);
-            if (!next) {
-              mutateUninvited();
-            }
-          }}
-          dataroomId={dataroomId}
-          dataroomName={dataroom?.name ?? "this dataroom"}
-          groupId={groupId}
-          defaultEmails={uninvitedEmails}
-          onSuccess={() => {
-            if (groupKey) {
-              mutate(groupKey);
-            }
-            mutateUninvited();
-          }}
-        />
-      )}
     </>
   );
 }

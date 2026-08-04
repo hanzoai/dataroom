@@ -1,11 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { isTeamPausedById } from "@/lib/billing/paused";
-
 import { sendViewedDataroomEmail } from "@/lib/emails/send-viewed-dataroom";
-import { sendViewedDataroomPausedEmail } from "@/lib/emails/send-viewed-dataroom-paused";
 import { sendViewedDocumentEmail } from "@/lib/emails/send-viewed-document";
-import { sendViewedDocumentPausedEmail } from "@/lib/emails/send-viewed-document-paused";
 import prisma from "@/lib/prisma";
 import { log } from "@/lib/utils";
 
@@ -230,9 +226,6 @@ export default async function handle(
       return res.status(400).json({ message: "No admin email found for team" });
     }
 
-    // Check if team is paused
-    const teamIsPaused = await isTeamPausedById(teamId);
-
     if (view.viewType === "DOCUMENT_VIEW") {
       const teamMembers = users
         .map((user) => user.user.email!)
@@ -257,25 +250,15 @@ export default async function handle(
         teamMembers.push(linkOwnerEmail);
       }
 
-      // send appropriate email based on team pause status
-      if (teamIsPaused) {
-        await sendViewedDocumentPausedEmail({
-          ownerEmail: adminEmail,
-          documentName: view.document!.name,
-          linkName: view.link!.name || `Link #${view.linkId.slice(-5)}`,
-          teamMembers,
-        });
-      } else {
-        await sendViewedDocumentEmail({
-          ownerEmail: adminEmail,
-          documentId: view.document!.id,
-          documentName: view.document!.name,
-          linkName: view.link!.name || `Link #${view.linkId.slice(-5)}`,
-          viewerEmail: view.viewerEmail,
-          teamMembers,
-          locationString: includeLocation ? locationString : undefined,
-        });
-      }
+      await sendViewedDocumentEmail({
+        ownerEmail: adminEmail,
+        documentId: view.document!.id,
+        documentName: view.document!.name,
+        linkName: view.link!.name || `Link #${view.linkId.slice(-5)}`,
+        viewerEmail: view.viewerEmail,
+        teamMembers,
+        locationString: includeLocation ? locationString : undefined,
+      });
     } else {
       const teamMembers = users
         .map((user) => user.user.email!)
@@ -290,25 +273,15 @@ export default async function handle(
         teamMembers.push(linkOwnerEmail);
       }
 
-      // send appropriate email based on team pause status
-      if (teamIsPaused) {
-        await sendViewedDataroomPausedEmail({
-          ownerEmail: adminEmail,
-          dataroomName: view.dataroom!.name,
-          linkName: view.link!.name || `Link #${view.linkId.slice(-5)}`,
-          teamMembers,
-        });
-      } else {
-        await sendViewedDataroomEmail({
-          ownerEmail: adminEmail,
-          dataroomId: view.dataroom!.id,
-          dataroomName: view.dataroom!.name,
-          viewerEmail: view.viewerEmail,
-          linkName: view.link!.name || `Link #${view.linkId.slice(-5)}`,
-          teamMembers,
-          locationString: includeLocation ? locationString : undefined,
-        });
-      }
+      await sendViewedDataroomEmail({
+        ownerEmail: adminEmail,
+        dataroomId: view.dataroom!.id,
+        dataroomName: view.dataroom!.name,
+        viewerEmail: view.viewerEmail,
+        linkName: view.link!.name || `Link #${view.linkId.slice(-5)}`,
+        teamMembers,
+        locationString: includeLocation ? locationString : undefined,
+      });
     }
 
     res.status(200).json({ message: "Successfully sent notification", viewId });
