@@ -6,7 +6,7 @@ import { BellRingIcon } from "lucide-react";
 
 import { useDataroom, useDataroomLinks } from "@/lib/swr/use-dataroom";
 
-import { DataroomLinkSheet } from "@/components/links/link-sheet/dataroom-link-sheet";
+import LinkSheet from "@/components/links/link-sheet";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -76,8 +76,8 @@ export const DataroomHeader = ({
             Share
           </Button>
         </div>
-        <DataroomLinkSheet
-          linkType={"DATAROOM_LINK"}
+        <LinkSheet
+          linkType="DATAROOM_LINK"
           isOpen={isLinkSheetOpen}
           setIsOpen={setIsLinkSheetOpen}
           existingLinks={links}

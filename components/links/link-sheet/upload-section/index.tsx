@@ -23,7 +23,6 @@ import { BadgeTooltip } from "@/components/ui/tooltip";
 
 import { DEFAULT_LINK_TYPE } from "..";
 import LinkItem from "../link-item";
-import { LinkUpgradeOptions } from "../link-options";
 
 function FolderSelectionModal({
   open,
@@ -131,18 +130,10 @@ function FolderSelectionModal({
 export default function UploadSection({
   data,
   setData,
-  isAllowed,
-  handleUpgradeStateChange,
   targetId,
 }: {
   data: DEFAULT_LINK_TYPE;
   setData: React.Dispatch<React.SetStateAction<DEFAULT_LINK_TYPE>>;
-  isAllowed: boolean;
-  handleUpgradeStateChange: ({
-    state,
-    trigger,
-    plan,
-  }: LinkUpgradeOptions) => void;
   targetId: string;
 }) {
   const { enableUpload, isFileRequestOnly, uploadFolderId, uploadFolderName } =
@@ -196,15 +187,6 @@ export default function UploadSection({
         tooltipContent="Visitors can upload files to the dataroom."
         enabled={enabled}
         action={handleUpload}
-        isAllowed={isAllowed}
-        requiredPlan="data rooms plus"
-        upgradeAction={() =>
-          handleUpgradeStateChange({
-            state: true,
-            trigger: "link_sheet_upload_section",
-            plan: "Data Rooms Plus",
-          })
-        }
       />
 
       {enabled && (

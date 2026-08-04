@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 
 import { motion } from "motion/react";
 
+import { FADE_IN_ANIMATION_SETTINGS } from "@/lib/constants";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -12,26 +14,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { FADE_IN_ANIMATION_SETTINGS } from "@/lib/constants";
-
 import { DEFAULT_LINK_TYPE } from ".";
 import LinkItem from "./link-item";
-import { LinkUpgradeOptions } from "./link-options";
 
 export default function QuestionSection({
   data,
   setData,
-  isAllowed,
-  handleUpgradeStateChange,
 }: {
   data: DEFAULT_LINK_TYPE;
   setData: React.Dispatch<React.SetStateAction<DEFAULT_LINK_TYPE>>;
-  isAllowed: boolean;
-  handleUpgradeStateChange: ({
-    state,
-    trigger,
-    plan,
-  }: LinkUpgradeOptions) => void;
 }) {
   const { enableQuestion, questionText, questionType } = data;
   const [enabled, setEnabled] = useState<boolean>(false);
@@ -54,15 +45,6 @@ export default function QuestionSection({
         tooltipContent="Create a concise question for visitor feedback."
         enabled={enabled}
         action={handleQuestion}
-        isAllowed={isAllowed}
-        requiredPlan="business"
-        upgradeAction={() =>
-          handleUpgradeStateChange({
-            state: true,
-            trigger: "link_sheet_question_section",
-            plan: "Business",
-          })
-        }
       />
 
       {enabled && (

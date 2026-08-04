@@ -5,17 +5,12 @@ export type BetaFeatures =
   | "incomingWebhooks"
   | "roomChangeNotifications"
   | "webhooks"
-  | "conversations"
   | "dataroomUpload"
   | "inDocumentLinks"
   | "usStorage"
   | "dataroomIndex"
   | "slack"
   | "annotations"
-  | "dataroomInvitations"
-  | "workflows"
-  | "ai"
-  | "sso"
   | "textSelection";
 
 type BetaFeaturesRecord = Record<BetaFeatures, string[]>;
@@ -26,17 +21,12 @@ export const getFeatureFlags = async ({ teamId }: { teamId?: string }) => {
     incomingWebhooks: false,
     roomChangeNotifications: false,
     webhooks: false,
-    conversations: false,
     dataroomUpload: false,
     inDocumentLinks: false,
     usStorage: false,
     dataroomIndex: false,
     slack: false,
     annotations: false,
-    dataroomInvitations: false,
-    workflows: false,
-    ai: false,
-    sso: false,
     textSelection: false,
   };
 

@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 import { useTeam } from "@/context/team-context";
 import { DocumentStorageType } from "@prisma/client";
@@ -10,11 +10,7 @@ import { toast } from "sonner";
 import { mutate } from "swr";
 
 import { useAnalytics } from "@/lib/analytics";
-import {
-  FREE_PLAN_ACCEPTED_FILE_TYPES,
-  FULL_PLAN_ACCEPTED_FILE_TYPES,
-  SUPPORTED_DOCUMENT_MIME_TYPES,
-} from "@/lib/constants";
+import { FULL_PLAN_ACCEPTED_FILE_TYPES } from "@/lib/constants";
 import { DocumentData, createDocument } from "@/lib/documents/create-document";
 import { resumableUpload } from "@/lib/files/tus-upload";
 import {
@@ -24,23 +20,20 @@ import {
   isSystemFile,
 } from "@/lib/folders/create-folder";
 import { usePlan } from "@/lib/swr/use-billing";
-import useLimits from "@/lib/swr/use-limits";
 import { useTeamSettings } from "@/lib/swr/use-team-settings";
 import { CustomUser } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { getSupportedContentType } from "@/lib/utils/get-content-type";
 import {
+  UPLOAD_LIMITS,
   getFileSizeLimit,
-  getFileSizeLimits,
 } from "@/lib/utils/get-file-size-limits";
 import { getPagesCount } from "@/lib/utils/get-page-number-count";
 
 // Originally these mime values were directly used in the dropzone hook.
 // There was a solid reason to take them out of the scope, primarily to solve a browser compatibility issue to determine the file type when user dropped a folder.
 // you will figure out how this change helped to fix the compatibility issue once you have went through reading of `getFilesFromDropEvent` and `traverseFolder`
-const acceptableDropZoneMimeTypesWhenIsFreePlanAndNotTrial =
-  FREE_PLAN_ACCEPTED_FILE_TYPES;
-const allAcceptableDropZoneMimeTypes = FULL_PLAN_ACCEPTED_FILE_TYPES;
+const acceptableDropZoneFileTypes = FULL_PLAN_ACCEPTED_FILE_TYPES;
 
 interface FileWithPaths extends File {
   path?: string;
@@ -95,15 +88,10 @@ export default function UploadZone({
   dataroomName,
 }: UploadZoneProps) {
   const analytics = useAnalytics();
-  const { plan, isFree, isTrial } = usePlan();
+  const { plan } = usePlan();
   const router = useRouter();
   const teamInfo = useTeam();
   const { data: session } = useSession();
-  const { limits, canAddDocuments, isPaused } = useLimits();
-  const hasDocumentLimit = limits?.documents != null && limits.documents > 0;
-  const remainingDocuments = hasDocumentLimit
-    ? limits.documents - (limits?.usage?.documents ?? 0)
-    : Infinity;
 
   // Fetch team settings with proper revalidation - ensures settings stay fresh across tabs
   const { settings: teamSettings } = useTeamSettings(teamInfo?.currentTeam?.id);
@@ -114,7 +102,6 @@ export default function UploadZone({
   // Using promise-lock pattern to prevent race conditions during concurrent folder creation
   const dataroomFolderPathRef = useRef<string | null>(null);
   const dataroomFolderCreationPromiseRef = useRef<Promise<string> | null>(null);
-  const fileLimitTruncatedRef = useRef(false);
 
   // Reset the cached dataroom folder path when the replication setting changes
   // This ensures we don't use stale cached paths if the setting is toggled
@@ -122,21 +109,6 @@ export default function UploadZone({
     dataroomFolderPathRef.current = null;
     dataroomFolderCreationPromiseRef.current = null;
   }, [replicateDataroomFolders, dataroomId]);
-
-  const fileSizeLimits = useMemo(
-    () =>
-      getFileSizeLimits({
-        limits,
-        isFree,
-        isTrial,
-      }),
-    [limits, isFree, isTrial],
-  );
-
-  const acceptableDropZoneFileTypes =
-    isFree && !isTrial
-      ? acceptableDropZoneMimeTypesWhenIsFreePlanAndNotTrial
-      : allAcceptableDropZoneMimeTypes;
 
   // Helper function to get or create the dataroom folder in "All Documents"
   // Uses promise-lock pattern to prevent concurrent creation attempts
@@ -229,7 +201,7 @@ export default function UploadZone({
       );
 
       if (hasTooManyFiles) {
-        const maxFiles = fileSizeLimits.maxFiles ?? 150;
+        const maxFiles = UPLOAD_LIMITS.maxFiles;
         toast.error(
           `You're trying to upload ${rejectedFiles.length} files, but you can only upload up to ${maxFiles} files at once. Please upload in smaller batches.`,
           { duration: 8000 },
@@ -246,101 +218,32 @@ export default function UploadZone({
       const rejected = rejectedFiles.map(({ file, errors }) => {
         let message = "";
         if (errors.find(({ code }) => code === "file-too-large")) {
-          const fileSizeLimitMB = getFileSizeLimit(file.type, fileSizeLimits);
-          message = `File size too big (max. ${fileSizeLimitMB} MB). Upgrade to a paid plan to increase the limit.`;
+          message = `File size too big (max. ${getFileSizeLimit(file.type)} MB)`;
         } else if (errors.find(({ code }) => code === "file-invalid-type")) {
-          const isSupported = SUPPORTED_DOCUMENT_MIME_TYPES.includes(file.type);
-          message = `File type not supported ${
-            isFree && !isTrial && isSupported ? `on free plan` : ""
-          }`;
+          message = "File type not supported";
         }
         return { fileName: file.name, message };
       });
       onUploadRejected(rejected);
     },
-    [onUploadRejected, fileSizeLimits, isFree, isTrial],
+    [onUploadRejected],
   );
 
   const onDrop = useCallback(
     async (acceptedFiles: FileWithPaths[]) => {
-      // Check if team is paused
-      if (isPaused) {
-        toast.error(
-          "Your subscription is paused. Resume your subscription to upload documents.",
-          {
-            action: {
-              label: "Go to Billing",
-              onClick: () => router.push("/settings/billing"),
-            },
-          },
-        );
-        return;
-      }
-
-      if (hasDocumentLimit && remainingDocuments <= 0) {
-        toast.error(
-          `You've reached your plan's document limit (${limits?.usage?.documents}/${limits?.documents} documents). Upgrade your plan to upload more.`,
-          {
-            action: {
-              label: "Upgrade",
-              onClick: () => router.push("/settings/billing"),
-            },
-            duration: 8000,
-          },
-        );
-        return;
-      }
-
-      let filesToUpload = acceptedFiles;
-
-      if (fileLimitTruncatedRef.current) {
-        // Folder traversal was already capped at remainingDocuments –
-        // no extra folders were created, just show the warning.
-        fileLimitTruncatedRef.current = false;
-        toast.warning(
-          `Your upload was limited to ${acceptedFiles.length} file${acceptedFiles.length === 1 ? "" : "s"} because your plan only allows ${remainingDocuments} more document${remainingDocuments === 1 ? "" : "s"} (${limits?.usage?.documents}/${limits?.documents} used).`,
-          {
-            action: {
-              label: "Upgrade",
-              onClick: () => router.push("/settings/billing"),
-            },
-            duration: 10000,
-          },
-        );
-      } else if (hasDocumentLimit && acceptedFiles.length > remainingDocuments) {
-        // Safety net for the file-picker path (no folder traversal) or
-        // race conditions where the cap was slightly exceeded.
-        const skippedCount = acceptedFiles.length - remainingDocuments;
-        toast.warning(
-          `You're trying to upload ${acceptedFiles.length} files, but your plan only allows ${remainingDocuments} more document${remainingDocuments === 1 ? "" : "s"} (${limits?.usage?.documents}/${limits?.documents} used). ${skippedCount} file${skippedCount === 1 ? "" : "s"} will be skipped.`,
-          {
-            action: {
-              label: "Upgrade",
-              onClick: () => router.push("/settings/billing"),
-            },
-            duration: 10000,
-          },
-        );
-        filesToUpload = acceptedFiles.slice(0, remainingDocuments);
-      }
-
       // Validate files and separate into valid and invalid
-      const validatedFiles = filesToUpload.reduce<{
+      const validatedFiles = acceptedFiles.reduce<{
         valid: FileWithPaths[];
         invalid: { fileName: string; message: string }[];
       }>(
         (acc, file) => {
-          const fileSizeLimitMB = getFileSizeLimit(file.type, fileSizeLimits);
+          const fileSizeLimitMB = getFileSizeLimit(file.type);
           const fileSizeLimit = fileSizeLimitMB * 1024 * 1024; // Convert to bytes
 
           if (file.size > fileSizeLimit) {
             acc.invalid.push({
               fileName: file.name,
-              message: `File size too big (max. ${fileSizeLimitMB} MB)${
-                isFree && !isTrial
-                  ? ". Upgrade to a paid plan to increase the limit"
-                  : ""
-              }`,
+              message: `File size too big (max. ${fileSizeLimitMB} MB)`,
             });
           } else {
             acc.valid.push(file);
@@ -383,7 +286,7 @@ export default function UploadZone({
           const buffer = await file.arrayBuffer();
           numPages = await getPagesCount(buffer);
 
-          if (numPages > fileSizeLimits.maxPages) {
+          if (numPages > UPLOAD_LIMITS.maxPages) {
             setUploads((prev) =>
               prev.filter((upload) => upload.fileName !== file.name),
             );
@@ -391,7 +294,7 @@ export default function UploadZone({
             return setRejectedFiles((prev) => [
               {
                 fileName: file.name,
-                message: `File has too many pages (max. ${fileSizeLimits.maxPages})`,
+                message: `File has too many pages (max. ${UPLOAD_LIMITS.maxPages})`,
               },
               ...prev,
             ]);
@@ -585,35 +488,13 @@ export default function UploadZone({
       }));
       onUploadSuccess?.(dataroomDocuments);
     },
-    [
-      onUploadStart,
-      onUploadProgress,
-      endpointTargetType,
-      fileSizeLimits,
-      isFree,
-      isTrial,
-      isPaused,
-      hasDocumentLimit,
-      remainingDocuments,
-    ],
+    [onUploadStart, onUploadProgress, endpointTargetType],
   );
 
   const getFilesFromEvent = useCallback(
     async (event: DropEvent) => {
       // This callback also run when event.type =`dragenter`. We only need to compute files when the event.type is `drop`.
       if ("type" in event && event.type !== "drop" && event.type !== "change") {
-        return [];
-      }
-
-      fileLimitTruncatedRef.current = false;
-      const fileLimit =
-        hasDocumentLimit && isFinite(remainingDocuments)
-          ? Math.max(0, remainingDocuments)
-          : Infinity;
-      let collectedFileCount = 0;
-
-      // Early check: skip folder traversal (and folder creation) if document limit is already reached
-      if (fileLimit <= 0) {
         return [];
       }
 
@@ -635,10 +516,6 @@ export default function UploadZone({
         let files: FileWithPaths[] = [];
 
         if (isSystemFile(entry.name)) {
-          return files;
-        }
-
-        if (collectedFileCount >= fileLimit) {
           return files;
         }
 
@@ -787,10 +664,6 @@ export default function UploadZone({
             return files;
           }
 
-          if (collectedFileCount >= fileLimit) {
-            return files;
-          }
-
           let file = await new Promise<FileWithPaths>((resolve) =>
             (entry as FileSystemFileEntry).file(resolve),
           );
@@ -845,7 +718,6 @@ export default function UploadZone({
           file.dataroomUploadPath = dataroomParentPath;
 
           files.push(file);
-          collectedFileCount++;
         }
 
         return files;
@@ -891,10 +763,6 @@ export default function UploadZone({
         }
       }
 
-      if (isFinite(fileLimit) && collectedFileCount >= fileLimit) {
-        fileLimitTruncatedRef.current = true;
-      }
-
       return filesToBePassedToOnDrop;
     },
     [
@@ -905,18 +773,14 @@ export default function UploadZone({
       dataroomName,
       analytics,
       setRejectedFiles,
-      acceptableDropZoneFileTypes,
       getOrCreateDataroomFolder,
-      hasDocumentLimit,
-      remainingDocuments,
     ],
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: acceptableDropZoneFileTypes,
     multiple: true,
-    // maxSize: maxSize * 1024 * 1024, // 30 MB
-    maxFiles: fileSizeLimits.maxFiles ?? 150,
+    maxFiles: UPLOAD_LIMITS.maxFiles,
     onDrop,
     onDropRejected,
     getFilesFromEvent,
@@ -953,9 +817,7 @@ export default function UploadZone({
                   Drop your file(s) here
                 </span>
                 <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                  {isFree && !isTrial
-                    ? `Only *.pdf, *.xls, *.xlsx, *.csv, *.tsv, *.ods, *.png, *.jpeg, *.jpg`
-                    : `Only *.pdf, *.pptx, *.docx, *.xlsx, *.xls, *.csv, *.tsv, *.ods, *.ppt, *.odp, *.doc, *.odt, *.dwg, *.dxf, *.png, *.jpg, *.jpeg, *.mp4, *.mov, *.avi, *.webm, *.ogg`}
+                  {`Only *.pdf, *.pptx, *.docx, *.xlsx, *.xls, *.csv, *.tsv, *.ods, *.ppt, *.odp, *.doc, *.odt, *.dwg, *.dxf, *.png, *.jpg, *.jpeg, *.mp4, *.mov, *.avi, *.webm, *.ogg`}
                 </p>
               </div>
             </div>

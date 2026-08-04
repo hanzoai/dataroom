@@ -1,12 +1,10 @@
 import { useMemo, useState } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { PlanEnum } from "@/lib/billing/legacy/constants";
 import { CircleHelpIcon, FileTextIcon, PlusIcon } from "lucide-react";
 import { mutate } from "swr";
 
 import { useAgreements } from "@/lib/swr/use-agreements";
-import { usePlan } from "@/lib/swr/use-billing";
 
 import AgreementCard from "@/components/agreements/agreement-card";
 import AppLayout from "@/components/layouts/app";
@@ -14,19 +12,10 @@ import AgreementSheet from "@/components/links/link-sheet/agreement-panel";
 import { SettingsHeader } from "@/components/settings/settings-header";
 import { Button } from "@/components/ui/button";
 import { BadgeTooltip } from "@/components/ui/tooltip";
-import { createUpgradeButton } from "@/components/ui/upgrade-button";
-
-const AgreementsUpgradeButton = createUpgradeButton(
-  "Create Agreements",
-  PlanEnum.Business,
-  "nda_agreements_page",
-  { highlightItem: ["nda"] },
-);
 
 export default function NdaAgreements() {
   const { agreements, loading, error } = useAgreements();
   const teamInfo = useTeam();
-  const { isTrial, isBusiness, isDatarooms, isDataroomsPlus } = usePlan();
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -66,14 +55,10 @@ export default function NdaAgreements() {
               </p>
             </div>
             <ul className="flex items-center justify-between gap-4">
-              {isTrial || isBusiness || isDatarooms || isDataroomsPlus ? (
-                <Button variant="outline" onClick={() => setIsOpen(true)}>
-                  <FileTextIcon className="h-4 w-4" />
-                  Create agreement
-                </Button>
-              ) : (
-                <AgreementsUpgradeButton />
-              )}
+              <Button variant="outline" onClick={() => setIsOpen(true)}>
+                <FileTextIcon className="h-4 w-4" />
+                Create agreement
+              </Button>
             </ul>
           </div>
           {loading ? (
@@ -119,18 +104,10 @@ export default function NdaAgreements() {
                   Create your first NDA agreement to get started
                 </p>
               </div>
-              {isTrial || isBusiness || isDatarooms || isDataroomsPlus ? (
-                <Button variant="outline" onClick={() => setIsOpen(true)}>
-                  <FileTextIcon className="h-4 w-4" />
-                  Create NDA agreement
-                </Button>
-              ) : (
-                <AgreementsUpgradeButton
-                  text="Create NDA Agreements"
-                  trigger="nda_agreements_page_empty_state"
-                  variant="outline"
-                />
-              )}
+              <Button variant="outline" onClick={() => setIsOpen(true)}>
+                <FileTextIcon className="h-4 w-4" />
+                Create NDA agreement
+              </Button>
             </div>
           )}
         </div>

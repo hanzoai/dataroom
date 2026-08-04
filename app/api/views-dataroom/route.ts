@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { reportDeniedAccessAttempt } from "@/features/access-notifications";
 import { getStorageConfig } from "@/lib/storage/config";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { ItemType, LinkAudienceType } from "@prisma/client";
@@ -130,7 +129,6 @@ export async function POST(request: NextRequest) {
           select: {
             plan: true,
             globalBlockList: true,
-            agentsEnabled: true,
             pauseStartsAt: true,
           },
         },
@@ -143,7 +141,6 @@ export async function POST(request: NextRequest) {
         enableUpload: true,
         dataroom: {
           select: {
-            agentsEnabled: true,
             name: true,
           },
         },
@@ -316,7 +313,6 @@ export async function POST(request: NextRequest) {
         );
       }
       if (globalBlockCheck.isBlocked) {
-        waitUntil(reportDeniedAccessAttempt(link, email, "global"));
 
         return NextResponse.json({ message: "Access denied" }, { status: 403 });
       }
@@ -338,7 +334,6 @@ export async function POST(request: NextRequest) {
 
         // Deny access if the email is not allowed
         if (!isAllowed) {
-          waitUntil(reportDeniedAccessAttempt(link, email, "allow"));
 
           return NextResponse.json(
             { message: "Unauthorized access" },
@@ -356,7 +351,6 @@ export async function POST(request: NextRequest) {
 
         // Deny access if the email is denied
         if (isDenied) {
-          waitUntil(reportDeniedAccessAttempt(link, email, "deny"));
 
           return NextResponse.json(
             { message: "Unauthorized access" },
@@ -400,7 +394,6 @@ export async function POST(request: NextRequest) {
             : false;
 
           if (!isMember && !hasDomainAccess) {
-            waitUntil(reportDeniedAccessAttempt(link, email, "allow"));
             return NextResponse.json(
               { message: "Unauthorized access" },
               { status: 403 },
@@ -674,11 +667,6 @@ export async function POST(request: NextRequest) {
         }),
     };
 
-    const isPaused =
-      link.team?.pauseStartsAt && link.team?.pauseStartsAt <= new Date()
-        ? true
-        : false;
-
     // ** DATAROOM_VIEW **
     if (viewType === "DATAROOM_VIEW") {
       try {
@@ -706,7 +694,6 @@ export async function POST(request: NextRequest) {
               dataroomId: link.dataroomId!,
               teamId: link.teamId!,
               enableNotification: link.enableNotification,
-              isPaused,
             }),
           );
 
@@ -720,7 +707,6 @@ export async function POST(request: NextRequest) {
                     linkId,
                     viewerEmail: verifiedEmail ?? email,
                     viewerId: viewer?.id,
-                    teamIsPaused: isPaused,
                   });
                 } catch (error) {
                   console.error("Error sending Slack notification:", error);
@@ -742,9 +728,7 @@ export async function POST(request: NextRequest) {
           notionData: undefined,
           verificationToken: hashedVerificationToken,
           viewerId: viewer?.id,
-          conversationsEnabled: link.enableConversation,
           enableVisitorUpload: link.enableUpload,
-          agentsEnabled: link.dataroom?.agentsEnabled ?? false,
           dataroomName: link.dataroom?.name,
           ...(isTeamMember && { isTeamMember: true }),
         };
@@ -822,7 +806,6 @@ export async function POST(request: NextRequest) {
               dataroomId: link.dataroomId!,
               teamId: link.teamId!,
               enableNotification: link.enableNotification,
-              isPaused,
             }),
           );
         }
@@ -851,7 +834,6 @@ export async function POST(request: NextRequest) {
                   linkId,
                   viewerEmail: verifiedEmail ?? email,
                   viewerId: viewer?.id,
-                  teamIsPaused: isPaused,
                 });
               } catch (error) {
                 console.error("Error sending Slack notification:", error);
@@ -1055,8 +1037,6 @@ export async function POST(request: NextRequest) {
             : undefined,
         canDownload: canDownload,
         viewerId: viewer?.id,
-        conversationsEnabled: link.enableConversation,
-        agentsEnabled: link.dataroom?.agentsEnabled ?? false,
         dataroomName: link.dataroom?.name,
         ...(isTeamMember && { isTeamMember: true }),
       };

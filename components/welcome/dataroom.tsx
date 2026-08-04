@@ -64,22 +64,10 @@ export default function Dataroom() {
       >
         <Button
           className="px-10 text-base font-medium"
-          onClick={() =>
-            router.push({
-              pathname: "/welcome",
-              query: {
-                type: "dataroom-trial",
-              },
-            })
-          }
+          onClick={() => router.push("/datarooms")}
         >
-          Get a data room trial
+          Create a data room
         </Button>
-        <span className="text-xs text-muted-foreground">
-          Data rooms are available on our `Data Rooms` plans and on the
-          `Business` plan. <br />
-          You receive a 7-day trial.
-        </span>
       </motion.div>
     </motion.div>
   );

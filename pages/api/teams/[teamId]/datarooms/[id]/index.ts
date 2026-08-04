@@ -5,7 +5,6 @@ import { DefaultPermissionStrategy } from "@prisma/client";
 import { getServerSession } from "next-auth/next";
 
 import { errorhandler } from "@/lib/errorHandler";
-import { getFeatureFlags } from "@/lib/featureFlags";
 import prisma from "@/lib/prisma";
 import { CustomUser } from "@/lib/types";
 
@@ -116,7 +115,6 @@ export default async function handle(
         allowBulkDownload,
         showLastUpdated,
         tags,
-        agentsEnabled,
         introductionEnabled,
         introductionContent,
       } = req.body as {
@@ -127,31 +125,9 @@ export default async function handle(
         allowBulkDownload?: boolean;
         showLastUpdated?: boolean;
         tags?: string[];
-        agentsEnabled?: boolean;
         introductionEnabled?: boolean;
         introductionContent?: any;
       };
-
-      const featureFlags = await getFeatureFlags({ teamId: team.id });
-      const isDataroomsPlus = team.plan.includes("datarooms-plus") || team.plan.includes("datarooms-premium");
-      const isTrial = team.plan.includes("drtrial");
-
-      if (
-        enableChangeNotifications !== undefined &&
-        !isDataroomsPlus &&
-        !isTrial &&
-        !featureFlags.roomChangeNotifications
-      ) {
-        return res.status(403).json({
-          message: "This feature is not available in your plan",
-        });
-      }
-
-      if (agentsEnabled !== undefined && !featureFlags.ai) {
-        return res.status(403).json({
-          message: "This feature is not available in your plan",
-        });
-      }
 
       const updatedDataroom = await prisma.$transaction(async (tx) => {
         const dataroom = await tx.dataroom.update({
@@ -172,9 +148,6 @@ export default async function handle(
             }),
             ...(typeof showLastUpdated === "boolean" && {
               showLastUpdated,
-            }),
-            ...(typeof agentsEnabled === "boolean" && {
-              agentsEnabled,
             }),
             ...(typeof introductionEnabled === "boolean" && {
               introductionEnabled,

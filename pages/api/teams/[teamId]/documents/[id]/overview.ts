@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { getLimits } from "@/lib/billing/limits/server";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth/next";
@@ -50,7 +49,7 @@ export default async function handle(
     }
 
     // Parallel fetch of core data
-    const [document, limits, featureFlags] = await Promise.all([
+    const [document, featureFlags] = await Promise.all([
       prisma.document.findUnique({
         where: {
           id: docId,
@@ -68,7 +67,6 @@ export default async function handle(
           numPages: true,
           ownerId: true,
           teamId: true,
-          agentsEnabled: true,
           advancedExcelEnabled: true,
           downloadOnly: true,
           createdAt: true,
@@ -112,7 +110,6 @@ export default async function handle(
           },
         },
       }),
-      getLimits({ teamId, userId }),
       getFeatureFlags({ teamId }),
     ]);
 
@@ -148,13 +145,6 @@ export default async function handle(
         primaryVersion: serializeFileSize(primaryVersion),
         hasPageLinks,
         isEmpty: !hasLinks && !hasViews, // Flag for empty state optimization
-      },
-      limits: {
-        canAddLinks: limits?.links ? limits?.usage?.links < limits.links : true,
-        canAddDocuments: limits?.documents
-          ? limits?.usage?.documents < limits.documents
-          : true,
-        canAddUsers: limits?.users ? limits?.usage?.users < limits.users : true,
       },
       featureFlags: {
         annotations: featureFlags.annotations,

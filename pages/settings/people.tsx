@@ -3,20 +3,16 @@ import { useRouter } from "next/router";
 import { useMemo, useState } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { PlanEnum } from "@/lib/billing/legacy/constants";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 import { mutate } from "swr";
 
 import { useAnalytics } from "@/lib/analytics";
-import { usePlan } from "@/lib/swr/use-billing";
 import { useInvitations } from "@/lib/swr/use-invitations";
-import useLimits from "@/lib/swr/use-limits";
 import { useGetTeam } from "@/lib/swr/use-team";
 import { useTeams } from "@/lib/swr/use-teams";
 import { CustomUser } from "@/lib/types";
 
-import { AddSeatModal } from "@/components/billing/add-seat-modal";
 import AppLayout from "@/components/layouts/app";
 import { SettingsHeader } from "@/components/settings/settings-header";
 import Folder from "@/components/shared/icons/folder";
@@ -31,19 +27,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
-import { UpgradeButton } from "@/components/ui/upgrade-button";
 
-export default function Billing() {
+export default function People() {
   const [isTeamMemberInviteModalOpen, setTeamMemberInviteModalOpen] =
     useState<boolean>(false);
-  const [isAddSeatModalOpen, setAddSeatModalOpen] = useState<boolean>(false);
   const [leavingUserId, setLeavingUserId] = useState<string>("");
 
   const { data: session } = useSession();
   const { team, loading } = useGetTeam()!;
   const teamInfo = useTeam();
-  const { isTrial } = usePlan();
-  const { canAddUsers, showUpgradePlanModal } = useLimits();
   const { teams } = useTeams();
   const analytics = useAnalytics();
 
@@ -139,7 +131,6 @@ export default function Billing() {
     await mutate(`/api/teams/${teamInfo?.currentTeam?.id}`);
     await mutate("/api/teams");
     mutate(`/api/teams/${teamInfo?.currentTeam?.id}/invitations`);
-    mutate(`/api/teams/${teamInfo?.currentTeam?.id}/limits`);
 
     setLeavingUserId("");
     if (isCurrentUser(userId)) {
@@ -183,7 +174,6 @@ export default function Billing() {
       teamId: teamInfo?.currentTeam?.id,
     });
     mutate(`/api/teams/${teamInfo?.currentTeam?.id}/invitations`);
-    mutate(`/api/teams/${teamInfo?.currentTeam?.id}/limits`);
 
     toast.success("Invitation resent successfully!");
   };
@@ -215,11 +205,9 @@ export default function Billing() {
     });
 
     mutate(`/api/teams/${teamInfo?.currentTeam?.id}/invitations`);
-    mutate(`/api/teams/${teamInfo?.currentTeam?.id}/limits`);
 
     toast.success("Invitation revoked successfully!");
   };
-  const showInvite = canAddUsers;
 
   return (
     <AppLayout>
@@ -244,36 +232,12 @@ export default function Billing() {
                   Teammates that have access to this project.
                 </p>
               </div>
-              {showUpgradePlanModal ? (
-                <UpgradeButton
-                  text="Invite Members"
-                  clickedPlan={isTrial ? PlanEnum.Business : PlanEnum.Pro}
-                  trigger="invite_team_members"
-                />
-              ) : (
-                <div className="flex items-center gap-2">
-                  <AddSeatModal
-                    open={isAddSeatModalOpen}
-                    setOpen={setAddSeatModalOpen}
-                  >
-                    <Button variant="outline" className="whitespace-nowrap">
-                      Add Seat
-                    </Button>
-                  </AddSeatModal>
-                  {showInvite ? (
-                    <AddTeamMembers
-                      open={isTeamMemberInviteModalOpen}
-                      setOpen={setTeamMemberInviteModalOpen}
-                    >
-                      <Button>Invite</Button>
-                    </AddTeamMembers>
-                  ) : (
-                    <Button disabled title="Add a seat to invite more members">
-                      Invite
-                    </Button>
-                  )}
-                </div>
-              )}
+              <AddTeamMembers
+                open={isTeamMemberInviteModalOpen}
+                setOpen={setTeamMemberInviteModalOpen}
+              >
+                <Button>Invite</Button>
+              </AddTeamMembers>
             </div>
           </div>
 
@@ -324,11 +288,6 @@ export default function Billing() {
                     <span className="text-sm capitalize text-foreground">
                       {member.role.toLowerCase()}
                     </span>
-                    {member.status === "BLOCKED_TRIAL_EXPIRED" && (
-                      <span className="text-xs font-medium text-red-500">
-                        Blocked (Trial Expired)
-                      </span>
-                    )}
                   </div>
                   {leavingUserId === member.userId ? (
                     <span className="text-xs">leaving...</span>

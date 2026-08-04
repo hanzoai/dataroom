@@ -3,8 +3,8 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { type HandleUploadBody, handleUpload } from "@vercel/blob/client";
 import { getServerSession } from "next-auth/next";
 
-import prisma from "@/lib/prisma";
 import { CustomUser } from "@/lib/types";
+import { UPLOAD_LIMITS } from "@/lib/utils/get-file-size-limits";
 
 import { authOptions } from "../auth/[...nextauth]";
 
@@ -27,29 +27,6 @@ export default async function handler(
           throw new Error("Unauthorized");
         }
 
-        const userId = (session.user as CustomUser).id;
-        const team = await prisma.team.findFirst({
-          where: {
-            users: {
-              some: {
-                userId,
-              },
-            },
-          },
-          select: {
-            plan: true,
-          },
-        });
-
-        let maxSize = 30 * 1024 * 1024; // 30 MB
-        const stripedTeamPlan = team?.plan.replace("+old", "");
-        if (
-          stripedTeamPlan &&
-          ["business", "datarooms", "datarooms-plus", "datarooms-premium"].includes(stripedTeamPlan)
-        ) {
-          maxSize = 100 * 1024 * 1024; // 100 MB
-        }
-
         return {
           addRandomSuffix: true,
           allowedContentTypes: [
@@ -57,7 +34,7 @@ export default async function handler(
             "application/vnd.ms-excel",
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
           ],
-          maximumSizeInBytes: maxSize, // 30 MB
+          maximumSizeInBytes: UPLOAD_LIMITS.document * 1024 * 1024,
           metadata: JSON.stringify({
             // optional, sent to your server on upload completion
             userId: (session.user as CustomUser).id,

@@ -1,7 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { isTeamPausedById } from "@/lib/billing/paused";
-import { getLimits } from "@/lib/billing/limits/server";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth/next";
@@ -257,29 +255,12 @@ export default async function handle(
         return res.status(401).end("Unauthorized");
       }
 
-      // Check if team is paused
-      const teamIsPaused = await isTeamPausedById(teamId);
-      if (teamIsPaused) {
-        return res.status(403).json({
-          error:
-            "Team is currently paused. New dataroom creation is not available.",
-        });
-      }
-
       // Limits: Check if the user has reached the limit of datarooms in the team
       const dataroomCount = await prisma.dataroom.count({
         where: {
           teamId: teamId,
         },
       });
-
-      const limits = await getLimits({ teamId, userId });
-
-      if (limits && dataroomCount >= limits.datarooms) {
-        return res
-          .status(403)
-          .json({ message: "You have reached the limit of datarooms" });
-      }
 
       const pId = newId("dataroom");
 
