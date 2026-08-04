@@ -1,0 +1,571 @@
+<title>DRAFT — Hanzo AI Reg CF Investor Memo — Requires Securities Counsel Review</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root{
+    --bg:#f2f4f7; --panel:#fff; --ink:#141a21; --dim:#5d6b7a; --line:#d3dae2;
+    --save:#1f7a6b; --cost:#b8402f; --save-soft:#e3efec; --amber:#8a6414;
+    --seal:#c0362c; --seal-soft:#f3dedb; --slate:#5b7186; --amber-soft:#f6e9c8;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:"Helvetica Neue",Helvetica,"Segoe UI",Arial,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{--bg:#0d1117;--panel:#151c24;--ink:#e4ebf2;--dim:#8a9aab;--line:#25303c;
+          --save:#3fbfa8;--cost:#e5705c;--save-soft:#14231f;--amber:#d3a63f;
+          --seal:#e2685c;--seal-soft:#33201e;--slate:#7e97ad;--amber-soft:#2e2612}
+  }
+  :root[data-theme="dark"]{--bg:#0d1117;--panel:#151c24;--ink:#e4ebf2;--dim:#8a9aab;--line:#25303c;
+          --save:#3fbfa8;--cost:#e5705c;--save-soft:#14231f;--amber:#d3a63f;
+          --seal:#e2685c;--seal-soft:#33201e;--slate:#7e97ad;--amber-soft:#2e2612}
+  :root[data-theme="light"]{--bg:#f2f4f7;--panel:#fff;--ink:#141a21;--dim:#5d6b7a;--line:#d3dae2;
+          --save:#1f7a6b;--cost:#b8402f;--save-soft:#e3efec;--amber:#8a6414;
+          --seal:#c0362c;--seal-soft:#f3dedb;--slate:#5b7186;--amber-soft:#f6e9c8}
+
+  *{box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:68rem;margin:0 auto;padding:1.5rem 1.25rem 5rem;display:flex;flex-direction:column;gap:2.1rem}
+  h1{font-size:clamp(1.9rem,4.6vw,2.9rem);letter-spacing:-.028em;line-height:1.04;text-wrap:balance}
+  h2{font-size:1.22rem;letter-spacing:-.014em;margin-bottom:.45rem;text-wrap:balance}
+  h3{font-size:.95rem;letter-spacing:-.004em;margin-bottom:.25rem}
+  p{max-width:74ch}
+  .sub{color:var(--dim);font-size:1rem;max-width:60ch}
+  .num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+  .eyebrow{font-family:var(--mono);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--seal)}
+  section{display:flex;flex-direction:column;gap:.85rem}
+  .note{font-size:.87rem;color:var(--dim);max-width:76ch}
+  .note b,.note strong{color:var(--ink)}
+
+  /* DRAFT banner */
+  .draft{background:var(--seal-soft);border:2px solid var(--seal);border-left-width:6px;padding:1rem 1.2rem;
+         display:flex;flex-direction:column;gap:.45rem}
+  .draft .hd{font-family:var(--mono);font-size:.86rem;letter-spacing:.13em;text-transform:uppercase;color:var(--seal);font-weight:700;line-height:1.35}
+  .draft p{font-size:.86rem;color:var(--ink);max-width:88ch;line-height:1.5}
+
+  header{display:flex;flex-direction:column;gap:.85rem;border-bottom:2px solid var(--ink);padding-bottom:1.4rem}
+
+  /* label chips */
+  .t{font-family:var(--mono);font-size:.63rem;letter-spacing:.09em;text-transform:uppercase;
+     padding:.07rem .34rem;border:1px solid;white-space:nowrap;vertical-align:.08em;font-weight:600}
+  .t.f{color:var(--save);border-color:var(--save)}
+  .t.a{color:var(--slate);border-color:var(--slate)}
+  .t.e{color:var(--dim);border-color:var(--line)}
+  .t.c{color:var(--seal);border-color:var(--seal);background:var(--seal-soft)}
+
+  .legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(15rem,100%),1fr));gap:.6rem}
+  .legend div{background:var(--panel);border:1px solid var(--line);padding:.55rem .75rem;font-size:.82rem;color:var(--dim)}
+
+  /* stat strip */
+  .parts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(11rem,100%),1fr));gap:.75rem}
+  .p{background:var(--panel);border:1px solid var(--line);border-top:3px solid var(--save);padding:.7rem .9rem;display:flex;flex-direction:column;gap:.15rem}
+  .p.att{border-top-color:var(--slate)}
+  .p.est{border-top-color:var(--dim)}
+  .p .num{font-size:1.32rem;letter-spacing:-.02em;line-height:1.15}
+  .p small{color:var(--dim);font-size:.75rem;line-height:1.35}
+
+  .hero{background:var(--save-soft);border:1px solid var(--save);padding:1.1rem 1.3rem;
+        display:flex;flex-wrap:wrap;gap:1.6rem;align-items:baseline}
+  .hero .big{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:clamp(2rem,5.6vw,3.1rem);
+             letter-spacing:-.045em;color:var(--save);line-height:1}
+  .hero .l{font-size:.7rem;letter-spacing:.11em;text-transform:uppercase;color:var(--dim)}
+  .hero .kv{display:flex;flex-direction:column;gap:.2rem}
+  .hero .kv .num{font-size:1.1rem}
+
+  .scroll{overflow-x:auto;background:var(--panel);border:1px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:.84rem}
+  th,td{text-align:left;padding:.42rem .7rem;border-bottom:1px solid var(--line);white-space:nowrap}
+  th{background:var(--panel);font-family:var(--mono);font-size:.65rem;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);font-weight:600}
+  tbody tr:last-child td{border-bottom:none}
+  td.r,th.r{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+  tr.tot td{font-weight:700;border-top:2px solid var(--ink);border-bottom:none}
+  tr.tot td.r{color:var(--save)}
+  tr.sub td{color:var(--dim);font-style:italic}
+  tr.hd td{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);background:var(--bg)}
+  .drv{color:var(--dim);font-size:.76rem;font-family:var(--mono);white-space:normal;min-width:16rem}
+  td.neg{color:var(--cost)}
+
+  .presets{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+  .presets button{font:inherit;font-size:.83rem;padding:.42rem .8rem;background:var(--panel);border:1px solid var(--line);color:var(--ink);cursor:pointer}
+  .presets button:hover{border-color:var(--save)}
+  .presets button[aria-pressed="true"]{border-color:var(--save);background:var(--save-soft);color:var(--save);font-weight:650}
+  .presets button:focus-visible{outline:2px solid var(--save);outline-offset:2px}
+
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(19rem,100%),1fr));gap:.85rem}
+  .card{background:var(--panel);border:1px solid var(--line);padding:.85rem 1rem;display:flex;flex-direction:column;gap:.35rem}
+  .card.risk{border-left:3px solid var(--amber)}
+  .card.risk.sev{border-left-color:var(--seal)}
+  .card p{font-size:.86rem;color:var(--dim);max-width:none}
+  .card p b{color:var(--ink)}
+
+  .flag{background:var(--amber-soft);border:1px solid var(--amber);border-left-width:4px;padding:.8rem 1rem}
+  .flag h3{color:var(--amber);font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase}
+  .flag p{font-size:.86rem;max-width:82ch}
+
+  ol.todo{list-style:none;counter-reset:i;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(21rem,100%),1fr));gap:.5rem}
+  ol.todo li{counter-increment:i;background:var(--panel);border:1px solid var(--line);padding:.5rem .75rem;font-size:.85rem;display:flex;gap:.55rem}
+  ol.todo li::before{content:counter(i);font-family:var(--mono);font-size:.72rem;color:var(--seal);font-weight:700;padding-top:.15rem}
+
+  blockquote{border-left:4px solid var(--save);background:var(--panel);padding:1rem 1.25rem;font-size:1.04rem;line-height:1.5;font-weight:550;text-wrap:balance}
+  code{font-family:var(--mono);font-size:.85em;color:var(--dim)}
+  footer{border-top:1px solid var(--line);padding-top:1.1rem;font-size:.82rem;color:var(--dim)}
+  @media print{.presets{display:none}body{background:#fff}}
+</style>
+
+<div class="wrap">
+
+<div class="draft">
+  <div class="hd">⚠ DRAFT — REQUIRES SECURITIES COUNSEL REVIEW</div>
+  <p>Working draft for internal review. <b>Not an offer to sell or a solicitation of an offer to buy securities.</b>
+  No offering has commenced. Any Regulation Crowdfunding offering may be made only through a registered funding
+  portal or broker-dealer, pursuant to a filed Form C, and only on the terms of that Form C — which control over
+  anything on this page. The projections below are projections, not promises, and are unlikely to be achieved as
+  stated. Nothing here has been reviewed by counsel, an auditor, or the SEC. <b>Do not distribute externally in
+  this form.</b></p>
+</div>
+
+<header>
+  <div class="eyebrow">Regulation Crowdfunding · investor memo · evidence-graded</div>
+  <h1>Hanzo AI</h1>
+  <p class="sub">The open-source AI cloud and Business OS — the platform that makes the one-person
+  billion-dollar company possible. The founder is the existence proof.</p>
+</header>
+
+<section>
+  <h2>How to read every number on this page</h2>
+  <p class="note">Four tags, applied without exception. An unlabeled number is a bug.</p>
+  <div class="legend">
+    <div><span class="t f">F</span> <b>Fact</b> — measured this session against the working tree or live systems; reproducible.</div>
+    <div><span class="t a">A</span> <b>Attested</b> — supplied by the founder, not independently verified here.</div>
+    <div><span class="t e">E</span> <b>Estimate</b> — a modeling assumption; the arithmetic is shown.</div>
+    <div><span class="t c">CITE</span> <b>Missing</b> — a citation is required and is <em>not</em> present. Do not publish that line.</div>
+  </div>
+</section>
+
+<section>
+  <h2>1 · Thesis</h2>
+  <p>Hanzo AI is an <b>open-source AI cloud and Business OS</b>: one binary supplying the identity, billing,
+  commerce, observability, inference, agents and back-office surface a company otherwise assembles from two
+  hundred vendors. The wager is that the marginal cost of <em>running a company</em> is collapsing toward the cost
+  of running software, and whoever owns the substrate — open, self-hostable, one protocol end to end — becomes the
+  layer the next generation of very small, very large companies is built on. The founder is the existence proof,
+  not a metaphor for one: <b>4,973 repositories across 186 GitHub organizations, ~104 services in a single Go
+  binary, operated by one engineer</b> <span class="t f">F</span>, serving ~2M visitors/month with zero paid
+  marketing <span class="t a">A</span>. The company runs entirely on its own stack <span class="t f">F</span>.
+  We are not asking investors to believe a one-person billion-dollar company is possible. We are asking them to
+  fund the productization of the one that already exists.</p>
+</section>
+
+<section>
+  <h2>2 · Traction — verified first</h2>
+  <div class="parts">
+    <div class="p"><small>Repositories · 186 orgs</small><span class="num">4,973</span><small><span class="t f">F</span> authenticated API</small></div>
+    <div class="p"><small>Engineers operating it</small><span class="num">1</span><small><span class="t f">F</span> founder/CTO</small></div>
+    <div class="p"><small>Services, one binary</small><span class="num">~104</span><small><span class="t f">F</span></small></div>
+    <div class="p"><small>Plugin host packages</small><span class="num">316</span><small><span class="t f">F</span> vs 3,105 monolithic</small></div>
+    <div class="p"><small>Binary / RSS all-mounted</small><span class="num">19 / 14 MB</span><small><span class="t f">F</span></small></div>
+    <div class="p"><small>Plugin start cold / warm</small><span class="num">123 / 4–7 ms</span><small><span class="t f">F</span></small></div>
+    <div class="p"><small>gRPC packages</small><span class="num">65 → 0</span><small><span class="t f">F</span> <code>go list -deps</code></small></div>
+    <div class="p"><small>Per-service binary packages</small><span class="num">3,253 → 652</span><small><span class="t f">F</span></small></div>
+    <div class="p"><small>ZAP wire decode</small><span class="num">0 alloc/op</span><small><span class="t f">F</span> 3.2× the JSON path</small></div>
+    <div class="p"><small>Generated OpenAPI paths</small><span class="num">959</span><small><span class="t f">F</span> drift-gated in CI</small></div>
+    <div class="p att"><small>Visitors / month, $0 paid</small><span class="num">~2M</span><small><span class="t a">A</span> Cloudflare</small></div>
+    <div class="p att"><small>Topline revenue, 2022</small><span class="num">$8M</span><small><span class="t a">A</span> agency era</small></div>
+  </div>
+
+  <div class="card">
+    <h3>Correction of record, disclosed deliberately</h3>
+    <p>The repository count was published wrong three times before it was right — <b>548</b> (one personal
+    account), then <b>973</b> (a guessed list of twelve orgs), before the authenticated measurement produced
+    <b>4,973</b>. Both earlier figures used unauthenticated endpoints returning only <em>public</em> org
+    membership. We disclose the error because the correction is the credential: the number is now reproducible by
+    a stranger with the right token, and the method is published. One further drift flagged rather than silently
+    fixed — prior material says the <code>studio</code> repo is 813 files; measured now it is
+    <b>876 git-tracked files</b> <span class="t f">F</span>.</p>
+  </div>
+
+  <h3 style="margin-top:.5rem">Founder-attested — stronger, and today entirely uncitable</h3>
+  <p class="note">These outperform everything above as persuasion and none of them can be checked by a third
+  party. <b>None may appear in an offering document until substantiated.</b></p>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Claim</th><th>Tag</th><th>Substantiation required</th></tr></thead>
+      <tbody>
+        <tr><td>Largest Claude token consumer last year; hanzo.ai synthetic dev #2</td><td><span class="t a">A</span></td><td class="drv">Written attestation from Anthropic — the single strongest AI-native proof available, and the only one a third party can confirm outright. Pursue first.</td></tr>
+        <tr><td>Multiple unicorns built on Hanzo</td><td><span class="t a">A</span></td><td class="drv">Named logos with written permission; 3 case studies + 1 quotable customer</td></tr>
+        <tr><td>~2M visitors/month, zero paid marketing</td><td><span class="t a">A</span></td><td class="drv">Cloudflare export or shared read-only dashboard — this is the entire self-serve driver below</td></tr>
+        <tr><td>enso router saves ~90% on LLM spend</td><td><span class="t a">A</span></td><td class="drv">Published benchmark, fixed workload, both cost paths — currently a ratio with no denominator</td></tr>
+        <tr><td>~90% compute reduction running Hanzo on Hanzo</td><td><span class="t a">A</span></td><td class="drv">Before/after cloud invoices, redacted</td></tr>
+        <tr><td>$8M topline, 2022</td><td><span class="t a">A</span></td><td class="drv">Form C financial statements govern and will supersede <span class="t c">CITE</span> 17 CFR 227.201(t)</td></tr>
+        <tr><td>1B+ end users touched; Triller $4.5B peak, 100M+ users</td><td><span class="t a">A</span></td><td class="drv">Founder biography, not company traction — Form C bio with dates and roles <span class="t c">CITE</span></td></tr>
+        <tr><td>hanzo.team / studio / erp / HR / payroll native</td><td><span class="t a">A</span></td><td class="drv"><b>team, studio, erp verified present locally</b> <span class="t f">F</span>. <b>hr and payroll do not exist as standalone repos</b> — locate them or stop claiming them as discrete products.</td></tr>
+        <tr><td>Techstars '17</td><td><span class="t a">A</span></td><td class="drv">Public record, trivially citable — use it</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><b>What this memo does not assert:</b> current ARR, cash, customer count or burn. No verified
+  figure was available. The 2022 $8M is historical. Assume revenue today is de minimis until the Form C financials
+  say otherwise — the proforma below starts from <b>zero backlog and zero signed contracts</b>.</p>
+</section>
+
+<section>
+  <h2>3 · Market — the assembly tax</h2>
+  <p class="note">The average company no longer buys software; it <em>assembles</em> a company out of software and
+  pays a recurring tax on the seams. Widely reported portfolio sizes — <b>all four rows need
+  <span class="t c">CITE</span></b>: verify edition and page before any external use.</p>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Source</th><th>Figure</th><th class="r">Status</th></tr></thead>
+      <tbody>
+        <tr><td>Okta · <i>Businesses at Work</i></td><td>~93 apps average; <b>211 at 2,000+ employees</b></td><td class="r"><span class="t c">CITE</span></td></tr>
+        <tr><td>Productiv · <i>State of SaaS</i></td><td><b>254 average</b></td><td class="r"><span class="t c">CITE</span></td></tr>
+        <tr><td>Zylo · <i>SaaS Management Index</i></td><td><b>~270 average</b>; <b>~$4,800/employee/yr</b>; ~44% licenses unused</td><td class="r"><span class="t c">CITE</span></td></tr>
+        <tr><td>Gartner</td><td>waste ~25% of SaaS spend</td><td class="r"><span class="t c">CITE</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 style="margin-top:.4rem">Sized bottom-up, not top-down</h3>
+  <p class="note">The Hanzo True Savings model enumerates <b>42 categories</b> at public list prices,
+  parameterized on headcount. Recomputed from the model's own coefficients this session
+  <span class="t f">F</span> — auditor mode, 100 employees, 30% engineers, $15k/mo cloud, 1.5 glue FTEs,
+  0.5 ops FTEs:</p>
+  <div class="scroll">
+    <table>
+      <tbody>
+        <tr><td>Replaced SaaS — 42 categories, weighted</td><td class="r">$614,600/yr</td><td class="r">$6,146 / employee</td></tr>
+        <tr><td>Infra delta — DO-class vs hyperscaler, 60% of bill</td><td class="r">$108,000/yr</td><td class="r"></td></tr>
+        <tr><td>Glue engineering reclaimed — 1.5 × $220k</td><td class="r">$330,000/yr</td><td class="r"></td></tr>
+        <tr><td>Cost of operating Hanzo — 0.5 × $220k</td><td class="r neg">−$110,000/yr</td><td class="r"></td></tr>
+        <tr class="tot"><td>Net annual savings, 100-employee company</td><td class="r">$942,600/yr</td><td class="r">$9,426 / employee</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">The $6,146/employee figure lands ~28% above the Zylo ~$4,800 benchmark — a useful cross-check:
+  right order of magnitude, erring slightly rich. <b>Auditor vs Founder mode:</b> regrading every category to
+  "full" moves the total only <b>$614,600 → $618,800</b>, a <b>$4,200</b> gap, because one of 42 rows (vector
+  store) is still partial. Stated plainly, <em>the parity roadmap is one row wide</em> — by founder grading
+  <span class="t a">A</span>, which a skeptical buyer should re-grade themselves.</p>
+
+  <div class="flag">
+    <h3>Weakness in the model, disclosed</h3>
+    <p>The model's <b>absolute price floors dominate at small headcount and overstate seed-stage spend</b>
+    <span class="t f">F</span>: 15 employees → $301,118 SaaS = <b>$20,075/employee</b> (4.2× the benchmark — not
+    credible); 25 → $13,160; 60 → $7,646; 100 → $6,146. Roughly fifteen of the 42 categories carry minimums that
+    do not scale down, so the model is sound above ~60 employees and unusable below ~40. <b>It is therefore not
+    used to derive the Techstars ACV below</b> — that comes from the per-employee benchmark instead. Disclosed
+    because the seed cohort is exactly what the proforma targets, and a diligence reader would find it.</p>
+  </div>
+
+  <p class="note"><b>The build, not just the bill.</b> All of the above prices what a company stops
+  <em>paying</em>, ignoring what it would cost to <em>build</em>. Market anchors for fragments: Auth0 acquired for
+  $6.5B <span class="t c">CITE</span>, Datadog R&amp;D &gt;$1B/yr <span class="t c">CITE</span>, LaunchDarkly ~$200M
+  raised <span class="t c">CITE</span>, Zapier 800+ people <span class="t c">CITE</span>. A COCOMO replacement-cost
+  study of the full 4,973-repo estate is <b>in progress and not complete</b> — no headline from it is quoted here,
+  and none should be until it lands. Expectation, labeled as expectation <span class="t e">E</span>:
+  engineer-centuries.</p>
+</section>
+
+<section>
+  <h2>4 · Product — one binary, one protocol, five projections</h2>
+  <div class="grid2">
+    <div class="card"><h3>One binary</h3><p>~104 services compose into a single Go host. The lazy-plugin
+    architecture links <b>316 packages against 3,105</b>, ships <b>19 MB</b>, holds <b>14 MB RSS</b> with every app
+    mounted, starts a plugin cold in <b>123 ms</b> / warm in <b>4–7 ms</b>. A plugin can panic without taking a
+    route down; a failed build cannot. Each pinned by a test passing under <code>-race</code>, not asserted in a
+    README. <span class="t f">F</span></p></div>
+    <div class="card"><h3>One protocol</h3><p>ZAP: length-prefixed name/value header pairs, every name and value a
+    subslice of the frame, decoding in <b>0 allocations/op</b> — <b>3.2×</b> the JSON path it replaced. gRPC went
+    <b>65 packages → 0</b>; the roots were the Gemini SDK (sole importer of <code>cloud.google.com/go/auth</code>,
+    dragging gax-go and all 13 s2a-go packages) and an OTLP exporter whose <em>HTTP</em> variant imported gRPC
+    internally. <span class="t f">F</span></p></div>
+    <div class="card"><h3>Five projections</h3><p>One typed handler emits the REST route, the OpenAPI path, the MCP
+    tool, the CLI command and the SDK client. Doc comments lift into the spec at build time, so the reference
+    cannot drift from the code — <b>959 OpenAPI paths</b> generated from the live registry, CI fails on drift. For
+    an AI-native buyer this is load-bearing: every service is an agent tool the day it ships.
+    <span class="t f">F</span></p></div>
+    <div class="card"><h3>Case study zero — Hanzo on Hanzo</h3><p>The company operates fully on its own stack, off
+    GCP, on DigitalOcean <span class="t f">F</span>. ATS/BD/TA and business-ops replaced natively; compute cut
+    <b>~90%</b> and vendor headcount to zero <span class="t a">A</span>. The deployment being sold is the
+    deployment that exists. It is also <b>the only case study in this memo, and it is the founder's own</b> —
+    a limitation, stated as one.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>5 · Business model</h2>
+  <div class="grid2">
+    <div class="card"><h3>1 · Cloud usage</h3><p>Metered compute, inference and storage. Margin benefits from the
+    same ~90% compute reduction the company runs on itself <span class="t a">A</span> and DO-class rather than
+    hyperscaler pricing <span class="t f">F</span>.</p></div>
+    <div class="card"><h3>2 · Seats</h3><p>Per-user pricing across team, studio, erp and the back-office surface.
+    Bundled with usage below as a single ARPU per paid account.</p></div>
+    <div class="card"><h3>3 · Marketplace rev-share</h3><p>Third-party connectors, models, templates and agents
+    transacted on the platform's billing rails, at a take rate.</p></div>
+    <div class="card"><h3>4 · Dependency dividends — the kingmaker mechanic</h3><p>The platform knows from the
+    dependency graph which open-source projects its revenue rests on. A defined share of the marketplace take
+    routes back to those maintainers through the same rails. Not a CSR line — it converts the commons from a cost
+    center into a distribution channel and gives every maintainer a commercial reason to keep Hanzo working.
+    <b>Hattori Hanzō did not win the battle; he got the man who did out of Iga alive.</b></p></div>
+  </div>
+  <div class="flag">
+    <h3>⚠ Counsel flag — the word "dividends"</h3>
+    <p>"Dependency dividends" describes a <b>commercial revenue-share paid to software maintainers for goods and
+    services</b>. It is <em>not</em> a distribution on equity and <em>not</em> a payment to security holders. In a
+    Reg CF document the term can be read as an implied return to investors, which would be a material problem.
+    <b>Counsel must either approve the term with a definition attached or rename the program.</b> Flagged, not
+    resolved.</p>
+  </div>
+  <p class="note"><b>Pricing posture</b> <span class="t e">E</span>: Hanzo prices at roughly <b>30–40% of the
+  assembled alternative</b>. The savings <em>are</em> the pitch; capturing more inverts the value proposition.
+  This ratio is what turns the assembled-cost figures above into the ACVs below.</p>
+</section>
+
+<section>
+  <h2>6 · Proforma, FY2026–FY2030</h2>
+  <p class="note"><b>Y1 = the first twelve months after offering close</b> — the "2026" label is nominal; this
+  memo is written mid-2026 and the offering has not closed. Only <b>three drivers</b> produce revenue, and
+  <b>no enterprise motion outside the Techstars network is modeled in any scenario</b> — a deliberate omission,
+  conservative in all three. Every line is the product of a named, adjustable input.
+  <b>All three scenarios are <span class="t e">E</span></b>; the labels describe assumption aggressiveness, not
+  likelihood. No probability weighting is offered because we have none to offer.</p>
+
+  <div class="presets" role="group" aria-label="Scenario">
+    <button type="button" data-s="0" aria-pressed="false">Conservative</button>
+    <button type="button" data-s="1" aria-pressed="true">Base</button>
+    <button type="button" data-s="2" aria-pressed="false">Founder</button>
+    <span class="note" id="scnote"></span>
+  </div>
+
+  <div class="hero">
+    <div class="kv"><span class="l">Y5 revenue</span><span class="big" id="hRev">—</span></div>
+    <div class="kv"><span class="l">Y5 EBITDA</span><span class="num" id="hEb">—</span></div>
+    <div class="kv"><span class="l">5-yr cumulative revenue</span><span class="num" id="hCum">—</span></div>
+    <div class="kv"><span class="l">Peak cumulative burn</span><span class="num" id="hBurn">—</span></div>
+    <div class="kv"><span class="l">5-yr dividends to maintainers</span><span class="num" id="hDiv">—</span></div>
+  </div>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Line</th><th class="drv">Driver / arithmetic</th><th class="r">Y1</th><th class="r">Y2</th><th class="r">Y3</th><th class="r">Y4</th><th class="r">Y5</th></tr></thead>
+      <tbody id="pf"></tbody>
+    </table>
+  </div>
+  <p class="note" id="caveat"></p>
+
+  <h3 style="margin-top:.5rem">Driver definitions</h3>
+  <div class="grid2">
+    <div class="card"><h3>A · Techstars network capture</h3><p>Population <b>~2,500 active portfolio companies</b>
+    <span class="t e">E</span> <span class="t c">CITE</span> — Techstars publishes cumulative companies
+    accelerated; the <em>active</em> subset is an estimate and must be sourced. Access is a
+    <b>Techstars '17 alum</b> warm-intro path <span class="t a">A</span>, not cold outbound — which is why the
+    model uses a named network rather than a generic TAM slice. <b>ACV derived from the per-employee benchmark,
+    not the §3 model:</b> seed cohort ~15 people ≈ $114k assembled → 40% ≈ <b>$46k</b>; growth cohort ~60 people
+    ≈ $531k assembled → 30% ≈ <b>$159k</b>. Band used $50k / $90k / $150k. The smallest cohort sits
+    <em>below</em> the $50k floor, one reason capture stays low in Y1–Y2.</p></div>
+    <div class="card"><h3>B · Visitor conversion</h3><p><code>monthly visitors × signup% × signup→paid% × 12</code>
+    = gross paid adds/yr, then a cumulative base with annual churn. Revenue is booked on the <b>average</b> base
+    (opening + closing ÷ 2), not the closing base.</p></div>
+    <div class="card"><h3>C · Marketplace take</h3><p><code>(network accounts + avg self-serve base) × GMV/account
+    × take rate</code> = gross take. <b>50% of gross take is paid out as dependency dividends in every
+    scenario</b>; the proforma books only the net.</p></div>
+    <div class="card"><h3>Cost side</h3><p>Fully loaded <b>$220k/head</b> — the same rate the savings model uses on
+    the other side of the trade. <b>COGS 20%</b> of revenue (cloud + GPU fleet), <b>S&amp;M 10%</b>, plus a G&amp;A
+    line carrying SOC 2, audit and legal.</p></div>
+  </div>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Assumption</th><th class="r">Conservative</th><th class="r">Base</th><th class="r">Founder</th></tr></thead>
+      <tbody>
+        <tr><td>Capture % of 2,500, Y1→Y5</td><td class="r">0.4 / 1.2 / 2.4 / 4 / 6</td><td class="r">0.8 / 2.4 / 5 / 8 / 12</td><td class="r">1.6 / 4.8 / 9.6 / 16 / 24</td></tr>
+        <tr><td>ACV per captured company</td><td class="r">$50,000</td><td class="r">$90,000</td><td class="r">$150,000</td></tr>
+        <tr><td>Visitor growth / yr</td><td class="r">0%</td><td class="r">10%</td><td class="r">25%</td></tr>
+        <tr><td>Visitor → signup</td><td class="r">0.05%</td><td class="r">0.15%</td><td class="r">0.30%</td></tr>
+        <tr><td>Signup → paid</td><td class="r">2%</td><td class="r">3%</td><td class="r">5%</td></tr>
+        <tr><td>Annual churn</td><td class="r">30%</td><td class="r">25%</td><td class="r">20%</td></tr>
+        <tr><td>ARPU / paid account / yr</td><td class="r">$1,800</td><td class="r">$2,400</td><td class="r">$3,600</td></tr>
+        <tr><td>Marketplace GMV / account / yr</td><td class="r">$1,200</td><td class="r">$3,600</td><td class="r">$9,600</td></tr>
+        <tr><td>Take rate · dividend share</td><td class="r">10% · 50%</td><td class="r">15% · 50%</td><td class="r">20% · 50%</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <h2>7 · Use of funds — $5,000,000</h2>
+  <p class="note">$5,000,000 is the Reg CF maximum for a 12-month period <span class="t c">CITE</span> 17 CFR
+  227.100(a)(1) — the cap is periodically inflation-adjusted and counsel must confirm the figure in effect at
+  filing.</p>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Use</th><th class="r">Amount</th><th class="r">%</th><th>Rationale</th></tr></thead>
+      <tbody>
+        <tr><td><b>Auth &amp; self-service completion</b></td><td class="r">$900,000</td><td class="r">18%</td><td class="drv">The gating item. Driver B produces <b>zero</b> revenue until signup → provision → bill works unattended. Nothing else here matters if this does not ship first.</td></tr>
+        <tr><td><b>GPU fleet</b></td><td class="r">$1,400,000</td><td class="r">28%</td><td class="drv">Owned inference capacity — converts the largest COGS line into capex-amortized and makes the ~90% cost posture durable rather than a routing trick.</td></tr>
+        <tr><td><b>First devrel + support hires</b></td><td class="r">$1,300,000</td><td class="r">26%</td><td class="drv">4 people over ~18 months. 2M monthly visitors with nobody to answer them is the clearest waste in the business today.</td></tr>
+        <tr><td><b>SOC 2 Type II + HIPAA readiness</b></td><td class="r">$650,000</td><td class="r">13%</td><td class="drv">Audit, tooling, remediation. Unlocks the regulated buyer, for whom compliance is the largest pre-revenue cost — turns an aspiration into an auditor letter.</td></tr>
+        <tr><td><b>Reg CF offering costs</b></td><td class="r">$350,000</td><td class="r">7%</td><td class="drv">Portal fees, escrow, securities counsel, Form C financials. Disclosed as a line rather than buried.</td></tr>
+        <tr><td><b>Working capital / reserve</b></td><td class="r">$400,000</td><td class="r">8%</td><td class="drv">~4 months of conservative-case opex at Y2 run rate.</td></tr>
+        <tr class="tot"><td>Total</td><td class="r">$5,000,000</td><td class="r">100%</td><td class="drv">≈ <b>5× the conservative case's $1.04M peak cumulative burn</b>. Not raising to reach breakeven — raising to compress the years in which the company is small.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <h2>8 · Risks — stated at diligence depth</h2>
+  <div class="grid2">
+    <div class="card risk sev"><h3>Key-person risk — dominant and severe</h3><p>One engineer operates 4,973
+    repositories and ~104 services <span class="t f">F</span>. <b>There is no bus factor.</b> If the founder is
+    unavailable, the ability to ship, support and secure the platform degrades immediately and materially.
+    <em>Partial</em> mitigations: the architecture is deliberately survivable at this headcount — one protocol, one
+    registry with five projections, one plugin model, agentic maintenance against the estate — and that discipline
+    is why the surface exists at all. <b>But an architecture is not a person.</b> Not yet in place and recommended:
+    key-person insurance, a documented successor/escrow arrangement, and a second engineer with commit rights
+    across the core. <b>This risk is not eliminated by this raise.</b></p></div>
+    <div class="card risk sev"><h3>Auth &amp; self-service are under repair</h3><p>Driver B — 13% of conservative
+    Y5 revenue and 39% of founder Y5 revenue — <b>does not work unattended today</b>. Until it does, ~2M monthly
+    visitors convert at approximately zero. It is the first line in the use of funds for exactly that reason. Read
+    every self-serve column as contingent on that work landing.</p></div>
+    <div class="card risk"><h3>Competition from model labs</h3><p>Frontier labs ship platform surface steadily with
+    unbounded capital. Hanzo's defensible position is what they will not build: self-hostable, open-source,
+    identity + billing + commerce + compliance + settlement, on <em>any</em> model including theirs. Durable, but a
+    bet that labs stay in the model business — a credible open self-hostable Business OS from a lab weakens the
+    thesis sharply. <b>Related discipline: never position Hanzo as competing with frontier training.</b> It invites
+    an immediate losing comparison and discounts everything said after it.</p></div>
+    <div class="card risk"><h3>Private-repo verification pending</h3><p><b>2,172 of 4,973 repositories are
+    private</b> <span class="t f">F</span>. No third party can verify the private portion, nor the ~104-service
+    composition, without read access or an independent attestation. An investor relying on the scale claim should
+    ask for a scoped audit. The public portion (2,253 org + 548 personal) is verifiable now.</p></div>
+    <div class="card risk"><h3>The strongest claims are the least verified</h3><p>The attested table is the
+    persuasive material and none of it is citable today. If the Anthropic attestation cannot be obtained, or the
+    case studies cannot be published with permission, the story reverts to the measured column — excellent
+    engineering evidence with no commercial proof attached.</p></div>
+    <div class="card risk"><h3>No backlog; single channel</h3><p>Zero signed contracts, zero committed pipeline, no
+    current ARR asserted. Every dollar in the proforma is un-won. All of Driver A rests on one network and one
+    alumni relationship — <b>no contractual arrangement with Techstars exists or is implied</b>, and the ~2,500
+    active-company figure is itself unsourced <span class="t c">CITE</span>.</p></div>
+    <div class="card risk"><h3>Reg CF risks, non-exhaustive</h3><p>Illiquidity — no public market, resale restricted
+    twelve months subject to exceptions. Dilution by future rounds. Possibility of total loss. Reliance on the
+    founder. Per-investor limits based on income and net worth. Ongoing annual reporting obligations.
+    <b>Counsel must draft the definitive risk factors; this is not sufficient for a Form C.</b></p></div>
+  </div>
+</section>
+
+<section>
+  <h2>9 · The offer frame — users become owners</h2>
+  <blockquote>Owners above, maintainers below, one billing rail through the middle. A user who becomes a
+  shareholder and a maintainer who becomes a payee are two halves of the same idea: the platform's success should
+  be indistinguishable from the ecosystem's.</blockquote>
+  <p class="note">Reg CF is not a second-choice financing here, it is the structurally correct one. Hanzo's users
+  are self-hosting developers and founders already running the software for free. A community round makes the
+  people who <em>depend</em> on the platform the people who <em>own</em> it — the same alignment the
+  dependency-dividend mechanic creates one layer down. In the base case the company routes
+  <b>$3.31M to open-source maintainers over five years</b> as a contractual consequence of its own revenue: not a
+  grant program, a billing rail.</p>
+  <div class="flag">
+    <h3>⚠ Counsel flag — the offer frame</h3>
+    <p>Do not deploy any of section 9 externally before review. Specific exposures: (a) "dependency dividends" as a
+    term; (b) any implication that platform usage confers or influences ownership; (c) any implication of a return,
+    yield or distribution to investors; (d) general-solicitation and testing-the-waters rules — communications
+    before the Form C is filed are constrained, and this memo, this page and any social content derived from them
+    are all communications. <span class="t c">CITE</span> 17 CFR 227.204 advertising limits; 17 CFR 227.206
+    promoter compensation.</p>
+  </div>
+</section>
+
+<section>
+  <h2>Open items before this leaves the building</h2>
+  <ol class="todo">
+    <li><span><b>Securities counsel review of the entire document.</b> Nothing here has had it.</span></li>
+    <li><span>Fill every <span class="t c">CITE</span> — Okta / Productiv / Zylo / Gartner editions; Techstars active count; Reg CF cap and advertising rules; Auth0 / Datadog / LaunchDarkly / Zapier anchors; Triller figures.</span></li>
+    <li><span>Obtain the <b>Anthropic written attestation</b>. Highest single-item leverage on this page.</span></li>
+    <li><span>Make <b>Cloudflare analytics</b> independently viewable — it is the whole of Driver B.</span></li>
+    <li><span>Publish <b>enso ~90%</b> and <b>Hanzo-on-Hanzo ~90%</b> as benchmarks with denominators.</span></li>
+    <li><span>Land three <b>named case studies</b> with written permission.</span></li>
+    <li><span>Locate <b>hr / payroll</b> or stop claiming them as discrete products.</span></li>
+    <li><span>Finish the <b>COCOMO replacement-cost study</b>; quote nothing from it until it lands.</span></li>
+    <li><span>Put <b>key-person mitigations</b> in place — insurance, successor plan, second committer.</span></li>
+    <li><span>Reconcile <b>studio 813 vs 876</b> and reissue any external material.</span></li>
+  </ol>
+</section>
+
+<footer>
+  Working draft. Every figure carries a label; where a citation is required and absent it is marked
+  <span class="t c">CITE</span> rather than filled with something plausible. That is the house style, and it is the
+  only reason the measured column deserves any credence. <b>Not an offer. Requires securities counsel review.</b>
+</footer>
+
+</div>
+
+<script>
+const M=n=>(n<0?'−$':'$')+Math.abs(n).toFixed(2)+'M';
+const N=n=>n.toLocaleString('en-US');
+// Y1..Y5 arrays. All values pre-computed from the stated drivers; see markdown memo for the longhand.
+const S=[
+{name:'Conservative',note:'Flat traffic · bottom-of-band ACV · 6% of the network by Y5.',
+ caveat:'<b>5-yr cumulative revenue $21.46M. Peak cumulative burn ~$1.04M, crossing to profit in Y4.</b> A $5M raise covers this scenario roughly <b>5×</b> — the single most useful fact in the proforma. The downside case is <em>funded</em>, not merely survivable.',
+ cum:21.46,burn:'$1.04M',div5:0.15,
+ co:[10,30,60,100,150],net:[0.50,1.50,3.00,5.00,7.50],
+ vis:[2.000,2.000,2.000,2.000,2.000],adds:[240,240,240,240,240],cl:[240,408,526,608,666],av:[120,324,467,567,637],
+ ss:[0.22,0.58,0.84,1.02,1.15],gmv:[0.16,0.43,0.63,0.80,0.94],take:[0.02,0.04,0.06,0.08,0.09],
+ dv:[0.01,0.02,0.03,0.04,0.05],mp:[0.01,0.02,0.03,0.04,0.05],rev:[0.72,2.10,3.87,6.06,8.69],
+ hc:[3,6,10,14,18],ppl:[0.66,1.32,2.20,3.08,3.96],cogs:[0.14,0.42,0.77,1.21,1.74],
+ sm:[0.07,0.21,0.39,0.61,0.87],ga:[0.35,0.55,0.65,0.70,0.80],opx:[1.22,2.50,4.01,5.60,7.37],
+ eb:[-0.50,-0.40,-0.14,0.46,1.32],acv:'$50k',sig:'0.05% × 2%',arpu:'$1,800',gpa:'$1,200',tk:'10%'},
+{name:'Base',note:'10%/yr traffic growth · mid-band ACV · 12% of the network by Y5.',
+ caveat:'<b>5-yr cumulative revenue $94.47M. EBITDA-positive from Y1.</b> The base case does not require the raise to reach profitability — the raise buys speed and the compliance surface, not survival. That is unusual, and it is true of the model as built; state it plainly.',
+ cum:94.47,burn:'none (Y1+)',div5:3.31,
+ co:[20,60,125,200,300],net:[1.80,5.40,11.25,18.00,27.00],
+ vis:[2.000,2.200,2.420,2.662,2.928],adds:[1080,1188,1307,1437,1581],cl:[1080,1998,2806,3542,4238],av:[540,1539,2402,3174,3890],
+ ss:[1.30,3.69,5.76,7.62,9.34],gmv:[2.02,5.76,9.10,12.15,15.08],take:[0.30,0.86,1.37,1.82,2.26],
+ dv:[0.15,0.43,0.68,0.91,1.13],mp:[0.15,0.43,0.68,0.91,1.13],rev:[3.25,9.53,17.70,26.53,37.47],
+ hc:[4,10,20,32,45],ppl:[0.88,2.20,4.40,7.04,9.90],cogs:[0.65,1.91,3.54,5.31,7.49],
+ sm:[0.32,0.95,1.77,2.65,3.75],ga:[0.35,0.60,0.75,0.90,1.10],opx:[2.20,5.66,10.46,15.90,22.24],
+ eb:[1.04,3.87,7.24,10.63,15.23],acv:'$90k',sig:'0.15% × 3%',arpu:'$2,400',gpa:'$3,600',tk:'15%'},
+{name:'Founder',note:'25%/yr traffic growth · top-of-band ACV · 24% of the network by Y5.',
+ caveat:'<b>5-yr cumulative revenue $437.79M. Read this case skeptically — here is where to push.</b> It requires capturing <b>24% of the entire active Techstars portfolio</b> (600 companies) on a warm-intro motion at 100 headcount, <em>and</em> a self-serve funnel converting at <b>6× the conservative rate</b> (0.30% × 5% vs 0.05% × 2%) on a signup flow that <b>does not currently work at scale</b>. Included because the drivers are stated and dialable. It is not a plan of record.',
+ cum:437.79,burn:'none (Y1+)',div5:49.02,
+ co:[40,120,240,400,600],net:[6.00,18.00,36.00,60.00,90.00],
+ vis:[2.000,2.500,3.125,3.906,4.883],adds:[3600,4500,5625,7031,8789],cl:[3600,7380,11529,16254,21792],av:[1800,5490,9455,13892,19023],
+ ss:[6.48,19.76,34.04,50.01,68.48],gmv:[17.66,53.86,93.07,137.20,188.38],take:[3.53,10.77,18.61,27.44,37.68],
+ dv:[1.77,5.39,9.31,13.72,18.84],mp:[1.77,5.39,9.31,13.72,18.84],rev:[14.25,43.15,79.35,123.73,177.32],
+ hc:[6,18,40,70,100],ppl:[1.32,3.96,8.80,15.40,22.00],cogs:[2.85,8.63,15.87,24.75,35.46],
+ sm:[1.43,4.32,7.94,12.37,17.73],ga:[0.40,0.90,1.50,2.20,3.00],opx:[5.99,17.81,34.10,54.72,78.20],
+ eb:[8.25,25.35,45.24,69.01,99.13],acv:'$150k',sig:'0.30% × 5%',arpu:'$3,600',gpa:'$9,600',tk:'20%'}];
+
+const $=i=>document.getElementById(i);
+function render(k){
+  const s=S[k], R=[];
+  const row=(lbl,drv,vals,f,cls)=>R.push(`<tr class="${cls||''}"><td>${lbl}</td><td class="drv">${drv}</td>`+
+    vals.map(v=>`<td class="r${f===M&&v<0?' neg':''}">${f(v)}</td>`).join('')+'</tr>');
+  R.push('<tr class="hd"><td colspan="7">Driver A — Techstars network capture</td></tr>');
+  row('Network companies','2,500 × capture %',s.co,N);
+  row('<b>Network revenue</b>',`count × ${s.acv} ACV`,s.net,M);
+  R.push('<tr class="hd"><td colspan="7">Driver B — visitor conversion</td></tr>');
+  row('Monthly visitors (M)','2.0M base × growth',s.vis,v=>v.toFixed(3));
+  row('Paid adds / yr',`visitors × ${s.sig} × 12`,s.adds,N);
+  row('Paid base, closing','opening + adds − churn',s.cl,N);
+  row('Paid base, average','(opening + closing) ÷ 2',s.av,N);
+  row('<b>Self-serve revenue</b>',`avg base × ${s.arpu} ARPU`,s.ss,M);
+  R.push('<tr class="hd"><td colspan="7">Driver C — marketplace</td></tr>');
+  row('Marketplace GMV',`(network + avg base) × ${s.gpa}`,s.gmv,M);
+  row('Gross take',`GMV × ${s.tk}`,s.take,M);
+  row('<i>Dependency dividends paid out</i>','50% of gross take',s.dv,M,'sub');
+  row('<b>Marketplace revenue, net</b>','gross take − dividends',s.mp,M);
+  row('<b>TOTAL REVENUE</b>','A + B + C',s.rev,M,'tot');
+  R.push('<tr class="hd"><td colspan="7">Cost side</td></tr>');
+  row('Headcount','plan',s.hc,N);
+  row('People','headcount × $220k',s.ppl,M);
+  row('COGS','20% of revenue',s.cogs,M);
+  row('S&amp;M','10% of revenue',s.sm,M);
+  row('G&amp;A','SOC 2 + audit + legal',s.ga,M);
+  row('<b>Total opex</b>','sum',s.opx,M);
+  row('<b>EBITDA</b>','revenue − opex',s.eb,M,'tot');
+  $('pf').innerHTML=R.join('');
+  $('hRev').textContent=M(s.rev[4]); $('hEb').textContent=M(s.eb[4]);
+  $('hCum').textContent=M(s.cum); $('hBurn').textContent=s.burn; $('hDiv').textContent=M(s.div5);
+  $('scnote').textContent=s.note; $('caveat').innerHTML=s.caveat;
+  document.querySelectorAll('.presets button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.s===k));
+}
+document.querySelectorAll('.presets button').forEach(b=>b.onclick=()=>render(+b.dataset.s));
+render(1);
+</script>

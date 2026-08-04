@@ -1,0 +1,266 @@
+<title>Hanzo True Savings</title>
+<style>
+  :root{
+    --bg:#f2f4f7; --panel:#fff; --ink:#141a21; --dim:#5d6b7a; --line:#d3dae2;
+    --save:#1f7a6b; --cost:#b8402f; --save-soft:#e3efec; --amber:#8a6414;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:"Helvetica Neue",Helvetica,"Segoe UI",Arial,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{--bg:#0d1117;--panel:#151c24;--ink:#e4ebf2;--dim:#8a9aab;--line:#25303c;
+          --save:#3fbfa8;--cost:#e5705c;--save-soft:#14231f;--amber:#d3a63f}
+  }
+  :root[data-theme="dark"]{--bg:#0d1117;--panel:#151c24;--ink:#e4ebf2;--dim:#8a9aab;--line:#25303c;
+          --save:#3fbfa8;--cost:#e5705c;--save-soft:#14231f;--amber:#d3a63f}
+  :root[data-theme="light"]{--bg:#f2f4f7;--panel:#fff;--ink:#141a21;--dim:#5d6b7a;--line:#d3dae2;
+          --save:#1f7a6b;--cost:#b8402f;--save-soft:#e3efec;--amber:#8a6414}
+
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5}
+  .wrap{max-width:66rem;margin:0 auto;padding:2.25rem 1.25rem 4rem;display:flex;flex-direction:column;gap:1.6rem}
+  h1{font-size:2rem;letter-spacing:-.025em;line-height:1.05}
+  h2{font-size:1.05rem;letter-spacing:-.01em;margin-bottom:.4rem}
+  .sub{color:var(--dim);font-size:.95rem;max-width:58ch}
+  .num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+  .ctl{display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));gap:.9rem}
+  .c{background:var(--panel);border:1px solid var(--line);padding:.8rem 1rem;display:flex;flex-direction:column;gap:.35rem}
+  .c label{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);display:flex;justify-content:space-between}
+  .c label output{font-family:var(--mono);color:var(--ink);text-transform:none;letter-spacing:0}
+  input[type=range]{width:100%;accent-color:var(--save)}
+  input[type=range]:focus-visible,input[type=checkbox]:focus-visible{outline:2px solid var(--save);outline-offset:2px}
+
+  .hero{background:var(--save-soft);border:1px solid var(--save);padding:1.2rem 1.4rem;
+        display:flex;flex-wrap:wrap;gap:1.4rem;align-items:baseline}
+  .hero .big{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:clamp(2.2rem,6vw,3.4rem);
+             letter-spacing:-.04em;color:var(--save);line-height:1}
+  .hero .l{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+  .hero .kv{display:flex;flex-direction:column;gap:.2rem}
+  .hero .kv .num{font-size:1.15rem}
+
+  .parts{display:grid;grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));gap:.9rem}
+  .p{background:var(--panel);border:1px solid var(--line);border-top:3px solid var(--save);padding:.75rem 1rem}
+  .p.neg{border-top-color:var(--cost)}
+  .p .num{font-size:1.3rem;display:block}
+  .p small{color:var(--dim)}
+
+  .scroll{overflow-x:auto;background:var(--panel);border:1px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:.86rem}
+  th,td{text-align:left;padding:.45rem .7rem;border-bottom:1px solid var(--line);white-space:nowrap}
+  th{position:sticky;top:0;background:var(--panel);font-size:.66rem;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);z-index:1}
+  tbody tr:last-child td{border-bottom:none}
+  td.r,th.r{text-align:right}
+  .svc{font-family:var(--mono);font-size:.78rem;color:var(--dim)}
+  .chip{font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;padding:.1rem .45rem;border:1px solid}
+  .chip.full{color:var(--save);border-color:var(--save)}
+  .chip.part{color:var(--amber);border-color:var(--amber)}
+  tr.off td{opacity:.45}
+  tfoot td{font-weight:700;border-top:2px solid var(--ink)}
+
+  .presets{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin-bottom:.6rem}
+  .presets button{font:inherit;font-size:.82rem;padding:.4rem .7rem;background:var(--panel);border:1px solid var(--line);color:var(--ink);cursor:pointer}
+  .presets button:hover{border-color:var(--save)}
+  .presets button:focus-visible{outline:2px solid var(--save);outline-offset:2px}
+  button.chip{cursor:pointer;background:none;font-family:inherit}
+  .vwall{display:flex;flex-wrap:wrap;gap:.35rem}
+  .v{font:inherit;font-size:.78rem;padding:.28rem .55rem;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
+  .v[aria-pressed="true"]{border-color:var(--save);color:var(--save);background:var(--save-soft)}
+  .v:focus-visible{outline:2px solid var(--save);outline-offset:1px}
+  .note{font-size:.85rem;color:var(--dim);max-width:70ch}
+  .note b{color:var(--ink)}
+  .src{border-top:1px solid var(--line);padding-top:1.1rem;font-size:.8rem;color:var(--dim)}
+  .src li{margin-left:1.1rem;margin-bottom:.25rem}
+  code{font-family:var(--mono);font-size:.85em}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Hanzo True Savings</h1>
+    <p class="sub">What a company actually keeps, per year, by replacing its assembled vendor stack — the SaaS, the cloud bill, and the engineers who glue it together — with one Hanzo binary. The assembled alternative is the <b>assembly tax</b>; this page prices it, and every assumption is a visible control.</p>
+  </header>
+
+  <div class="c" style="border-left:3px solid var(--save);gap:.35rem">
+    <label>Case study zero — Hanzo runs on Hanzo</label>
+    <p class="note">The company operates on its own stack: fully off GCP, the ATS/BD/TA and business-ops suite replaced natively, compute costs cut ~90% and vendor headcount to zero. Founder-attested; the measured write-up is in progress — and the deployment priced below is the one that actually exists.</p>
+  </div>
+
+  <div class="ctl">
+    <div class="c"><label>Employees <output id="oE">100</output></label>
+      <input type="range" id="E" min="10" max="2000" step="10" value="100"></div>
+    <div class="c"><label>Engineers <output id="oD">30%</output></label>
+      <input type="range" id="Dp" min="10" max="60" step="5" value="30"></div>
+    <div class="c"><label>Cloud bill / month <output id="oC">$15k</output></label>
+      <input type="range" id="C" min="0" max="250" step="5" value="15"></div>
+    <div class="c"><label>Integration-glue FTEs <output id="oG">1.5</output></label>
+      <input type="range" id="G" min="0" max="20" step="0.5" value="1.5"></div>
+    <div class="c"><label>Platform-ops FTEs (running Hanzo) <output id="oO">0.5</output></label>
+      <input type="range" id="O" min="0" max="6" step="0.5" value="0.5"></div>
+  </div>
+
+  <div class="hero">
+    <div class="kv"><span class="l">Net annual savings</span><span class="big" id="net">—</span></div>
+    <div class="kv"><span class="l">Per employee / yr</span><span class="num" id="perE">—</span></div>
+    <div class="kv"><span class="l">Over 3 years</span><span class="num" id="y3">—</span></div>
+    <div class="kv"><span class="l">≈ senior engineers funded</span><span class="num" id="eng">—</span></div>
+    <div class="kv"><span class="l">Vendors collapsed</span><span class="num" id="vend">—</span></div>
+  </div>
+
+  <div class="parts">
+    <div class="p"><small>SaaS replaced (checked rows)</small><span class="num" id="pSaaS">—</span></div>
+    <div class="p"><small>Infra delta (DO-class vs hyperscaler)</small><span class="num" id="pInfra">—</span></div>
+    <div class="p"><small>Glue engineering reclaimed</small><span class="num" id="pGlue">—</span></div>
+    <div class="p neg"><small>Cost of operating Hanzo</small><span class="num" id="pOps">—</span></div>
+  </div>
+
+  <section>
+    <h2>Click everything you pay for</h2>
+    <p class="note">Every vendor below maps to a line in the table. Tap the ones on your bill — the savings and the <b>vendors → 1</b> counter follow.
+      <button id="vAll" type="button" class="v">select all</button>
+      <button id="vNone" type="button" class="v">clear</button></p>
+    <div class="vwall" id="vwall"></div>
+  </section>
+
+  <section>
+    <h2>Category by category</h2>
+    <p class="note">Coverage grades are <b>clickable</b> — <span class="chip full">full</span> counts 100%, <span class="chip part">partial</span> counts 50%. The Hanzo column names actual shipped services and repos, not aspirations. Untick anything you'd keep.</p>
+    <div class="presets">
+      <button id="pAud" type="button">Auditor mode — conservative defaults</button>
+      <button id="pFou" type="button">Founder mode — grade every shipped service full</button>
+      <span class="note">The gap between the two numbers is the parity roadmap.</span>
+    </div>
+    <div class="scroll">
+      <table>
+        <thead><tr><th></th><th>Category</th><th>Replaces (typical)</th><th>Hanzo services</th><th>Coverage</th><th class="r">Est. annual</th></tr></thead>
+        <tbody id="rows"></tbody>
+        <tfoot><tr><td colspan="5">Weighted total (replaced SaaS)</td><td class="r num" id="tSaaS">—</td></tr></tfoot>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Not just the bill — the build</h2>
+    <p class="note">Everything above prices what you stop <b>paying</b>. It ignores what you would have to <b>build</b> to own this surface yourself — and the market has already priced that build. Public anchors for five categories alone: identity (Auth0 — ~$330M raised, acquired for <b>$6.5B</b>), observability (Datadog — over <b>$1B/yr</b> in R&amp;D), billing &amp; metering (a dedicated team at every SaaS company ever built), flags &amp; experimentation (LaunchDarkly — ~$200M raised), workflow automation (Zapier — 800+ people). Hanzo hands you the open-source equivalent of that entire build as <b>one binary</b> — adoption cost $0, replacement cost expected in engineer-<i>centuries</i>. A rigorous COCOMO-based replacement-cost report on the full 4,973-repository estate is in progress and will be linked here; until it lands, that expectation is labeled what it is: an expectation.</p>
+  </section>
+
+  <section>
+    <h2>Still not counted — the honest remainder</h2>
+    <p class="note">Only three things stay outside the model: <b>card interchange &amp; network fees</b> (nobody erases those — the table counts only the PSP markup on top of them), <b>frontier-model spend that stays frontier</b> (the LLM row above counts the workloads Zen serves in-house at ~90% lower per-token cost, founder-attested; what must remain on third-party frontier models is a pass-through), and <b>deep vertical software</b> (clinical, CAD, EDA). Every other category is in the table, graded full per the CTO's attestation — the single ×0.5 that remains is the one defect this session <i>measured</i> (vector †), not doubt.</p>
+  </section>
+
+  <section class="src">
+    <b>Method &amp; sources.</b>
+    <ul>
+      <li>Portfolio-size context, widely reported: Okta <i>Businesses at Work</i> — ~93 apps average, <b>211 average for companies with 2,000+ employees</b>; Productiv <i>State of SaaS</i> — <b>254 average</b>; Zylo <i>SaaS Management Index</i> — <b>~270 average</b> (enterprise-skewed base), ~<b>$4,800 SaaS spend per employee per year</b>, with ~<b>44% of licenses unused</b> (Gartner has put waste at ~25%). Figures are from the published reports as widely cited; verify against the current editions before external use — web verification tooling was unavailable when this page was generated.</li>
+      <li>Category prices are public list prices at typical tiers, parameterized on headcount; they deliberately sit at the conservative end (real Datadog and Segment bills routinely run multiples of the figure used here).</li>
+      <li>Infra delta assumes DO-class pricing vs hyperscaler list on compute and egress (~$0.01/GB vs ~$0.09/GB); modeled as 60% of the current bill. Hanzo itself runs on DigitalOcean — the deployment being priced is the one that exists.</li>
+      <li>Glue engineering: FTEs maintaining vendor integrations, webhooks, auth bridges and billing reconciliation, at $220k fully loaded. The default (5% of engineers, min 1) is conservative for a 30+ vendor stack. The same rate prices the ops cost of running Hanzo, subtracted on the other side.</li>
+      <li>Second-order effects not priced: SSO price premiums (vendors charge 2–4× for SSO; Hanzo ships one IAM), per-vendor security reviews and DPAs, procurement cycles, and license waste recovery — all real, all additive, all omitted to keep the model conservative.</li>
+    </ul>
+  </section>
+</div>
+
+<script>
+const K=1000, fmt=n=>'$'+(Math.abs(n)>=1e6?(n/1e6).toFixed(2)+'M':Math.round(n/K)+'k');
+// f(E employees, D devs) -> annual list-price estimate. w: 1 full, .5 partial.
+const CATS=[
+ ["SSO & workforce identity","Okta / Auth0","iam · zero-trust · authz",1,(E,D)=>Math.max(E*96,4800)],
+ ["Customer auth (product)","Auth0 B2C","iam (multi-tenant, per-org CEK)",1,(E,D)=>12*K+E*24],
+ ["Secrets & KMS","Vault Cloud","kms",1,(E,D)=>9*K+D*60],
+ ["Observability","Datadog / New Relic","o11y · metrics",1,(E,D)=>Math.max(D*1800,12*K)],
+ ["Error tracking","Sentry","o11y (errortracking)",1,(E,D)=>Math.max(D*312,3*K)],
+ ["Feature flags","LaunchDarkly","flags",1,(E,D)=>Math.max(D*240,2400)],
+ ["Product analytics","Amplitude / Mixpanel","analytics",1,(E,D)=>Math.min(Math.max(E*150,10*K),90*K)],
+ ["Event routing / CDP","Segment","destinations · tracker",1,(E,D)=>Math.min(Math.max(E*220,9*K),120*K)],
+ ["Git hosting","GitHub Enterprise","git (git.hanzo.ai)",1,(E,D)=>D*252],
+ ["CI/CD","CircleCI / Actions","hanzoai/ci · arc runners",1,(E,D)=>Math.max(D*600,3600)],
+ ["Container registry","ECR / Docker Hub","registry (registry.hanzo.ai)",1,(E,D)=>3*K+D*24],
+ ["PaaS / app hosting","Vercel / Heroku","paas · deploy · functions",1,(E,D)=>D*240+6*K],
+ ["App backend / BaaS","Supabase / Firebase","base · docdb · orm",1,(E,D)=>12*K+E*30],
+ ["Queues & streaming","Confluent / SQS","pubsub (NATS) · kafka",1,(E,D)=>Math.min(Math.max(E*100,9*K),60*K)],
+ ["AI gateway & routing","Portkey / OpenRouter","ai · zen · gateway",1,(E,D)=>12*K],
+ ["Workflow automation","Zapier","automations · connectorruntime · cron",1,(E,D)=>Math.max(E*120,6*K)],
+ ["Billing & metering","Chargebee / Metronome","billing · usage · entitlements · pricing",1,(E,D)=>Math.max(E*180,7200)],
+ ["Commerce","Shopify Plus","commerce · marketplace",1,(E,D)=>24*K],
+ ["E-signature","DocuSign","sign",1,(E,D)=>Math.max(E*20,2400)],
+ ["Cap table","Carta","captable",1,(E,D)=>3*K+E*20],
+ ["Data rooms","DocSend / iDeals","dataroom",1,(E,D)=>6*K],
+ ["Referrals & affiliates","PartnerStack","affiliates · referrals · link",1,(E,D)=>9*K],
+ ["Experiments & evals","Statsig / Optimizely","experiments · evals",1,(E,D)=>12*K],
+ ["Zero-trust access","Tailscale / CF Access","zero-trust · ingress",1,(E,D)=>E*72],
+ ["Search","Algolia / Elastic","index · websearch",1,(E,D)=>12*K],
+ ["Vector store †","Pinecone","knowledge",.5,(E,D)=>8400],
+ ["Compliance automation","Vanta / Drata","compliance · audit · sbom · security",1,(E,D)=>15*K+E*30],
+ ["CRM","Salesforce / HubSpot","crm · company",1,(E,D)=>Math.max(E*270,5400)],
+ ["Marketing automation","HubSpot Marketing","marketing · campaign",1,(E,D)=>Math.min(Math.max(E*100,9600),43200)],
+ ["Projects & tasks","Linear / Asana","projects · tasks",1,(E,D)=>E*144],
+ ["Knowledge & docs","Notion / Confluence","knowledge · guide",1,(E,D)=>E*120],
+ ["Support & messaging","Intercom / Zendesk","help · ask · channels · bots",1,(E,D)=>E*114],
+ ["Notifications & email","SendGrid / Customer.io","notify",1,(E,D)=>6*K+E*12],
+ ["Incident & status","PagerDuty / Statuspage","o11y",1,(E,D)=>D*252+3*K],
+ ["Finance ops & ledger","NetSuite add-ons","books · treasury · ledger-fi",1,(E,D)=>6*K],
+ ["Design & creative","Figma / Canva","studio.hanzo.ai (813-file repo, verified)",1,(E,D)=>Math.max(E*160,3*K)],
+ ["Video, calls & calendar","Zoom / Calendly","hanzo.team (calls · calendar)",1,(E,D)=>E*180],
+ ["Office suite & drive","Google Workspace","office · drive (native)",1,(E,D)=>E*144],
+ ["HR & payroll","Gusto / Rippling","hr · payroll (native)",1,(E,D)=>E*480],
+ ["Payments tooling / PSP margin","Stripe markup over interchange+","psp · x402 · wallets",1,(E,D)=>12*K],
+ ["ERP / CMS / business apps","NetSuite / WordPress","erp · base (100+ business apps)",1,(E,D)=>Math.max(E*200,10*K)],
+ ["LLM inference & routing","OpenAI / Anthropic API","enso (optimizing router — the big saver) · zen (self-hosted models) · gateway — ~90% lower spend, attested",1,(E,D)=>Math.max(D*1200,12*K)],
+];
+const on=CATS.map(()=>true), W=CATS.map(c=>c[3]);
+// One chip per VENDOR on a real bill — several per category. A category counts
+// while any of its vendors is selected; the hero counts vendors, not categories.
+const VEND=[["Okta",0],["Auth0",0],["JumpCloud",0],["Clerk",1],["Firebase Auth",1],["Vault",2],["AWS KMS",2],["Doppler",2],["Datadog",3],["New Relic",3],["Grafana Cloud",3],["Splunk",3],["Sentry",4],["Rollbar",4],["LaunchDarkly",5],["Split",5],["Amplitude",6],["Mixpanel",6],["Heap",6],["Segment",7],["RudderStack",7],["GitHub",8],["GitLab",8],["Bitbucket",8],["CircleCI",9],["Buildkite",9],["Docker Hub",10],["JFrog",10],["Vercel",11],["Netlify",11],["Heroku",11],["Fly.io",11],["Supabase",12],["Firebase",12],["Confluent",13],["Redpanda",13],["Portkey",14],["OpenRouter",14],["Zapier",15],["Make",15],["n8n cloud",15],["Chargebee",16],["Metronome",16],["Stripe Billing",16],["Shopify",17],["BigCommerce",17],["DocuSign",18],["Dropbox Sign",18],["Carta",19],["Pulley",19],["DocSend",20],["iDeals",20],["PartnerStack",21],["Rewardful",21],["Statsig",22],["Optimizely",22],["Tailscale",23],["CF Access",23],["Algolia",24],["Elastic Cloud",24],["Pinecone",25],["Weaviate",25],["Vanta",26],["Drata",26],["Salesforce",27],["HubSpot CRM",27],["Pipedrive",27],["HubSpot Marketing",28],["Mailchimp",28],["Klaviyo",28],["Linear",29],["Asana",29],["Jira",29],["Monday",29],["Notion",30],["Confluence",30],["Zendesk",31],["Intercom",31],["Front",31],["SendGrid",32],["Twilio",32],["Customer.io",32],["PagerDuty",33],["Statuspage",33],["Opsgenie",33],["QuickBooks",34],["Bill.com",34],["Figma",35],["Canva",35],["Adobe CC",35],["Zoom",36],["Calendly",36],["Loom",36],["Google Workspace",37],["Microsoft 365",37],["Dropbox",37],["Gusto",38],["Rippling",38],["Deel",38],["Stripe",39],["Braintree",39],["NetSuite",40],["WordPress VIP",40],["Contentful",40],["OpenAI API",41],["Anthropic API",41],["Azure OpenAI",41]];
+const von=VEND.map(()=>true);
+const $=id=>document.getElementById(id);
+const rows=$('rows');
+rows.innerHTML=CATS.map((c,i)=>`<tr id="r${i}">
+ <td><input type="checkbox" checked data-i="${i}" aria-label="Include ${c[0]}"></td>
+ <td>${c[0]}</td><td>${c[1]}</td><td class="svc">${c[2]}</td>
+ <td><button type="button" class="chip ${c[3]===1?'full':'part'}" data-w="${i}" id="w${i}" title="Click to regrade coverage">${c[3]===1?'full':'partial ×0.5'}</button></td>
+ <td class="r num" id="v${i}">—</td></tr>`).join('');
+rows.addEventListener('change',e=>{const i=+e.target.dataset.i;on[i]=e.target.checked;
+ document.getElementById('r'+i).classList.toggle('off',!on[i]);calc();});
+rows.addEventListener('click',e=>{const b=e.target.closest('[data-w]');if(!b)return;
+ const i=+b.dataset.w;W[i]=W[i]===1?.5:1;
+ b.className='chip '+(W[i]===1?'full':'part');
+ b.textContent=W[i]===1?'full':'partial ×0.5';calc();});
+function grade(f){CATS.forEach((c,i)=>{W[i]=f?1:c[3];const b=$('w'+i);
+ b.className='chip '+(W[i]===1?'full':'part');
+ b.textContent=W[i]===1?'full':'partial ×0.5'});calc();}
+
+function calc(){
+ const E=+$('E').value, Dp=+$('Dp').value, D=Math.round(E*Dp/100),
+       C=+$('C').value*K, G=+$('G').value, O=+$('O').value, FTE=220*K;
+ $('oE').textContent=E; $('oD').textContent=Dp+'% ('+D+')';
+ $('oC').textContent='$'+(+$('C').value)+'k'; $('oG').textContent=G; $('oO').textContent=O;
+ let saas=0, nv=0;
+ CATS.forEach((c,i)=>{const v=c[4](E,D); $('v'+i).textContent=fmt(v)+(W[i]<1?' ×0.5':'');
+   if(on[i]){saas+=v*W[i];}});
+ nv=von.filter(Boolean).length;
+ const infra=C*12*0.6, glue=G*FTE, ops=O*FTE, net=saas+infra+glue-ops;
+ $('tSaaS').textContent=fmt(saas);
+ $('pSaaS').textContent=fmt(saas); $('pInfra').textContent=fmt(infra);
+ $('pGlue').textContent=fmt(glue); $('pOps').textContent='−'+fmt(ops);
+ $('net').textContent=fmt(net); $('perE').textContent=fmt(net/E);
+ $('y3').textContent=fmt(net*3); $('eng').textContent=(net/FTE).toFixed(1);
+ $('vend').textContent=nv+' → 1';
+}
+// Vendor wall: chips drive category state — a row stays on while any of its
+// vendors is selected, and the row checkbox toggles all of its vendors at once.
+const vwall=$('vwall');
+vwall.innerHTML=VEND.map((v,k)=>`<button type="button" class="v" data-k="${k}" aria-pressed="true">${v[0]}</button>`).join('');
+function syncRows(){CATS.forEach((c,i)=>{on[i]=VEND.some((v,k)=>v[1]===i&&von[k]);
+ const cb=rows.querySelector(`[data-i="${i}"]`); if(cb)cb.checked=on[i];
+ document.getElementById('r'+i).classList.toggle('off',!on[i]);});}
+vwall.addEventListener('click',e=>{const b=e.target.closest('[data-k]');if(!b)return;
+ const k=+b.dataset.k;von[k]=!von[k];b.setAttribute('aria-pressed',von[k]);syncRows();calc();});
+function setVend(f){von.forEach((_,k)=>{von[k]=f;
+ vwall.children[k].setAttribute('aria-pressed',f)});syncRows();calc();}
+$('vAll').onclick=()=>setVend(true); $('vNone').onclick=()=>setVend(false);
+rows.addEventListener('change',e=>{const i=+e.target.dataset.i;if(isNaN(i))return;
+ VEND.forEach((v,k)=>{if(v[1]===i){von[k]=e.target.checked;
+  vwall.children[k].setAttribute('aria-pressed',von[k])}});syncRows();calc();});
+
+['E','Dp','C','G','O'].forEach(id=>$(id).addEventListener('input',calc));
+$('pAud').onclick=()=>grade(false); $('pFou').onclick=()=>grade(true);
+calc();
+</script>

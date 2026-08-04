@@ -1,0 +1,161 @@
+Hanzo Dataroom
+Copyright 2026 Hanzo AI, Inc.
+
+This product is a derivative work of Papermark. Except for the separately
+licensed directories described in section 3, it is distributed under the GNU
+Affero General Public License, Version 3 — the same license as the upstream
+work.
+
+
+================================================================================
+1. Upstream project
+================================================================================
+
+    Project:  Papermark — open source document sharing and data rooms
+    Source:   https://github.com/mfts/papermark
+    Website:  https://www.papermark.com
+
+    Copyright (c) 2023-present Papermark, Inc.
+
+The Papermark codebase was begun on 2023-05-27 by Marc Seitz <marc@mfts.io>,
+who remains its principal author. Prior to the Hanzo fork it had received
+contributions from 68 individuals, including Ashish Viradiya, Iuliia Shnai,
+Aashish Upadhyay, Ashraf Chowdury and Vinod Pal.
+
+Copyright in the upstream work remains with Papermark, Inc. and the
+respective contributing authors. Nothing in this NOTICE, and nothing done by
+Hanzo AI, Inc., transfers or reassigns that copyright.
+
+The upstream copyright line at the head of the LICENSE file —
+`Copyright (c) 2023-present Papermark, Inc.` — is the upstream holder's
+attribution and is retained deliberately.
+
+This repository preserves the complete upstream git history, so upstream
+authorship of every file and line is independently verifiable with `git log`
+and `git blame`.
+
+
+================================================================================
+2. License
+================================================================================
+
+The LICENSE file at the root of this repository is the license as received
+from upstream. It has never been modified by Hanzo — its last change is an
+upstream commit by Marc Seitz (bf2cb41ca, 2025-12-08).
+
+That file sets out a split arrangement, which Hanzo has preserved:
+
+  * Content under the `ee/` and `app/(ee)/` directories is under a separate
+    commercial license, not the AGPL. See section 3 below.
+  * Third-party components are under the original license provided by the
+    owner of the applicable component. See section 5 below.
+  * Everything else is under the GNU Affero General Public License,
+    Version 3 (AGPL-3.0), whose full text is included in that same file.
+
+AGPL-3.0 section 13 — remote network interaction
+------------------------------------------------
+
+Hanzo Dataroom is made available to users over a network at
+https://dataroom.hanzo.ai. Section 13 of the AGPL therefore applies to the
+AGPL-licensed portion: users interacting with the software remotely must be
+given an opportunity to receive the Corresponding Source of the running
+version.
+
+The Corresponding Source is published at:
+
+    https://github.com/hanzoai/dataroom
+
+
+================================================================================
+3. Commercially licensed directories (`ee/`, `app/(ee)/`)
+================================================================================
+
+The `ee/` directory, and `app/(ee)/` which symlinks its license, are NOT
+under the AGPL. They carry a separate commercial license in `ee/LICENSE.md`.
+This split originates upstream: Papermark shipped these directories under
+"The Papermark Commercial License".
+
+Record of what Hanzo changed here, stated plainly:
+
+  In commit eb2273543 (2026-03-01, "Rebrand from Papermark to Hanzo
+  Dataroom"), `ee/LICENSE.md` was edited as part of a repository-wide
+  rebranding pass. The edit retitled the document from "The Papermark
+  Commercial License" to "The Hanzo Dataroom Commercial License" and changed
+  its copyright line from `Copyright (c) 2023-present Papermark, Inc.` to
+  `Copyright (c) 2023-present Hanzo AI, Inc.`, together with the
+  corresponding party names in the body. The operative terms were otherwise
+  unchanged.
+
+  The code in `ee/` is not merely "substantially" upstream Papermark code —
+  it is entirely upstream. Every one of the 160 file-additions ever made
+  under `ee/` was authored upstream: 151 by Marc Seitz <marc@mfts.io> and 9
+  by other upstream contributors. Zero files under `ee/` have ever been
+  authored by Hanzo, and no Hanzo commit has added source there. This is
+  verifiable with:
+
+      git log --format='%H %ae' --name-status --diff-filter=A -- ee
+
+  Retitling the license document and substituting the copyright holder does
+  not transfer copyright in that code, which remains with Papermark, Inc.
+  and its contributors.
+
+  This is flagged as an open question requiring review by legal counsel. It
+  is recorded here rather than silently corrected, because unwinding it is a
+  legal determination and not an engineering one. Note also that the root
+  LICENSE directs readers to "ee/LICENSE" while the file is in fact named
+  `ee/LICENSE.md`, and that it identifies the covered directories by their
+  upstream URLs under github.com/mfts/papermark.
+
+  Deletion of `ee/` was evaluated on 2026-08-03 as a way of resolving this
+  by removing the code rather than adjudicating its ownership. It was not
+  carried out, because `ee/` is not a severable commercial add-on in this
+  codebase: 141 files outside `ee/` import from it, and those imports include
+  core infrastructure rather than paywall gating alone. In particular
+  `ee/features/storage/config.ts` supplies the S3 configuration consumed by
+  `lib/files/aws-client.ts`, `lib/files/bulk-download-presign.ts` and every
+  document view and download route. Deleting `ee/` therefore removes document
+  storage, AI document chat, conversations, granular permissions, dataroom
+  invitations, workflows and templates, and leaves a tree that does not
+  build. The licensing question above is unchanged by this and remains open.
+
+
+================================================================================
+4. Modifications by Hanzo
+================================================================================
+
+    Copyright 2026 Hanzo AI, Inc.
+
+Hanzo's modifications begin 2026-03-01. Modifications to AGPL-licensed
+portions are licensed under AGPL-3.0, on the same terms as the upstream work.
+In summary, Hanzo has:
+
+  * Rebranded from Papermark to Hanzo Dataroom — metadata, titles,
+    descriptions, Open Graph tags, email templates, the powered-by component,
+    the x-powered-by header, legal references and social handles — and
+    repointed papermark.io/.com URLs to dataroom.hanzo.ai.
+  * Replaced authentication with Hanzo IAM: an OIDC SSO provider, IAM-only
+    sign-in, and an `org_id` claim carried into the JWT and session.
+  * Replaced Upstash with Hanzo KV (an ioredis wire-compatible client).
+  * Replaced PostHog product analytics with Hanzo Insights.
+  * Upgraded to Next.js 15 and TypeScript 5.9, with the associated async
+    `params` / `searchParams` and Edge Runtime corrections.
+  * Removed vendored third-party files (a tracked vendor directory and
+    vendored Handsontable files) in favour of declared dependencies.
+  * Added a Dockerfile and moved CI/CD to the canonical Hanzo reusable
+    workflow, with credentials sourced from Hanzo KMS.
+
+
+================================================================================
+5. Third-party components
+================================================================================
+
+All third-party components incorporated into this software remain licensed
+under the original license provided by the owner of the applicable component.
+Dependency licenses are recorded in the lockfile and in each package's own
+metadata.
+
+Individually attributed source files:
+
+  * `components/ui/timestamp-tooltip.tsx`
+    Copyright (c) Dub, Inc. and contributors. Published under AGPLv3.
+    https://github.com/dubinc/dub

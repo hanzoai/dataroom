@@ -1,0 +1,292 @@
+<title>The Hanzo Claims Ledger</title>
+<style>
+  :root {
+    --paper: #eef1f4;
+    --card: #ffffff;
+    --ink: #12181f;
+    --ink-soft: #495563;
+    --rule: #c9d2db;
+    --seal: #c0362c;
+    --seal-soft: #f3dedb;
+    --slate: #5b7186;
+    --amber: #8a6414;
+    --amber-soft: #f6e9c8;
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+    --sans: "Helvetica Neue", Helvetica, "Segoe UI", Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #0f1419; --card: #161d25; --ink: #e6ecf2; --ink-soft: #96a4b3;
+      --rule: #2a3542; --seal: #e2685c; --seal-soft: #33201e;
+      --slate: #7e97ad; --amber: #d3a63f; --amber-soft: #2e2612;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #0f1419; --card: #161d25; --ink: #e6ecf2; --ink-soft: #96a4b3;
+    --rule: #2a3542; --seal: #e2685c; --seal-soft: #33201e;
+    --slate: #7e97ad; --amber: #d3a63f; --amber-soft: #2e2612;
+  }
+  :root[data-theme="light"] {
+    --paper: #eef1f4; --card: #ffffff; --ink: #12181f; --ink-soft: #495563;
+    --rule: #c9d2db; --seal: #c0362c; --seal-soft: #f3dedb;
+    --slate: #5b7186; --amber: #8a6414; --amber-soft: #f6e9c8;
+  }
+
+  body {
+    background: var(--paper); color: var(--ink);
+    font-family: var(--sans); line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 62rem; margin: 0 auto; padding: 3rem 1.5rem 6rem; display: flex; flex-direction: column; gap: 3.5rem; }
+
+  header { display: flex; flex-direction: column; gap: 1rem; border-bottom: 2px solid var(--ink); padding-bottom: 1.75rem; }
+  .eyebrow { font-family: var(--mono); font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; color: var(--seal); }
+  h1 { font-size: clamp(2.1rem, 5vw, 3.2rem); line-height: 1.04; letter-spacing: -.025em; font-weight: 700; text-wrap: balance; }
+  .standfirst { font-size: 1.09rem; color: var(--ink-soft); max-width: 46ch; }
+
+  h2 { font-size: 1.5rem; letter-spacing: -.015em; margin-bottom: .35rem; text-wrap: balance; }
+  h3 { font-size: 1.02rem; letter-spacing: -.005em; }
+  section { display: flex; flex-direction: column; gap: 1.25rem; }
+  .lede { color: var(--ink-soft); max-width: 62ch; }
+
+  .tier { display: flex; flex-direction: column; gap: .9rem; }
+  .tier-head { display: flex; align-items: baseline; gap: .75rem; flex-wrap: wrap; border-left: 4px solid var(--bar); padding-left: .85rem; }
+  .tier-head .n { font-family: var(--mono); font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: var(--bar); font-weight: 700; }
+  .t-proven { --bar: var(--seal); }
+  .t-credible { --bar: var(--slate); }
+  .t-drop { --bar: var(--amber); }
+
+  .claim { background: var(--card); border: 1px solid var(--rule); border-left: 4px solid var(--bar); padding: 1.05rem 1.2rem; display: flex; flex-direction: column; gap: .5rem; }
+  .claim q { font-size: 1.05rem; font-weight: 600; display: block; quotes: "\201C" "\201D"; }
+  .claim .ev { font-family: var(--mono); font-size: .81rem; color: var(--ink-soft); line-height: 1.55; }
+  .claim .ev b { color: var(--ink); font-weight: 600; }
+  .verify { font-size: .84rem; color: var(--slate); }
+  .verify::before { content: "verify → "; font-family: var(--mono); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--bar); }
+
+  table { width: 100%; border-collapse: collapse; font-size: .89rem; }
+  .scroll { overflow-x: auto; border: 1px solid var(--rule); background: var(--card); }
+  th, td { text-align: left; padding: .6rem .8rem; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+  th { font-family: var(--mono); font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); font-weight: 600; }
+  tbody tr:last-child td { border-bottom: none; }
+  .num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  .win { color: var(--seal); font-weight: 700; }
+  .me { background: var(--seal-soft); }
+  .me td:first-child { font-weight: 700; }
+
+  ol.spine { list-style: none; display: flex; flex-direction: column; gap: 1rem; counter-reset: post; }
+  ol.spine li { background: var(--card); border: 1px solid var(--rule); padding: 1rem 1.2rem; display: flex; flex-direction: column; gap: .4rem; counter-increment: post; }
+  ol.spine li::before { content: "Post " counter(post); font-family: var(--mono); font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; color: var(--seal); }
+  ol.spine .hook { font-weight: 650; font-size: 1.02rem; }
+  ol.spine .why { color: var(--ink-soft); font-size: .92rem; }
+
+  .brand { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1rem; }
+  .brand div { background: var(--card); border: 1px solid var(--rule); padding: 1rem 1.15rem; display: flex; flex-direction: column; gap: .4rem; }
+  .brand .stop { border-top: 3px solid var(--amber); }
+  .brand .start { border-top: 3px solid var(--seal); }
+  .brand p { font-size: .92rem; color: var(--ink-soft); }
+  .brand strong { color: var(--ink); }
+
+  blockquote { border-left: 4px solid var(--seal); background: var(--card); padding: 1.1rem 1.3rem; font-size: 1.1rem; line-height: 1.5; font-weight: 550; text-wrap: balance; }
+  footer { border-top: 1px solid var(--rule); padding-top: 1.25rem; font-size: .85rem; color: var(--ink-soft); }
+  a { color: var(--seal); }
+</style>
+
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Positioning · evidence-graded</div>
+  <h1>The Hanzo Claims Ledger</h1>
+  <p class="standfirst">Every claim you could make, sorted by whether it survives a skeptical engineer with a terminal. Market the top tier. Source the middle. Retire the bottom.</p>
+</header>
+
+<section>
+  <h2>Why grade claims at all</h2>
+  <p class="lede">Your buyer is a technical founder who will check. One claim that collapses under scrutiny costs more credibility than three verified ones earn — and it retroactively taints the true ones. The discipline below is the asset: a page where every number is checkable is itself the proof that the engineering is honest.</p>
+</section>
+
+<section class="tier t-proven">
+  <div class="tier-head"><span class="n">Tier 1 — Proven</span><h2>Say these everywhere</h2></div>
+  <p class="lede">Measured directly. A stranger can reproduce each in under a minute.</p>
+
+  <div class="claim">
+    <q>We took gRPC to zero.</q>
+    <p class="ev">65 gRPC packages → <b>0</b>. Two roots: the Gemini SDK (sole importer of <b>cloud.google.com/go/auth</b>, which dragged gax-go and all 13 s2a-go packages) and an OTLP exporter whose <em>HTTP</em> variant still imported gRPC internally. Replaced with a ~190-line native REST client and a ZAP-native span exporter.</p>
+    <p class="verify"><code>go list -deps ./cmd/cloud | grep -c google.golang.org/grpc</code></p>
+  </div>
+
+  <div class="claim">
+    <q>One service binary went from 3,253 packages to 652.</q>
+    <p class="ev">Every "standalone" service binary was linking the entire composition root. Fixing the generator cut <b>250,481 → 63,522</b> total package-links across 77 binaries — mean 3,253 → 825, floor <b>652</b>.</p>
+    <p class="verify"><code>go list -deps ./cmd/wallets | wc -l</code></p>
+  </div>
+
+  <div class="claim">
+    <q>Our wire protocol decodes with zero allocations.</q>
+    <p class="ev">Headers are length-prefixed name/value pairs; every name and value is a subslice of the frame. <b>82ns and 1 alloc/op → 26ns and 0 allocs/op</b> — 3.2× — replacing a JSON map inside the frame.</p>
+    <p class="verify">Published benchmark in the <code>zip</code> repo.</p>
+  </div>
+
+  <div class="claim">
+    <q>A plugin can panic and the host keeps serving.</q>
+    <p class="ev">Lazy start on first request, hot reload with no dropped requests, and a failed build that cannot take a route down — each pinned by a test passing under <b>-race</b>, not asserted in a README.</p>
+    <p class="verify"><code>go test -race -run 'TestPlugins_SurvivesPanic|TestLoad_Lazy'</code></p>
+  </div>
+
+  <div class="claim">
+    <q>One registry. Five projections.</q>
+    <p class="ev">A typed handler produces the REST route, the OpenAPI path, the MCP tool, the CLI command, and the SDK client — from one definition. Doc comments are lifted into the spec at build time, so the reference cannot drift from the code.</p>
+    <p class="verify">Hit <code>/.well-known/openapi.json</code> and <code>/mcp</code> on any service.</p>
+  </div>
+</section>
+
+<section class="tier t-credible">
+  <div class="tier-head"><span class="n">Tier 2 — True, needs sourcing</span><h2>Your strongest cards — once documented</h2></div>
+  <p class="lede">These are almost certainly true and far more persuasive than anything in Tier&nbsp;1. They are also, right now, completely invisible to anyone evaluating you. Turning each into a citable page is the highest-leverage marketing work available.</p>
+
+  <div class="claim">
+    <q>100+ VC-funded companies were built on Hanzo.</q>
+    <p class="ev">The only claim with no counterargument. Breadth invites "OpenStack is bigger"; scale invites "Clojure is smaller on purpose." <b>Who shipped on you</b> invites nothing. It needs logos, three named case studies, and one customer willing to be quoted.</p>
+    <p class="verify">Currently unciteable — no case study exists.</p>
+  </div>
+
+  <div class="claim">
+    <q>No open-source platform spans these fifteen domains.</q>
+    <p class="ev">Inference · agents/MCP · vector &amp; retrieval · app platform · identity · billing · commerce · observability · consensus · post-quantum cryptography · FHE · GPU kernels · compliance automation · e-signature &amp; cap tables · single-binary self-host. Nearest OSS comparisons cover three or four.</p>
+    <p class="verify">Publish the matrix and invite corrections.</p>
+  </div>
+
+  <div class="claim">
+    <q>HIPAA and SOC 2 posture out of the box.</q>
+    <p class="ev">Compliance is the single largest non-product cost for a regulated startup — commonly six figures and months before first revenue. If the platform ships the controls, audit trail and data handling by default, that is not a feature, it is <b>the reason a healthcare founder picks you over assembling five vendors</b>. Needs an auditor letter or a customer who passed.</p>
+    <p class="verify">Unciteable until one customer's audit is public.</p>
+  </div>
+
+  <div class="claim">
+    <q>A company that runs itself: formation, team, agents, on-chain.</q>
+    <p class="ev">Company formation, agentic teammates in chat, apps on every platform, settlement on-chain. This is the only claim here that is about <b>the future rather than the present</b> — which makes it the vision slide, not the proof slide. Powerful with investors, dangerous with engineers, who will ask for the demo.</p>
+    <p class="verify">Needs one end-to-end recorded demo.</p>
+  </div>
+
+  <div class="claim">
+    <q>Broadest scope per engineer in open source.</q>
+    <p class="ev">OpenStack had thousands of contributors and a foundation. GitLab is a 2,000-person company. The ratio is the absurd number here — but only if you state the team size, which is the part that makes it land.</p>
+    <p class="verify">Name the headcount publicly.</p>
+  </div>
+</section>
+
+<section>
+  <h2>The matrix, open-source only</h2>
+  <p class="lede">Scored on presence, not depth — and that distinction is the honest caveat to lead with, because on any single column a specialist beats you. The claim is coherence across all eight, not victory in each.</p>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Platform</th><th>Inference</th><th>Agents/MCP</th><th>App</th><th>Identity</th><th>Commerce</th><th>o11y</th><th>Chain</th><th>1-binary</th></tr></thead>
+      <tbody>
+        <tr class="me"><td>Hanzo</td><td class="win">✓</td><td class="win">✓</td><td class="win">✓</td><td class="win">✓</td><td class="win">✓</td><td class="win">✓</td><td class="win">✓</td><td class="win">✓</td></tr>
+        <tr><td>Supabase</td><td>partial</td><td>—</td><td>✓</td><td>✓</td><td>—</td><td>partial</td><td>—</td><td>—</td></tr>
+        <tr><td>Appwrite</td><td>partial</td><td>—</td><td>✓</td><td>✓</td><td>—</td><td>—</td><td>—</td><td>partial</td></tr>
+        <tr><td>Odoo</td><td>—</td><td>—</td><td>partial</td><td>✓</td><td>✓</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td>OpenStack</td><td>—</td><td>—</td><td>—</td><td>✓</td><td>partial</td><td>✓</td><td>—</td><td>—</td></tr>
+        <tr><td>GitLab CE</td><td>—</td><td>—</td><td>—</td><td>✓</td><td>—</td><td>✓</td><td>—</td><td>—</td></tr>
+        <tr><td>Medusa / Saleor</td><td>—</td><td>—</td><td>—</td><td>partial</td><td>✓</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td>Kill Bill / Lago</td><td>—</td><td>—</td><td>—</td><td>—</td><td>partial</td><td>—</td><td>—</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="tier t-drop">
+  <div class="tier-head"><span class="n">Tier 3 — Retire</span><h2>These lose you more than they win</h2></div>
+
+  <div class="claim" style="--bar: var(--seal)">
+    <q>4,000 projects. <span style="color:var(--seal)">— retracted twice; the real figure is higher</span></q>
+    <p class="ev">Measured with the authenticated API as the account that owns the estate: <b>186 organisations</b>, <b>2,253 public + 2,172 private org repositories = 4,425</b>, plus <b>548 personal</b>. <b>4,973 total.</b> Largest: hanzoskill 749 · hanzoai 591 · luxfi 407 · nko3 388 · Dream-AI-4444 336. Still excludes the self-hosted forge at git.hanzo.ai.</p>
+    <p class="ev">This ledger got it wrong <b>three times</b> — first from one personal account (548), then from a guessed list of twelve orgs (973). Both used unauthenticated endpoints, which return only PUBLIC org membership. The lesson generalises: <b>measure with the credential that can see the whole estate, or do not publish the number.</b></p>
+    <p class="verify"><code>gh api user/orgs --paginate --jq '.[].login'</code> then per org <code>gh api orgs/&lt;o&gt; --jq '[.public_repos, .total_private_repos]'</code></p>
+  </div>
+
+  <div class="claim" style="--bar: var(--seal)">
+    <q>One engineer runs all of it.</q>
+    <p class="ev">4,973 repositories, 186 organisations, ~104 services in a single binary, across inference, agents, identity, KMS, billing, commerce, observability, consensus, post-quantum cryptography, FHE and GPU kernels — <b>solo</b>. Set against OpenStack's thousands of contributors or GitLab's 2,000-person company, this is the ratio that has no peer and no counterargument.</p>
+    <p class="ev">It is also the answer to the question every investor asks next — <em>how is this maintainable by one person?</em> — and the answer is the architecture itself: one wire protocol, one registry with five projections, one plugin model. <b>The discipline is not a stylistic preference; it is the only reason the surface is survivable at this headcount.</b></p>
+    <p class="verify">State the headcount plainly. It is the most load-bearing number here.</p>
+  </div>
+
+  <div class="claim">
+    <q>Every AI modality ever.</q>
+    <p class="ev">Invites "what about protein folding, weather, robotics, EEG?" — a free win for a skeptic. The accurate version is stronger anyway: <b>text, vision, audio, video, 3D and code under one framework.</b></p>
+  </div>
+
+  <div class="claim">
+    <q>Bigger than Clojure / Rich Hickey's life work.</q>
+    <p class="ev">Clojure is deliberately small — that is its thesis. Measuring by volume uses the one metric you both reject, and to an audience that knows him it reads as not understanding the work you cite as an influence.</p>
+  </div>
+
+  <div class="claim">
+    <q>We dwarf what OpenAI and Anthropic have built.</q>
+    <p class="ev">This is the most expensive sentence in the deck. They run frontier <b>training</b> — nine-figure compute, research organisations. You do not, and an investor knows it in the first second. Say this and everything after it is discounted, including the true claims.</p>
+    <p class="ev"><b>The frame that wins instead:</b> they sell a model behind an API. Nobody gets identity, billing, commerce, compliance, self-hosting or settlement from them — and every company building on them still has to assemble that. You are the layer they will never build, and you run on <em>any</em> model including theirs. Not a competitor. <b>The platform their customers need in order to ship.</b></p>
+  </div>
+</section>
+
+<section>
+  <h2>The positioning line</h2>
+  <blockquote>The assembled alternative is Supabase&nbsp;+&nbsp;Lago&nbsp;+&nbsp;Keycloak&nbsp;+&nbsp;Grafana&nbsp;+&nbsp;a chain node — five vendors, five auth models, five integration surfaces. Hanzo is one binary, one protocol, one identity. 100+ funded companies already shipped on it.</blockquote>
+  <p class="lede">Breadth is the <em>explanation</em>, never the claim. Lead with who shipped; let the eight domains explain how.</p>
+</section>
+
+<section>
+  <h2>Campaign spine</h2>
+  <p class="lede">Five posts, ordered so each earns the audience for the next. Every one leads with a number a reader can reproduce — that is the through-line, and it is also the brand.</p>
+  <ol class="spine">
+    <li>
+      <span class="hook">"We deleted gRPC from a 3,000-package binary. Here's what was actually pulling it in."</span>
+      <span class="why">Pure engineering, zero pitch. The twist — the <em>HTTP</em> OTLP exporter secretly imports gRPC — is a genuinely useful finding that thousands of Go teams share and none have noticed. This is the post that travels.</span>
+    </li>
+    <li>
+      <span class="hook">"Every 'standalone' binary in our monorepo was linking all 104 services. 3,253 packages → 652."</span>
+      <span class="why">Universal monorepo pain, one-line diagnosis, reproducible command. Ends on the plugin architecture, so the product enters as the answer to a problem the reader now recognizes in their own repo.</span>
+    </li>
+    <li>
+      <span class="hook">"One registry, five projections: REST, OpenAPI, MCP, CLI and SDK from a single handler."</span>
+      <span class="why">The architectural thesis, and the one competitors cannot retrofit. Land the MCP angle hard — every AI company is currently hand-writing tool definitions that drift.</span>
+    </li>
+    <li>
+      <span class="hook">"The eight-domain matrix: what it takes to replace five vendors with one binary."</span>
+      <span class="why">Now the positioning post lands, because posts 1–3 established you measure honestly. Publish the matrix with its caveat intact and invite corrections — the arguments are the distribution.</span>
+    </li>
+    <li>
+      <span class="hook">"100+ funded companies were built on this. Here are three of them."</span>
+      <span class="why">The closer, and the one that converts. It only works after the credibility from 1–4, and it requires the case studies that do not exist yet. Start collecting them now — this is the long-lead item.</span>
+    </li>
+  </ol>
+</section>
+
+<section>
+  <h2>Personal brand</h2>
+  <p class="lede">The engineering is far ahead of the story. The gap is not talent or output — it is that reach comes from concentration, and your public surface is spread across 548 repositories.</p>
+  <div class="brand">
+    <div class="stop">
+      <h3>Stop</h3>
+      <p><strong>Comparative superlatives.</strong> "Bigger than X" invites scoring, and scoring is where volume loses. Torvalds has 12 public repos and 313k followers; Hickey has 10 and 6.4k. Repo count is inversely correlated with reach — 548 repos split the attention that one would compound.</p>
+    </div>
+    <div class="start">
+      <h3>Start</h3>
+      <p><strong>Be the person who publishes the number.</strong> Every post opens with a measurement and the command to reproduce it. That is a rare and defensible identity, it is already how you work, and it makes the claims self-verifying — the reader checks one, trusts the rest.</p>
+    </div>
+    <div class="start">
+      <h3>Own the name</h3>
+      <p><strong>Hattori Hanzō made a shogun.</strong> Samurai and Iga ninja commander under Tokugawa Ieyasu. When Nobunaga was killed at Honnō-ji in 1582 and Ieyasu was stranded in hostile territory, Hanzō led him out through Iga — the crossing that kept him alive. Ieyasu went on to found the shogunate that unified Japan for 250 years. There is still a gate at the Imperial Palace named Hanzōmon.</p>
+      <p><strong>That is the literal king-maker story</strong>, and it is far stronger than the swordsmith of the films. Not the man who wins the battle — the one without whom the person who wins it never survives to fight.</p>
+    </div>
+    <div class="start">
+      <h3>Recruiting angle</h3>
+      <p><strong>Lead with scope per engineer.</strong> The pitch is not "we're big," it is "you will touch consensus, post-quantum crypto, GPU kernels and inference in the same month, and nobody will slow you down." That is a self-selecting filter for the people you actually want.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Tier 1 figures were measured directly against the working tree. Tier 2 rests on figures supplied by the founder and is marked as needing citation, not as verified. Tier 3 claims were checked and did not hold.
+</footer>
+
+</div>
