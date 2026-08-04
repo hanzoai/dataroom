@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { reportDeniedAccessAttempt } from "@/features/access-notifications";
-import { getTeamStorageConfigById } from "@/features/storage/config";
+import { getStorageConfig } from "@/lib/storage/config";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { ItemType, LinkAudienceType } from "@prisma/client";
 import { ipAddress, waitUntil } from "@vercel/functions";
@@ -935,9 +935,7 @@ export async function POST(request: NextRequest) {
               documentVersion.file = documentVersion.file;
             } else {
               // Get team-specific storage config for advanced distribution host
-              const storageConfig = await getTeamStorageConfigById(
-                link.teamId!,
-              );
+              const storageConfig = getStorageConfig();
               documentVersion.file = `https://${storageConfig.advancedDistributionHost}/${documentVersion.file}`;
             }
           } else {

@@ -6,7 +6,7 @@ import { getServerSession } from "next-auth";
 import path from "node:path";
 
 import { ONE_HOUR, ONE_SECOND } from "@/lib/constants";
-import { getTeamS3ClientAndConfig } from "@/lib/files/aws-client";
+import { getS3ClientAndConfig } from "@/lib/files/aws-client";
 import { safeSlugify } from "@/lib/utils";
 import prisma from "@/lib/prisma";
 import { CustomUser } from "@/lib/types";
@@ -58,7 +58,7 @@ export default async function handler(
     const key = `${team.id}/${docId}/${slugifiedName}`;
     const contentDisposition = `attachment; filename="${slugifiedName}"; filename*=UTF-8''${encodeURIComponent(originalFileName)}`;
 
-    const { client, config } = await getTeamS3ClientAndConfig(team.id);
+    const { client, config } = getS3ClientAndConfig();
 
     const putObjectCommand = new PutObjectCommand({
       Bucket: config.bucket,

@@ -1,12 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import { MultiRegionS3Store } from "@/features/storage/s3-store";
+import { createTusStore } from "@/lib/storage/tus-store";
 import { CopyObjectCommand } from "@aws-sdk/client-s3";
 import { Server } from "@tus/server";
 import path from "node:path";
 
 import { verifyDataroomSessionInPagesRouter } from "@/lib/auth/dataroom-auth";
-import { getTeamS3ClientAndConfig } from "@/lib/files/aws-client";
+import { getS3ClientAndConfig } from "@/lib/files/aws-client";
 import { safeSlugify } from "@/lib/utils";
 import { RedisLocker } from "@/lib/files/tus-redis-locker";
 import { newId } from "@/lib/id-helper";
@@ -31,7 +31,7 @@ const tusServer = new Server({
   maxSize: 1024 * 1024 * 1024 * 2, // 2 GiB
   respectForwardedHeaders: true,
   locker,
-  datastore: new MultiRegionS3Store(),
+  datastore: createTusStore(),
   async namingFunction(req, metadata) {
     // Extract viewer data from metadata
     const { teamId, fileName, viewerId, linkId, dataroomId } = metadata as {
@@ -160,7 +160,7 @@ const tusServer = new Server({
       }
 
       // Get team-specific S3 client and config
-      const { client, config } = await getTeamS3ClientAndConfig(teamId);
+      const { client, config } = getS3ClientAndConfig();
 
       // Copy the object onto itself, replacing the metadata
       const params = {

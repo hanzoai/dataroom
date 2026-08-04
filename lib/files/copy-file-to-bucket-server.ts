@@ -2,7 +2,7 @@ import { CopyObjectCommand, ListObjectsV2Command } from "@aws-sdk/client-s3";
 import { DocumentStorageType } from "@prisma/client";
 import { match } from "ts-pattern";
 
-import { getTeamS3ClientAndConfig } from "./aws-client";
+import { getS3ClientAndConfig } from "./aws-client";
 
 export const copyFileToBucketServer = async ({
   filePath,
@@ -34,7 +34,7 @@ const copyFileToBucketInS3Server = async ({
   filePath: string;
   teamId: string;
 }) => {
-  const { client, config } = await getTeamS3ClientAndConfig(teamId);
+  const { client, config } = getS3ClientAndConfig();
 
   try {
     const copyCommand = new CopyObjectCommand({

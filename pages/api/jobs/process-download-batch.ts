@@ -1,9 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { getTeamStorageConfigById } from "@/features/storage/config";
+import { getStorageConfig } from "@/lib/storage/config";
 import { InvocationType, InvokeCommand } from "@aws-sdk/client-lambda";
 
-import { getLambdaClientForTeam } from "@/lib/files/aws-client";
+import { getLambdaClient } from "@/lib/files/aws-client";
 
 // Internal API endpoint for processing download batches
 // Called by Trigger.dev task - authenticated via shared secret
@@ -48,11 +48,8 @@ export default async function handler(
       return res.status(400).json({ error: "Missing required parameters" });
     }
 
-    // Get Lambda client and storage config using team credentials
-    const [client, storageConfig] = await Promise.all([
-      getLambdaClientForTeam(teamId),
-      getTeamStorageConfigById(teamId),
-    ]);
+    const client = getLambdaClient();
+    const storageConfig = getStorageConfig();
 
     const params = {
       FunctionName: storageConfig.lambdaFunctionName,

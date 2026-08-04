@@ -3,7 +3,7 @@ import { DocumentStorageType } from "@prisma/client";
 import { del } from "@vercel/blob";
 import { match } from "ts-pattern";
 
-import { getTeamS3ClientAndConfig } from "./aws-client";
+import { getS3ClientAndConfig } from "./aws-client";
 
 export type DeleteFileOptions = {
   type: DocumentStorageType;
@@ -33,7 +33,7 @@ const deleteAllFilesFromS3Server = async (data: string, teamId: string) => {
   const dataMatch = data.match(/^(.*doc_[^\/]+)\//);
   const folderPath = dataMatch ? dataMatch[1] : data;
 
-  const { client, config } = await getTeamS3ClientAndConfig(teamId);
+  const { client, config } = getS3ClientAndConfig();
 
   try {
     // List all objects in the folder
