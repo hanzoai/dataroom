@@ -9,21 +9,7 @@ import { z } from "zod";
 
 import { uploadImage } from "@/lib/utils";
 
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form-hook";
-import { Input } from "@/components/ui/input";
-import LoadingSpinner from "@/components/ui/loading-spinner";
-import { RichTextEditor } from "@/components/ui/rich-text-editor";
-import { Switch } from "@/components/ui/switch";
+import { Button, Checkbox, Input, Switch } from "@hanzo/ui";
 
 const formSchema = z.object({
   title: z

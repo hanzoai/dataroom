@@ -10,18 +10,7 @@ import { mutate } from "swr";
 
 import { useAnalytics } from "@/lib/analytics";
 
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, Input, Label } from "@hanzo/ui";
 
 import { UpgradePlanModal } from "../billing/upgrade-plan-modal";
 import { PhoneInput } from "../ui/phone-input";

@@ -14,8 +14,7 @@ import { fetcher } from "@/lib/utils";
 
 import StatsElement from "@/components/documents/stats-element";
 import VideoChartPlaceholder from "@/components/documents/video-chart-placeholder";
-import { Card, CardContent } from "@/components/ui/card";
-import LoadingSpinner from "@/components/ui/loading-spinner";
+import { Card, CardContent } from "@hanzo/ui";
 
 interface VideoAnalyticsProps {
   teamId: string;

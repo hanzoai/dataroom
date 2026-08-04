@@ -18,17 +18,7 @@ import { cn, nFormatter, timeAgo } from "@/lib/utils";
 import { fileIcon } from "@/lib/utils/get-file-icon";
 
 import BarChart from "@/components/shared/icons/bar-chart";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Checkbox } from "@/components/ui/checkbox";
-import { BadgeTooltip } from "@/components/ui/tooltip";
+import { Button, Checkbox, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@hanzo/ui";
 
 type HiddenDocumentCardProps = {
   document: DocumentWithLinksAndLinkCountAndViewCount;

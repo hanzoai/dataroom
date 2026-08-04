@@ -8,13 +8,7 @@ import { toast } from "sonner";
 
 import { formatDate } from "@/lib/utils";
 
-import {
-  ButtonTooltip,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@hanzo/ui";
 
 import { Button } from "../../ui/button";
 import { ConversationSidebar } from "../conversations/sidebar";

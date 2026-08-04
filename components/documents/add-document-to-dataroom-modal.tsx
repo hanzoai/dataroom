@@ -5,15 +5,7 @@ import { useState } from "react";
 import { useTeam } from "@/context/team-context";
 import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Button, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@hanzo/ui";
 
 import useDataroomsSimple from "@/lib/swr/use-datarooms-simple";
 

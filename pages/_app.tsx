@@ -12,8 +12,7 @@ import { EXCLUDED_PATHS } from "@/lib/constants";
 import { InsightsCustomProvider } from "@/components/providers/insights-provider";
 import { DealflowPopup } from "@/components/shared/dealflow-popup";
 import { ThemeProvider } from "@/components/theme-provider";
-import { Toaster } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster, TooltipProvider } from "@hanzo/ui";
 
 import "@/styles/globals.css";
 

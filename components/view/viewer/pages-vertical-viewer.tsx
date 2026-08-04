@@ -11,7 +11,7 @@ import { WatermarkConfig } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { useMediaQuery } from "@/lib/utils/use-media-query";
 
-import { ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import { ResizablePanel, ResizablePanelGroup } from "@hanzo/ui";
 
 import { ScreenProtector } from "../ScreenProtection";
 import Nav, { TNavData } from "../nav";

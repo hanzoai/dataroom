@@ -27,14 +27,7 @@ import useVisitorGroups, {
 } from "@/lib/swr/use-visitor-groups";
 import { cn, fetcher } from "@/lib/utils";
 
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@hanzo/ui";
 
 import { VisitorGroupModal } from "./visitor-group-modal";
 

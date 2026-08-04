@@ -1,11 +1,5 @@
 import { AlertCircleIcon } from "lucide-react";
 
-import {
-  Alert,
-  AlertClose,
-  AlertDescription,
-  AlertTitle,
-} from "@/components/ui/alert";
 
 interface AlertProps {
   id: string;

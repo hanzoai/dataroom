@@ -21,8 +21,7 @@ import VideoStatsPlaceholder from "@/components/documents/video-stats-placeholde
 import AppLayout from "@/components/layouts/app";
 import LinkSheet from "@/components/links/link-sheet";
 import LinksTable from "@/components/links/links-table";
-import { Button } from "@/components/ui/button";
-import LoadingSpinner from "@/components/ui/loading-spinner";
+import { Button } from "@hanzo/ui";
 
 const StatsComponent = dynamic(
   () =>

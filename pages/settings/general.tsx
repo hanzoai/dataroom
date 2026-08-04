@@ -18,7 +18,6 @@ import IgnoredDomainsForm from "@/components/settings/ignored-domains-form";
 import { SettingsHeader } from "@/components/settings/settings-header";
 import { SurveySettings } from "@/components/settings/survey-settings";
 import { TimezoneSelector } from "@/components/settings/timezone-selector";
-import { Form } from "@/components/ui/form";
 
 export default function General() {
   const analytics = useAnalytics();

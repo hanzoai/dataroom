@@ -21,7 +21,6 @@ import {
 } from "@/lib/notion/utils";
 import { CustomUser, LinkWithDataroomDocument, NotionTheme } from "@/lib/types";
 
-import LoadingSpinner from "@/components/ui/loading-spinner";
 import CustomMetaTag from "@/components/view/custom-metatag";
 import DataroomDocumentView from "@/components/view/dataroom/dataroom-document-view";
 

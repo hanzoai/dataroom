@@ -12,9 +12,7 @@ import { useTags } from "@/lib/swr/use-tags";
 import { TagProps } from "@/lib/types";
 
 import { UpgradePlanModal } from "@/components/billing/upgrade-plan-modal";
-import { Label } from "@/components/ui/label";
-import { MultiSelect } from "@/components/ui/multi-select-v2";
-import { BadgeTooltip } from "@/components/ui/tooltip";
+import { Label } from "@hanzo/ui";
 
 import { DEFAULT_LINK_TYPE } from "..";
 

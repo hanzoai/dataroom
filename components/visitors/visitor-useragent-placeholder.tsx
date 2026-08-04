@@ -2,7 +2,7 @@ import { PlanEnum } from "@/ee/stripe/constants";
 import { CrownIcon } from "lucide-react";
 
 import { UpgradePlanModal } from "@/components/billing/upgrade-plan-modal";
-import { Button } from "@/components/ui/button";
+import { Button } from "@hanzo/ui";
 import UAIcon from "@/components/user-agent-icon";
 
 export default function VisitorUserAgentPlaceholder() {

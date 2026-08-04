@@ -8,19 +8,7 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 import { useViewerAnnotations } from "@/lib/swr/use-annotations";
 import { createAdaptiveSurfacePalette } from "@/lib/utils/create-adaptive-surface-palette";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Badge, Button, Collapsible, CollapsibleContent, CollapsibleTrigger, ResizableHandle, ResizablePanel, ResizablePanelGroup, ScrollArea } from "@hanzo/ui";
 
 interface AnnotationPanelProps {
   brand?: Partial<Brand> | Partial<DataroomBrand> | null;

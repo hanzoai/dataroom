@@ -11,8 +11,7 @@ import { AddDomainModal } from "@/components/domains/add-domain-modal";
 import DomainCard from "@/components/domains/domain-card";
 import AppLayout from "@/components/layouts/app";
 import { SettingsHeader } from "@/components/settings/settings-header";
-import { Button } from "@/components/ui/button";
-import { BadgeTooltip } from "@/components/ui/tooltip";
+import { Button } from "@hanzo/ui";
 
 export default function Domains() {
   const { domains } = useDomains({ enabled: true });

@@ -21,17 +21,7 @@ import { durationFormat, timeAgo } from "@/lib/utils";
 import { fileIcon } from "@/lib/utils/get-file-icon";
 
 import { Pagination } from "@/components/documents/pagination";
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { TimestampTooltip } from "@/components/ui/timestamp-tooltip";
+import { Button } from "@hanzo/ui";
 
 type ViewerView = {
   documentId: string;

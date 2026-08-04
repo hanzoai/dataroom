@@ -11,9 +11,7 @@ import { useAnalytics } from "@/lib/analytics";
 import { usePlan } from "@/lib/swr/use-billing";
 import { timeIn } from "@/lib/utils";
 
-import { Button } from "@/components/ui/button";
-import { DialogDescription, DialogTitle } from "@/components/ui/dialog";
-import { Modal } from "@/components/ui/modal";
+import { Button, DialogDescription, DialogTitle } from "@hanzo/ui";
 
 interface PauseSubscriptionModalProps {
   open: boolean;

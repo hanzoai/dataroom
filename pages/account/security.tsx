@@ -14,18 +14,7 @@ import { usePasskeys } from "@/lib/swr/use-passkeys";
 import { AccountHeader } from "@/components/account/account-header";
 import AppLayout from "@/components/layouts/app";
 import Passkey from "@/components/shared/icons/passkey";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
+import { Button } from "@hanzo/ui";
 
 const ProfilePage: NextPage = () => {
   const [isLoading, setIsLoading] = useState(false);

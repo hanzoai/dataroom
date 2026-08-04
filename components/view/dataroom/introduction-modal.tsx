@@ -10,20 +10,7 @@ import React, {
 
 import { InfoIcon } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, ScrollArea, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@hanzo/ui";
 
 interface IntroductionModalProps {
   dataroom: {

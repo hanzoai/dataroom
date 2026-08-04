@@ -1,8 +1,6 @@
 import { ArrowLeftIcon } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { DialogDescription, DialogTitle } from "@/components/ui/dialog";
-import { Modal } from "@/components/ui/modal";
+import { Button, DialogDescription, DialogTitle } from "@hanzo/ui";
 
 export function CancellationBaseModal({
   open,

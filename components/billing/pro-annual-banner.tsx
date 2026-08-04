@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { usePlan } from "@/lib/swr/use-billing";
 
 import X from "@/components/shared/icons/x";
-import { Button } from "@/components/ui/button";
+import { Button } from "@hanzo/ui";
 
 export default function ProAnnualBanner({
   setShowProAnnualBanner,

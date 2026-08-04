@@ -11,9 +11,7 @@ import { DataroomNavigation } from "@/components/datarooms/dataroom-navigation";
 import AppLayout from "@/components/layouts/app";
 import LinkSheet from "@/components/links/link-sheet";
 import LinksTable from "@/components/links/links-table";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BadgeTooltip } from "@/components/ui/tooltip";
+import { Button, Tabs, TabsContent, TabsList, TabsTrigger } from "@hanzo/ui";
 
 export default function DataroomAnalyticsPage() {
   const { dataroom } = useDataroom();

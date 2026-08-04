@@ -37,24 +37,7 @@ import {
 import PlanBadge from "@/components/billing/plan-badge";
 import { UpgradePlanModal } from "@/components/billing/upgrade-plan-modal";
 import CloudDownloadOff from "@/components/shared/icons/cloud-download-off";
-import { Button } from "@/components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
-import { Switch } from "@/components/ui/switch";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Button, Switch } from "@hanzo/ui";
 
 const PermissionGroupItemName = ({ item }: { item: FileOrFolder }) => {
   const { isFeatureEnabled } = useFeatureFlags();

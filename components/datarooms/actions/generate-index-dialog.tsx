@@ -15,25 +15,7 @@ import { useDataroomLinks } from "@/lib/swr/use-dataroom";
 import { IndexFileFormat } from "@/lib/types/index-file";
 
 import { UpgradePlanModal } from "@/components/billing/upgrade-plan-modal";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { ResponsiveButton } from "@/components/ui/responsive-button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
+import { Button, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Separator } from "@hanzo/ui";
 
 interface GenerateIndexDialogProps {
   teamId: string;

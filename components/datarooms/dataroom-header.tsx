@@ -7,13 +7,7 @@ import { BellRingIcon } from "lucide-react";
 import { useDataroom, useDataroomLinks } from "@/lib/swr/use-dataroom";
 
 import { DataroomLinkSheet } from "@/components/links/link-sheet/dataroom-link-sheet";
-import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipPortal,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Button, Tooltip, TooltipContent, TooltipTrigger } from "@hanzo/ui";
 
 export const DataroomHeader = ({
   title,

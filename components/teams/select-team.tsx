@@ -8,12 +8,7 @@ import { ChevronsUpDown as ChevronUpDownIcon } from "lucide-react";
 import { Team } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@hanzo/ui";
 
 const SelectTeam = ({ teams, currentTeam, isLoading }: TeamContextType) => {
   const router = useRouter();

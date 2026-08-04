@@ -10,18 +10,7 @@ import useSWR from "swr";
 
 import AppLayout from "@/components/layouts/app";
 import { SettingsHeader } from "@/components/settings/settings-header";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import { BadgeTooltip } from "@/components/ui/tooltip";
+import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Input, Label, Separator } from "@hanzo/ui";
 
 import { copyToClipboard, fetcher } from "@/lib/utils";
 

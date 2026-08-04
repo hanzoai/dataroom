@@ -41,35 +41,7 @@ import { cn, copyToClipboard, nFormatter, timeAgo } from "@/lib/utils";
 import { useMediaQuery } from "@/lib/utils/use-media-query";
 
 import { UpgradePlanModal } from "@/components/billing/upgrade-plan-modal";
-import { Button } from "@/components/ui/button";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Switch } from "@/components/ui/switch";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { TimestampTooltip } from "@/components/ui/timestamp-tooltip";
+import { Button, Collapsible, CollapsibleContent, CollapsibleTrigger, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, Popover, PopoverContent, PopoverTrigger, Switch } from "@hanzo/ui";
 
 import FileProcessStatusBar from "../documents/file-process-status-bar";
 import BarChart from "../shared/icons/bar-chart";

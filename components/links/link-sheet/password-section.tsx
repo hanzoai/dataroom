@@ -4,7 +4,7 @@ import { motion } from "motion/react";
 
 import Eye from "@/components/shared/icons/eye";
 import EyeOff from "@/components/shared/icons/eye-off";
-import { Input } from "@/components/ui/input";
+import { Input } from "@hanzo/ui";
 
 import { FADE_IN_ANIMATION_SETTINGS } from "@/lib/constants";
 

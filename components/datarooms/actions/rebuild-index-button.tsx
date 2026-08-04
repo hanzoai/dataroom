@@ -8,17 +8,7 @@ import { useFeatureFlags } from "@/lib/hooks/use-feature-flags";
 import { usePlan } from "@/lib/swr/use-billing";
 
 import { UpgradePlanModal } from "@/components/billing/upgrade-plan-modal";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { ResponsiveButton } from "@/components/ui/responsive-button";
+import { Button, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@hanzo/ui";
 
 interface RebuildIndexButtonProps {
   teamId: string;

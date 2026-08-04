@@ -37,10 +37,7 @@ import ScreenshotProtectionSection from "@/components/links/link-sheet/screensho
 import WatermarkSection from "@/components/links/link-sheet/watermark-section";
 import Preview from "@/components/settings/og-preview";
 import { SettingsHeader } from "@/components/settings/settings-header";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
+import { Button, Input, Label, Separator } from "@hanzo/ui";
 
 export default function NewPreset() {
   const router = useRouter();

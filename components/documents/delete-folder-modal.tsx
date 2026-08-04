@@ -2,10 +2,7 @@ import { useState } from "react";
 
 import { FileIcon, Folder } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Modal } from "@/components/ui/modal";
-import { DialogDescription, DialogTitle } from "@/components/ui/dialog";
+import { Button, DialogDescription, DialogTitle, Input } from "@hanzo/ui";
 
 
 export type TSelectedDataroom = { id: string; name: string } | null;

@@ -8,7 +8,7 @@ import { useSafePageViewTracker } from "@/lib/tracking/safe-page-view-tracker";
 import { getTrackingOptions } from "@/lib/tracking/tracking-config";
 import { cn } from "@/lib/utils";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@hanzo/ui";
 
 import { ScreenProtector } from "../ScreenProtection";
 import { TDocumentData } from "../dataroom/dataroom-view";

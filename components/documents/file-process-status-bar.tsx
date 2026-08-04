@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import useSWRImmutable from "swr/immutable";
 
-import { Progress } from "@/components/ui/progress";
+import { Progress } from "@hanzo/ui";
 
 import { cn, fetcher } from "@/lib/utils";
 import { useDocumentProgressStatus } from "@/lib/utils/use-progress-status";

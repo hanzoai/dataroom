@@ -13,8 +13,7 @@ import { DataroomHeader } from "@/components/datarooms/dataroom-header";
 import { DataroomNavigation } from "@/components/datarooms/dataroom-navigation";
 import StatsCard from "@/components/datarooms/stats-card";
 import AppLayout from "@/components/layouts/app";
-import { FeaturePreview } from "@/components/ui/feature-preview";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@hanzo/ui";
 import DataroomVisitorsTable from "@/components/visitors/dataroom-visitors-table";
 
 export default function DataroomAnalyticsPage() {

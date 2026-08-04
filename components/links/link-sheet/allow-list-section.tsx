@@ -8,14 +8,7 @@ import { FADE_IN_ANIMATION_SETTINGS } from "@/lib/constants";
 import useVisitorGroups from "@/lib/swr/use-visitor-groups";
 import { sanitizeList } from "@/lib/utils";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Textarea } from "@/components/ui/textarea";
+import { Badge, Button, Popover, PopoverContent, PopoverTrigger, Textarea } from "@hanzo/ui";
 
 import { DEFAULT_LINK_TYPE } from ".";
 import LinkItem from "./link-item";

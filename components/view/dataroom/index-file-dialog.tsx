@@ -11,16 +11,7 @@ import { toast } from "sonner";
 import { useAnalytics } from "@/lib/analytics";
 import { IndexFileFormat } from "@/lib/types/index-file";
 
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Button, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@hanzo/ui";
 
 interface IndexFileDialogProps {
   linkId: string;

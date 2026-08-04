@@ -18,16 +18,7 @@ import {
 } from "@/lib/swr/use-dataroom-view-document-stats";
 import { cn, durationFormat, timeAgo } from "@/lib/utils";
 
-import { Gauge } from "@/components/ui/gauge";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Skeleton } from "@/components/ui/skeleton";
-import { TableCell, TableRow } from "@/components/ui/table";
-import { TimestampTooltip } from "@/components/ui/timestamp-tooltip";
+import { Popover, PopoverContent, PopoverTrigger, ScrollArea } from "@hanzo/ui";
 
 import { DocumentPageChart } from "./document-view-stats";
 

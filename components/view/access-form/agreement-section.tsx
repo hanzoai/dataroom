@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction } from "react";
 
 import { Brand, DataroomBrand } from "@prisma/client";
 
-import { Checkbox } from "@/components/ui/checkbox";
+import { Checkbox } from "@hanzo/ui";
 
 import { DEFAULT_ACCESS_FORM_TYPE } from ".";
 import { useAccessFormTheme } from "./access-form-theme";

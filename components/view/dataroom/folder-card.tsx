@@ -12,14 +12,7 @@ import {
   getHierarchicalDisplayName,
 } from "@/lib/utils/hierarchical-display";
 
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@hanzo/ui";
 import { useViewerSurfaceTheme } from "@/components/view/viewer/viewer-surface-theme";
 
 type FolderCardProps = {

@@ -27,23 +27,7 @@ import { getSupportedContentType } from "@/lib/utils/get-content-type";
 
 import { SetUnifiedPermissionsModal } from "@/components/datarooms/groups/set-unified-permissions-modal";
 import DocumentUpload from "@/components/document-upload";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger, Label, Tabs, TabsContent, TabsList, TabsTrigger } from "@hanzo/ui";
 
 import { UpgradePlanModal } from "../billing/upgrade-plan-modal";
 

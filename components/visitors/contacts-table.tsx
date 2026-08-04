@@ -18,16 +18,7 @@ import {
 import { timeAgo } from "@/lib/utils";
 
 import { Pagination } from "@/components/documents/pagination";
-import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { TimestampTooltip } from "@/components/ui/timestamp-tooltip";
+import { Button } from "@hanzo/ui";
 import { VisitorAvatar } from "@/components/visitors/visitor-avatar";
 
 import { Skeleton } from "../ui/skeleton";

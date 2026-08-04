@@ -17,10 +17,7 @@ import { mutate } from "swr";
 import { useAnalytics } from "@/lib/analytics";
 import { LinkWithViews } from "@/lib/types";
 
-import { Button } from "@/components/ui/button";
-import { DialogDescription, DialogTitle } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Modal } from "@/components/ui/modal";
+import { Button, DialogDescription, DialogTitle, Input } from "@hanzo/ui";
 
 function DeleteLinkModal({
   showDeleteLinkModal,

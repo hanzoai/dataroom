@@ -17,16 +17,7 @@ import {
 import { DownloadJob } from "@/lib/redis-download-job-store";
 import { cn } from "@/lib/utils";
 
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Progress } from "@/components/ui/progress";
+import { Button, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, Progress } from "@hanzo/ui";
 
 export interface DownloadJobStatus {
   id: string;

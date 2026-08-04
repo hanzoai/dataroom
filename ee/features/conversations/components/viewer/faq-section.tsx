@@ -4,15 +4,7 @@ import useSWR from "swr";
 
 import { fetcher } from "@/lib/utils";
 
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
+import { Badge, ScrollArea, Separator } from "@hanzo/ui";
 
 interface FAQ {
   id: string;

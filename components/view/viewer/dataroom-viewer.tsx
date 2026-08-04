@@ -28,21 +28,7 @@ import { sortByIndexThenName } from "@/lib/utils/sort-items-by-index-name";
 
 import { ViewFolderTree } from "@/components/datarooms/folders";
 import { SearchBoxPersisted } from "@/components/search-box";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import {
-  Sheet,
-  SheetOverlay,
-  SheetPortal,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { ScrollArea, ScrollBar } from "@hanzo/ui";
 
 import { DEFAULT_DATAROOM_VIEW_TYPE } from "../dataroom/dataroom-view";
 import DocumentCard from "../dataroom/document-card";

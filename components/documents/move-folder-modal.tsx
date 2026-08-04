@@ -9,15 +9,7 @@ import { moveDocumentToFolder } from "@/lib/documents/move-documents";
 import { moveFolderToFolder } from "@/lib/documents/move-folder";
 
 import { SidebarFolderTreeSelection } from "@/components/sidebar-folders";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Button, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@hanzo/ui";
 
 export type TSelectedFolder = {
   id: string | null;

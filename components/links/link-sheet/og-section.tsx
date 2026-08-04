@@ -9,9 +9,7 @@ import { FADE_IN_ANIMATION_SETTINGS } from "@/lib/constants";
 import { cn, fetcher, validateImageDimensions } from "@/lib/utils";
 import { resizeImage } from "@/lib/utils/resize-image";
 
-import { Input } from "@/components/ui/input";
-import LoadingSpinner from "@/components/ui/loading-spinner";
-import { Textarea } from "@/components/ui/textarea";
+import { Input, Textarea } from "@hanzo/ui";
 
 import { DEFAULT_LINK_TYPE } from ".";
 import LinkItem from "./link-item";

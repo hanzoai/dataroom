@@ -21,9 +21,7 @@ import { DataroomTrialModal } from "@/components/datarooms/dataroom-trial-modal"
 import { EmptyDataroom } from "@/components/datarooms/empty-dataroom";
 import AppLayout from "@/components/layouts/app";
 import { SearchBoxPersisted } from "@/components/search-box";
-import { Button } from "@/components/ui/button";
-import { MultiSelect } from "@/components/ui/multi-select-v2";
-import { Separator } from "@/components/ui/separator";
+import { Button, Separator } from "@hanzo/ui";
 
 export default function DataroomsPage() {
   const teamInfo = useTeam();

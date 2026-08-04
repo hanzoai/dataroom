@@ -16,7 +16,7 @@ import { motion } from "motion/react";
 
 import HanzoLogo from "@/public/_static/papermark-logo.svg";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@hanzo/ui";
 
 import prisma from "@/lib/prisma";
 import { verifyUnsubscribeToken } from "@/lib/utils/unsubscribe";

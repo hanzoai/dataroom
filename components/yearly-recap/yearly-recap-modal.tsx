@@ -32,8 +32,7 @@ import { useAnalytics } from "@/lib/analytics";
 import { cn, fetcher } from "@/lib/utils";
 
 import LinkedInIcon from "@/components/shared/icons/linkedin";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Button, Dialog, DialogContent } from "@hanzo/ui";
 
 interface YearlyRecapStats {
   year: number;

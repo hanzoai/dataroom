@@ -11,32 +11,7 @@ import { usePlan } from "@/lib/swr/use-billing";
 import { uploadImage } from "@/lib/utils";
 
 import PlanBadge from "@/components/billing/plan-badge";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import LoadingSpinner from "@/components/ui/loading-spinner";
-import { RichTextEditor } from "@/components/ui/rich-text-editor";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Switch } from "@/components/ui/switch";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Dialog, DialogContent, DialogHeader, DialogTitle, Label, ScrollArea, Switch, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@hanzo/ui";
 
 interface IntroductionSettingsProps {
   dataroomId: string;

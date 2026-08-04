@@ -11,17 +11,7 @@ import { mutate } from "swr";
 import { useFeatureFlags } from "@/lib/hooks/use-feature-flags";
 import { cn } from "@/lib/utils";
 
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
+import { Button, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, Label, Switch } from "@hanzo/ui";
 
 import { AIIndexingStatus } from "./ai-indexing-status";
 

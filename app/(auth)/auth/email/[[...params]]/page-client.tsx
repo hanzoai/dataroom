@@ -6,9 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import { LogoCloud } from "@/components/shared/logo-cloud";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button, Input, Label } from "@hanzo/ui";
 
 export default function EmailVerificationClient() {
   const router = useRouter();

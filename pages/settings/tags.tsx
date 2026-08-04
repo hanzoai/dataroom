@@ -26,25 +26,7 @@ import {
 import { SearchBoxPersisted } from "@/components/search-box";
 import { SettingsHeader } from "@/components/settings/settings-header";
 import { AddTagsModal } from "@/components/tags/add-tag-modal";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { BadgeTooltip } from "@/components/ui/tooltip";
+import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@hanzo/ui";
 
 const schema = z.object({
   name: z

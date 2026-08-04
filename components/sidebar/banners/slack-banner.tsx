@@ -8,7 +8,7 @@ import { useAnalytics } from "@/lib/analytics";
 
 import { SlackIcon } from "@/components/shared/icons/slack-icon";
 import X from "@/components/shared/icons/x";
-import { Button } from "@/components/ui/button";
+import { Button } from "@hanzo/ui";
 
 export default function SlackBanner({
   setShowSlackBanner,

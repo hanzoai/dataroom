@@ -6,7 +6,6 @@ import { motion } from "motion/react";
 import { FADE_IN_ANIMATION_SETTINGS } from "@/lib/constants";
 import { formatExpirationTime } from "@/lib/utils";
 
-import { SmartDateTimePicker } from "@/components/ui/smart-date-time-picker";
 
 import { DEFAULT_LINK_TYPE } from ".";
 import LinkItem from "./link-item";

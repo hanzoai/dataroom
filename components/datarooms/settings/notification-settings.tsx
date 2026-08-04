@@ -7,16 +7,7 @@ import { usePlan } from "@/lib/swr/use-billing";
 import { fetcher } from "@/lib/utils";
 
 import PlanBadge from "@/components/billing/plan-badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Label, Switch } from "@hanzo/ui";
 
 interface NotificationSettingsProps {
   dataroomId: string;

@@ -12,9 +12,7 @@ import AgreementCard from "@/components/agreements/agreement-card";
 import AppLayout from "@/components/layouts/app";
 import AgreementSheet from "@/components/links/link-sheet/agreement-panel";
 import { SettingsHeader } from "@/components/settings/settings-header";
-import { Button } from "@/components/ui/button";
-import { BadgeTooltip } from "@/components/ui/tooltip";
-import { createUpgradeButton } from "@/components/ui/upgrade-button";
+import { Button } from "@hanzo/ui";
 
 const AgreementsUpgradeButton = createUpgradeButton(
   "Create Agreements",

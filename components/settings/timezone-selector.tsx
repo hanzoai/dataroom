@@ -6,22 +6,7 @@ import { mutate } from "swr";
 
 import { useTeamSettings } from "@/lib/swr/use-team-settings";
 
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@hanzo/ui";
 
 // Common timezone options with IANA identifiers
 const TIMEZONE_OPTIONS = [

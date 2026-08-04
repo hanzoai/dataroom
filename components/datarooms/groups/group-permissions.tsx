@@ -33,17 +33,7 @@ import {
 } from "@/lib/utils/hierarchical-display";
 
 import CloudDownloadOff from "@/components/shared/icons/cloud-download-off";
-import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Button, Switch } from "@hanzo/ui";
 
 const PermissionItemName = ({ item }: { item: FileOrFolder }) => {
   const { isFeatureEnabled } = useFeatureFlags();

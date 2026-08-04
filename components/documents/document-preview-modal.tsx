@@ -5,9 +5,7 @@ import { toast } from "sonner";
 
 import { useDocumentPreview } from "@/lib/swr/use-document-preview";
 
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import LoadingSpinner from "@/components/ui/loading-spinner";
+import { Button, Dialog, DialogContent } from "@hanzo/ui";
 
 import { PreviewViewer } from "./preview-viewers/preview-viewer";
 

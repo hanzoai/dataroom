@@ -8,15 +8,7 @@ import { toast } from "sonner";
 import { mutate } from "swr";
 
 import { UpgradePlanModal } from "@/components/billing/upgrade-plan-modal";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@hanzo/ui";
 
 import { usePlan } from "@/lib/swr/use-billing";
 import useDataroomsSimple from "@/lib/swr/use-datarooms-simple";

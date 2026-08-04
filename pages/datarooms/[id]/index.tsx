@@ -8,7 +8,7 @@ import StatsCard from "@/components/datarooms/stats-card";
 import AppLayout from "@/components/layouts/app";
 import LinkSheet from "@/components/links/link-sheet";
 import LinksTable from "@/components/links/links-table";
-import { Button } from "@/components/ui/button";
+import { Button } from "@hanzo/ui";
 import DataroomVisitorsTable from "@/components/visitors/dataroom-visitors-table";
 
 export default function DataroomPage() {

@@ -10,22 +10,7 @@ import { useAnalytics } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 
 import { Shimmer } from "@/components/ai-elements/shimmer";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import {
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuAction,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
-} from "@/components/ui/sidebar";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@hanzo/ui";
 
 import { UpgradePlanModal } from "../billing/upgrade-plan-modal";
 

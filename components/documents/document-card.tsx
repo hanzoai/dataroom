@@ -34,16 +34,7 @@ import { AddToDataroomModal } from "@/components/documents/add-document-to-datar
 import { DocumentPreviewModal } from "@/components/documents/document-preview-modal";
 import { MoveToFolderModal } from "@/components/documents/move-folder-modal";
 import BarChart from "@/components/shared/icons/bar-chart";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { BadgeTooltip } from "@/components/ui/tooltip";
+import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@hanzo/ui";
 
 type DocumentsCardProps = {
   document: DocumentWithLinksAndLinkCountAndViewCount;

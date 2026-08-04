@@ -14,14 +14,7 @@ import { useAnalytics } from "@/lib/analytics";
 import { usePlan } from "@/lib/swr/use-billing";
 import { capitalize } from "@/lib/utils";
 
-import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Button, Switch, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@hanzo/ui";
 
 // Feature rendering component
 const FeatureItem = ({

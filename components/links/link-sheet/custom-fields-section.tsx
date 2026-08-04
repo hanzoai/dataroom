@@ -7,7 +7,7 @@ import { motion } from "motion/react";
 import { FADE_IN_ANIMATION_SETTINGS } from "@/lib/constants";
 
 import { DEFAULT_LINK_TYPE } from "@/components/links/link-sheet";
-import { Button } from "@/components/ui/button";
+import { Button } from "@hanzo/ui";
 
 import { CustomFieldData } from "./custom-fields-panel";
 import CustomFieldsPanel from "./custom-fields-panel";

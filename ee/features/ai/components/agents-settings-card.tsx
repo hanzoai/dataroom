@@ -11,19 +11,7 @@ import { mutate } from "swr";
 import { useFeatureFlags } from "@/lib/hooks/use-feature-flags";
 import { cn } from "@/lib/utils";
 
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import LoadingSpinner from "@/components/ui/loading-spinner";
-import { Progress } from "@/components/ui/progress";
-import { Switch } from "@/components/ui/switch";
+import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Label, Progress, Switch } from "@hanzo/ui";
 
 import { useAIIndexingStatus } from "../hooks/use-ai-indexing-status";
 

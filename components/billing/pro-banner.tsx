@@ -4,7 +4,7 @@ import { PlanEnum } from "@/ee/stripe/constants";
 import Cookies from "js-cookie";
 
 import X from "@/components/shared/icons/x";
-import { Button } from "@/components/ui/button";
+import { Button } from "@hanzo/ui";
 
 import { UpgradePlanModal } from "./upgrade-plan-modal";
 

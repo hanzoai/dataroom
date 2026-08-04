@@ -23,7 +23,7 @@ import { cn, fetcher } from "@/lib/utils";
 import { fileIcon } from "@/lib/utils/get-file-icon";
 import { useDocumentProgressStatus } from "@/lib/utils/use-progress-status";
 
-import { Progress } from "@/components/ui/progress";
+import { Progress } from "@hanzo/ui";
 import { useViewerSurfaceTheme } from "@/components/view/viewer/viewer-surface-theme";
 
 type FolderInfo = {

@@ -17,18 +17,7 @@ import { cn, convertDataUrlToFile, uploadImage } from "@/lib/utils";
 import { DataroomHeader } from "@/components/datarooms/dataroom-header";
 import { DataroomNavigation } from "@/components/datarooms/dataroom-navigation";
 import AppLayout from "@/components/layouts/app";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
-import { BadgeTooltip } from "@/components/ui/tooltip";
+import { Button, Card, CardContent, Checkbox, Label, Popover, PopoverContent, PopoverTrigger, Tabs, TabsContent, TabsList, TabsTrigger, Textarea } from "@hanzo/ui";
 
 const DEFAULT_BANNER_IMAGE = "/_static/papermark-banner.png";
 

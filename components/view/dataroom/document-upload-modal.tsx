@@ -7,13 +7,7 @@ import {
   UploadIcon,
 } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Button, Dialog, DialogContent, DialogHeader, DialogTitle } from "@hanzo/ui";
 import { ViewerUploadComponent } from "@/components/viewer-upload-component";
 
 export function DocumentUploadModal({

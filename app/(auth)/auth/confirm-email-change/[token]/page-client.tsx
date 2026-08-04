@@ -7,7 +7,6 @@ import { useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 
-import LoadingSpinner from "@/components/ui/loading-spinner";
 
 export default function ConfirmEmailChangePageClient() {
   const router = useRouter();

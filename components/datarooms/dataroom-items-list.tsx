@@ -46,10 +46,7 @@ import { DraggableItem } from "@/components/documents/drag-and-drop/draggable-it
 import { DroppableFolder } from "@/components/documents/drag-and-drop/droppable-folder";
 import { EmptyDocuments } from "@/components/documents/empty-document";
 import FolderCard from "@/components/documents/folder-card";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Portal } from "@/components/ui/portal";
-import { ButtonTooltip } from "@/components/ui/tooltip";
+import { Button, Checkbox } from "@hanzo/ui";
 import { UploadNotificationDrawer } from "@/components/upload-notification";
 import UploadZone, {
   RejectedFile,

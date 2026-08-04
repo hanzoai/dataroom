@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Brand, CustomField, DataroomBrand } from "@prisma/client";
 import { ArrowUpRightIcon } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@hanzo/ui";
 
 import AgreementSection from "./agreement-section";
 import {

@@ -18,20 +18,7 @@ import { cn, convertDataUrlToFile, uploadImage } from "@/lib/utils";
 import { UpgradePlanModal } from "@/components/billing/upgrade-plan-modal";
 import AppLayout from "@/components/layouts/app";
 import { NavMenu } from "@/components/navigation-menu";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import LoadingSpinner from "@/components/ui/loading-spinner";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
-import { BadgeTooltip } from "@/components/ui/tooltip";
-import { UpgradeButton } from "@/components/ui/upgrade-button";
+import { Button, Card, CardContent, CardFooter, Checkbox, Label, Popover, PopoverContent, PopoverTrigger, Tabs, TabsContent, TabsList, TabsTrigger, Textarea } from "@hanzo/ui";
 
 export default function Branding() {
   const teamInfo = useTeam();

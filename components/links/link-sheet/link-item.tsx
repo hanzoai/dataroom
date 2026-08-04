@@ -8,9 +8,7 @@ import { cn } from "@/lib/utils";
 
 
 import PlanBadge from "@/components/billing/plan-badge";
-import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { BadgeTooltip, ButtonTooltip } from "@/components/ui/tooltip";
+import { Button, Switch } from "@hanzo/ui";
 
 export default function LinkItem({
   title,

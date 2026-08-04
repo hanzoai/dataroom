@@ -7,8 +7,7 @@ import { useHiddenDocuments } from "@/lib/swr/use-documents";
 
 import { HiddenDocumentsList } from "@/components/documents/hidden-documents-list";
 import AppLayout from "@/components/layouts/app";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+import { Button, Separator } from "@hanzo/ui";
 
 export default function HiddenDocumentsPage() {
   const teamInfo = useTeam();

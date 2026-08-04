@@ -6,15 +6,7 @@ import { useTeam } from "@/context/team-context";
 import { toast } from "sonner";
 import { mutate } from "swr";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@hanzo/ui";
 
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";

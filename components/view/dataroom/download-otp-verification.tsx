@@ -2,12 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
-import { Button } from "@/components/ui/button";
+import { Button } from "@hanzo/ui";
 
 const REGEXP_ONLY_DIGITS = "^\\d+$";
 

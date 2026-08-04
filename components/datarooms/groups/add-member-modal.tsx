@@ -4,18 +4,7 @@ import { useTeam } from "@/context/team-context";
 import { toast } from "sonner";
 import { mutate } from "swr";
 
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
+import { Button, Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, Label, Tabs, TabsContent, TabsList, TabsTrigger, Textarea } from "@hanzo/ui";
 
 import { useAnalytics } from "@/lib/analytics";
 

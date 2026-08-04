@@ -2,8 +2,7 @@ import { useState } from "react";
 
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { ButtonTooltip } from "@/components/ui/tooltip";
+import { Button } from "@hanzo/ui";
 
 import { DocumentPreviewModal } from "./document-preview-modal";
 

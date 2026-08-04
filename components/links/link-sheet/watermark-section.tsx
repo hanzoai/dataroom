@@ -7,9 +7,7 @@ import { motion } from "motion/react";
 import { FADE_IN_ANIMATION_SETTINGS } from "@/lib/constants";
 import { WatermarkConfig } from "@/lib/types";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button, Input, Label } from "@hanzo/ui";
 
 import { DEFAULT_LINK_TYPE } from ".";
 import LinkItem from "./link-item";

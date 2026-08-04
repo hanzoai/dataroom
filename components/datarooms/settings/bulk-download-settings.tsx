@@ -6,16 +6,7 @@ import useSWR from "swr";
 
 import { fetcher } from "@/lib/utils";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Label, Switch } from "@hanzo/ui";
 
 interface BulkDownloadSettingsProps {
   dataroomId: string;

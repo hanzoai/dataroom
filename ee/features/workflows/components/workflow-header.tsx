@@ -3,17 +3,7 @@ import { useRouter } from "next/router";
 import { toast } from "sonner";
 import { z } from "zod";
 import { TrashIcon, CopyIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Button, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, Label, Switch } from "@hanzo/ui";
 
 interface WorkflowHeaderProps {
   workflowId: string;

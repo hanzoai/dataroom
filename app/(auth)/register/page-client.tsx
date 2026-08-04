@@ -11,8 +11,7 @@ import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 
 import LinkedIn from "@/components/shared/icons/linkedin";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button, Input } from "@hanzo/ui";
 
 export default function Register() {
   const { next } = useParams as { next?: string };

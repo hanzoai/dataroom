@@ -17,18 +17,7 @@ import { fetcher } from "@/lib/utils";
 
 import AppLayout from "@/components/layouts/app";
 import { SettingsHeader } from "@/components/settings/settings-header";
-import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import LoadingSpinner from "@/components/ui/loading-spinner";
-import { Switch } from "@/components/ui/switch";
+import { Badge, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Label, Switch } from "@hanzo/ui";
 
 interface AISettings {
   agentsEnabled: boolean;

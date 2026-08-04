@@ -8,8 +8,7 @@ import {
 } from "recharts";
 import useSWR from "swr";
 
-import { Card } from "@/components/ui/card";
-import LoadingSpinner from "@/components/ui/loading-spinner";
+import { Card } from "@hanzo/ui";
 
 import { fetcher } from "@/lib/utils";
 

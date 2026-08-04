@@ -8,7 +8,7 @@ import { DocumentData } from "@/lib/documents/create-document";
 import { newId } from "@/lib/id-helper";
 import { cn } from "@/lib/utils";
 
-import { Progress } from "@/components/ui/progress";
+import { Progress } from "@hanzo/ui";
 import ViewerUploadZone from "@/components/viewer-upload-zone";
 
 export function ViewerUploadComponent({

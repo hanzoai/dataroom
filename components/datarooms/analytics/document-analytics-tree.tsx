@@ -23,15 +23,7 @@ import { useDataroomFoldersTree } from "@/lib/swr/use-dataroom";
 import { useDataroomStats } from "@/lib/swr/use-dataroom-stats";
 import { cn } from "@/lib/utils";
 
-import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Button } from "@hanzo/ui";
 
 // Define types for the file/folder structure with analytics
 type FileOrFolder = {

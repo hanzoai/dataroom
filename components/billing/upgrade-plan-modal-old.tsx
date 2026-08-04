@@ -8,9 +8,7 @@ import { getStripe } from "@/ee/stripe/client";
 import { PLANS } from "@/ee/stripe/utils";
 import { CheckIcon } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button, Dialog, DialogContent, DialogTrigger, Tabs, TabsList, TabsTrigger } from "@hanzo/ui";
 
 import { useAnalytics } from "@/lib/analytics";
 import { usePlan } from "@/lib/swr/use-billing";

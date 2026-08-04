@@ -12,16 +12,7 @@ import {
 } from "lucide-react";
 
 import { DownloadOtpVerification } from "./download-otp-verification";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Progress } from "@/components/ui/progress";
+import { Button, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, Progress } from "@hanzo/ui";
 
 export type ViewerDownloadProgressModalProps = {
   isOpen: boolean;

@@ -7,7 +7,7 @@ import { ExternalLink } from "lucide-react";
 import { useSafePageViewTracker } from "@/lib/tracking/safe-page-view-tracker";
 import { getTrackingOptions } from "@/lib/tracking/tracking-config";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@hanzo/ui";
 
 import Nav, { TNavData } from "./nav";
 import { AwayPoster } from "./viewer/away-poster";

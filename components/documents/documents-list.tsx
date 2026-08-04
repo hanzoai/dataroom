@@ -35,7 +35,6 @@ import { FolderWithCount } from "@/lib/swr/use-documents";
 import { DocumentWithLinksAndLinkCountAndViewCount } from "@/lib/types";
 import { useMediaQuery } from "@/lib/utils/use-media-query";
 
-import { Skeleton } from "@/components/ui/skeleton";
 import { UploadNotificationDrawer } from "@/components/upload-notification";
 import UploadZone, {
   RejectedFile,

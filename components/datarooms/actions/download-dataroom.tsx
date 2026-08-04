@@ -3,7 +3,6 @@ import { useState } from "react";
 import { DownloadIcon } from "lucide-react";
 
 import { DownloadProgressModal } from "@/components/datarooms/download-progress-modal";
-import { ResponsiveButton } from "@/components/ui/responsive-button";
 
 export default function DownloadDataroomButton({
   teamId,

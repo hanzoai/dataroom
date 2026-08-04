@@ -10,7 +10,7 @@ import { CrownIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
-import { Separator } from "@/components/ui/separator";
+import { Separator } from "@hanzo/ui";
 
 import { UpgradePlanModal } from "./billing/upgrade-plan-modal";
 

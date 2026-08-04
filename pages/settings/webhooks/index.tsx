@@ -10,8 +10,7 @@ import { fetcher } from "@/lib/utils";
 import PlanBadge from "@/components/billing/plan-badge";
 import AppLayout from "@/components/layouts/app";
 import { SettingsHeader } from "@/components/settings/settings-header";
-import { Button } from "@/components/ui/button";
-import { BadgeTooltip } from "@/components/ui/tooltip";
+import { Button } from "@hanzo/ui";
 
 interface Webhook {
   id: string;

@@ -10,16 +10,7 @@ import {
 import { useDataroomVisitHistory } from "@/lib/swr/use-dataroom";
 import { timeAgo } from "@/lib/utils";
 
-import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Skeleton } from "@/components/ui/skeleton";
-import { TableCell, TableRow } from "@/components/ui/table";
-import { TimestampTooltip } from "@/components/ui/timestamp-tooltip";
+import { Button, Popover, PopoverContent, PopoverTrigger, ScrollArea } from "@hanzo/ui";
 
 export default function DataroomVisitHistory({
   viewId,

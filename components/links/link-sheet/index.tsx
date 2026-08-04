@@ -21,27 +21,7 @@ import { LinkWithViews, WatermarkConfig } from "@/lib/types";
 import { convertDataUrlToFile, fetcher, uploadImage } from "@/lib/utils";
 
 import { UpgradePlanModal } from "@/components/billing/upgrade-plan-modal";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import {
-  Sheet,
-  SheetContent,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ButtonTooltip } from "@/components/ui/tooltip";
+import { Button, Input, Label, ScrollArea, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Separator, Tabs, TabsContent, TabsList, TabsTrigger } from "@hanzo/ui";
 
 import { CustomFieldData } from "./custom-fields-panel";
 import { type ItemPermission } from "./dataroom-link-sheet";

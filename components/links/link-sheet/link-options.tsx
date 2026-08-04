@@ -22,11 +22,7 @@ import FeedbackSection from "@/components/links/link-sheet/feedback-section";
 import OGSection from "@/components/links/link-sheet/og-section";
 import PasswordSection from "@/components/links/link-sheet/password-section";
 import { ProBannerSection } from "@/components/links/link-sheet/pro-banner-section";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@hanzo/ui";
 
 import AgreementSection from "./agreement-section";
 import AIAgentsSection from "./ai-agents-section";

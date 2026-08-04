@@ -31,16 +31,7 @@ import { usePlan } from "@/lib/swr/use-billing";
 import { durationFormat, fetcher, timeAgo } from "@/lib/utils";
 import { downloadCSV } from "@/lib/utils/csv";
 
-import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { BadgeTooltip } from "@/components/ui/tooltip";
+import { Button } from "@hanzo/ui";
 import { DataTablePagination } from "@/components/visitors/data-table-pagination";
 import { VisitorAvatar } from "@/components/visitors/visitor-avatar";
 

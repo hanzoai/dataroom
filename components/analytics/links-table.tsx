@@ -32,16 +32,7 @@ import { cn, timeAgo } from "@/lib/utils";
 import { fetcher } from "@/lib/utils";
 import { downloadCSV } from "@/lib/utils/csv";
 
-import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { TimestampTooltip } from "@/components/ui/timestamp-tooltip";
+import { Button } from "@hanzo/ui";
 import { DataTablePagination } from "@/components/visitors/data-table-pagination";
 
 import { UpgradeButton } from "../ui/upgrade-button";

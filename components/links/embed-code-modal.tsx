@@ -3,13 +3,7 @@ import { useState } from "react";
 import { Check, Copy } from "lucide-react";
 import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Button, Dialog, DialogContent, DialogHeader, DialogTitle } from "@hanzo/ui";
 
 interface EmbedCodeModalProps {
   isOpen: boolean;

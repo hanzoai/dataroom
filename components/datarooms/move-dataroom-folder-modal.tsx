@@ -9,15 +9,7 @@ import { moveDataroomDocumentToFolder } from "@/lib/documents/move-dataroom-docu
 import { moveDataroomFolderToFolder } from "@/lib/documents/move-dataroom-folders";
 
 import { SidebarFolderTreeSelection } from "@/components/datarooms/folders";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Button, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@hanzo/ui";
 
 import { TSelectedFolder } from "../documents/move-folder-modal";
 

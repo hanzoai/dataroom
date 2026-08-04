@@ -19,20 +19,7 @@ import { putFile } from "@/lib/files/put-file";
 import { getSupportedContentType } from "@/lib/utils/get-content-type";
 
 import DocumentUpload from "@/components/document-upload";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
-import { Textarea } from "@/components/ui/textarea";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Button, Input, Label, ScrollArea, Textarea } from "@hanzo/ui";
 
 import LinkItem from "../link-item";
 

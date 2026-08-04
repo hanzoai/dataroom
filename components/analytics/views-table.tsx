@@ -36,18 +36,7 @@ import { usePlan } from "@/lib/swr/use-billing";
 import { cn, durationFormat, fetcher, timeAgo } from "@/lib/utils";
 import { downloadCSV } from "@/lib/utils/csv";
 
-import { Button } from "@/components/ui/button";
-import { Gauge } from "@/components/ui/gauge";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { TimestampTooltip } from "@/components/ui/timestamp-tooltip";
-import { BadgeTooltip } from "@/components/ui/tooltip";
+import { Button } from "@hanzo/ui";
 import { DataTablePagination } from "@/components/visitors/data-table-pagination";
 import { VisitorAvatar } from "@/components/visitors/visitor-avatar";
 

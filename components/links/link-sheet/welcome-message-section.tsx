@@ -6,7 +6,7 @@ import { motion } from "motion/react";
 import { FADE_IN_ANIMATION_SETTINGS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
-import { Textarea } from "@/components/ui/textarea";
+import { Textarea } from "@hanzo/ui";
 
 import { DEFAULT_LINK_TYPE } from ".";
 import LinkItem from "./link-item";

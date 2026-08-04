@@ -1,6 +1,4 @@
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
+import { Button, Label, Switch } from "@hanzo/ui";
 
 import StatsCard from "./stats-card";
 import StatsChartDummy from "./stats-chart-dummy";

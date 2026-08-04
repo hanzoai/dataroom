@@ -5,14 +5,7 @@ import { BoxesIcon, Layers2Icon, PenIcon } from "lucide-react";
 
 import BarChart from "@/components/shared/icons/bar-chart";
 import MoreVertical from "@/components/shared/icons/more-vertical";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@hanzo/ui";
 
 import { cn, nFormatter } from "@/lib/utils";
 

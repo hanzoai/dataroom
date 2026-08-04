@@ -6,14 +6,7 @@ import { useTeam } from "@/context/team-context";
 import { CheckCircleIcon, PencilIcon, XIcon } from "lucide-react";
 import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@hanzo/ui";
 
 const DEAL_TYPE_OPTIONS = [
   { value: "startup-fundraising", label: "Startup Fundraising" },

@@ -1,7 +1,6 @@
 import { PencilIcon, PlusIcon, TrashIcon } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Badge, Button } from "@hanzo/ui";
 
 interface WorkflowStep {
   id: string;

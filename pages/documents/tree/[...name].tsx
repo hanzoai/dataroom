@@ -7,8 +7,7 @@ import { AddDocumentModal } from "@/components/documents/add-document-modal";
 import { DocumentsList } from "@/components/documents/documents-list";
 import { AddFolderModal } from "@/components/folders/add-folder-modal";
 import AppLayout from "@/components/layouts/app";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+import { Button, Separator } from "@hanzo/ui";
 
 import { useFolder, useFolderDocuments } from "@/lib/swr/use-documents";
 

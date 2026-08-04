@@ -7,8 +7,7 @@ import useViewers from "@/lib/swr/use-viewers";
 
 import AppLayout from "@/components/layouts/app";
 import { SearchBoxPersisted } from "@/components/search-box";
-import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Separator, Tabs, TabsContent, TabsList, TabsTrigger } from "@hanzo/ui";
 import { ContactsTable } from "@/components/visitors/contacts-table";
 import { VisitorGroupsSection } from "@/components/visitors/visitor-groups-section";
 

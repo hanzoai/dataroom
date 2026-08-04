@@ -27,15 +27,7 @@ import {
 } from "@/lib/utils/hierarchical-display";
 
 import BarChart from "@/components/shared/icons/bar-chart";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@hanzo/ui";
 
 import { AddToDataroomModal } from "../documents/add-document-to-dataroom-modal";
 import { DocumentPreviewButton } from "../documents/document-preview-button";

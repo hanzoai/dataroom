@@ -10,15 +10,7 @@ import { useInvoices } from "@/lib/swr/use-invoices";
 import AppLayout from "@/components/layouts/app";
 import { SettingsHeader } from "@/components/settings/settings-header";
 import { TabMenu } from "@/components/tab-menu";
-import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Button } from "@hanzo/ui";
 
 export default function Invoices() {
   const router = useRouter();

@@ -8,16 +8,7 @@ import { usePlan } from "@/lib/swr/use-billing";
 import useViewer from "@/lib/swr/use-viewer";
 
 import AppLayout from "@/components/layouts/app";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Separator } from "@hanzo/ui";
 import { ContactsDocumentsTable } from "@/components/visitors/contacts-document-table";
 import { VisitorAvatar } from "@/components/visitors/visitor-avatar";
 

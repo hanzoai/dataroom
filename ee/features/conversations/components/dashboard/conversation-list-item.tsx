@@ -2,7 +2,7 @@ import { formatDistanceToNow } from "date-fns";
 
 import { cn } from "@/lib/utils";
 
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@hanzo/ui";
 
 export function ConversationListItem({
   navigateToConversation,

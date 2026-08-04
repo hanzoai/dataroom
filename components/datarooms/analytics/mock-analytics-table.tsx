@@ -2,15 +2,7 @@ import { ChevronRight, Download, Eye, File, Folder } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
-import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Button } from "@hanzo/ui";
 
 // Mock data for analytics preview
 const mockAnalyticsData = [

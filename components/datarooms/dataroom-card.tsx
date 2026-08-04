@@ -8,14 +8,7 @@ import { formatDistanceToNow } from "date-fns";
 import { TagColorProps } from "@/lib/types";
 
 import TagBadge from "@/components/links/link-sheet/tags/tag-badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Button, Card, CardContent, CardHeader, CardTitle, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@hanzo/ui";
 
 type DataroomTag = {
   tag: {

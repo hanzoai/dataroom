@@ -8,18 +8,7 @@ import { FADE_IN_ANIMATION_SETTINGS } from "@/lib/constants";
 import { SidebarFolderTreeSelection as DataroomFolderTree } from "@/components/datarooms/folders";
 import { TSelectedFolder } from "@/components/documents/move-folder-modal";
 import { SidebarFolderTreeSelection as AllDocFolderTree } from "@/components/sidebar-folders";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { BadgeTooltip } from "@/components/ui/tooltip";
+import { Button, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, Label } from "@hanzo/ui";
 
 import { DEFAULT_LINK_TYPE } from "..";
 import LinkItem from "../link-item";

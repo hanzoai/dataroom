@@ -6,13 +6,7 @@ import { motion } from "motion/react";
 import { FADE_IN_ANIMATION_SETTINGS } from "@/lib/constants";
 import { useAgreements } from "@/lib/swr/use-agreements";
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@hanzo/ui";
 
 import { DEFAULT_LINK_TYPE } from ".";
 import AgreementSheet from "./agreement-panel";

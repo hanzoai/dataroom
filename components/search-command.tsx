@@ -5,15 +5,7 @@ import { useEffect, useState } from "react";
 import { DialogProps } from "@radix-ui/react-dialog";
 import { FileText } from "lucide-react";
 
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, Dialog, DialogContent } from "@hanzo/ui";
 
 interface Article {
   data: {

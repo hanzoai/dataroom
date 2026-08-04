@@ -6,9 +6,6 @@ import { usePlan } from "@/lib/swr/use-billing";
 import { useLinkVisits } from "@/lib/swr/use-link";
 import { durationFormat, timeAgo } from "@/lib/utils";
 
-import { Gauge } from "@/components/ui/gauge";
-import { Skeleton } from "@/components/ui/skeleton";
-import { TableCell, TableRow } from "@/components/ui/table";
 import { VisitorAvatar } from "@/components/visitors/visitor-avatar";
 
 export default function LinksVisitors({

@@ -19,16 +19,7 @@ import {
 
 import { LinkWithViews } from "@/lib/types";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import {
-  Sheet,
-  SheetContent,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
+import { Badge, Button, Separator } from "@hanzo/ui";
 
 interface LinkSuccessSheetProps {
   isOpen: boolean;

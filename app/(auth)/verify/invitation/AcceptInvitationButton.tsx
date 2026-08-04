@@ -4,7 +4,7 @@ import Link from "next/link";
 
 import { useState } from "react";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@hanzo/ui";
 
 interface AcceptInvitationButtonProps {
   verificationUrl: string;

@@ -3,7 +3,7 @@ import type { CSSProperties } from "react";
 
 import { createAdaptiveSurfacePalette } from "@/lib/utils/create-adaptive-surface-palette";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@hanzo/ui";
 
 export default function ViewPage() {
   const router = useRouter();

@@ -17,9 +17,7 @@ import { AddDocumentModal } from "@/components/documents/add-document-modal";
 import { LoadingDocuments } from "@/components/documents/loading-document";
 import { AddFolderModal } from "@/components/folders/add-folder-modal";
 import AppLayout from "@/components/layouts/app";
-import { Button } from "@/components/ui/button";
-import { ResponsiveButton } from "@/components/ui/responsive-button";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Button, ScrollArea, ScrollBar } from "@hanzo/ui";
 
 export default function Documents() {
   const { dataroom } = useDataroom();

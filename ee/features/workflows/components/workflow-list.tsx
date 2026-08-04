@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { timeAgo } from "@/lib/utils";
 
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@hanzo/ui";
 
 interface Workflow {
   id: string;

@@ -7,13 +7,7 @@ import Cookies from "js-cookie";
 import { AppBreadcrumb } from "@/components/layouts/breadcrumb";
 import TrialBanner from "@/components/layouts/trial-banner";
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
-import { Separator } from "@/components/ui/separator";
-import {
-  SIDEBAR_COOKIE_NAME,
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
+import { Separator } from "@hanzo/ui";
 
 // import { usePlan } from "@/lib/swr/use-billing";
 // import YearlyUpgradeBanner from "@/components/billing/yearly-upgrade-banner";

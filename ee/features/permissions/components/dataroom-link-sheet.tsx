@@ -34,27 +34,7 @@ import DomainSection from "@/components/links/link-sheet/domain-section";
 import { LinkOptions } from "@/components/links/link-sheet/link-options";
 import LinkSuccessSheet from "@/components/links/link-sheet/link-success-sheet";
 import TagSection from "@/components/links/link-sheet/tags/tag-section";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import {
-  Sheet,
-  SheetContent,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BadgeTooltip, ButtonTooltip } from "@/components/ui/tooltip";
+import { Button, Input, Label, ScrollArea, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Separator, Tabs, TabsContent, TabsList, TabsTrigger } from "@hanzo/ui";
 
 import { PermissionsSheet } from "./permissions-sheet";
 

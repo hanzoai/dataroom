@@ -12,22 +12,7 @@ import { useDataroomViewers } from "@/lib/swr/use-dataroom";
 import { timeAgo } from "@/lib/utils";
 
 import ChevronDown from "@/components/shared/icons/chevron-down";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { TimestampTooltip } from "@/components/ui/timestamp-tooltip";
-import { BadgeTooltip } from "@/components/ui/tooltip";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@hanzo/ui";
 
 import { DataroomViewStats } from "./dataroom-view-stats";
 import { VisitorAvatar } from "./visitor-avatar";

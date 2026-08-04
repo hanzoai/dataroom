@@ -22,16 +22,7 @@ import { SettingsHeader } from "@/components/settings/settings-header";
 import Folder from "@/components/shared/icons/folder";
 import MoreVertical from "@/components/shared/icons/more-vertical";
 import { AddTeamMembers } from "@/components/teams/add-team-member-modal";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Skeleton } from "@/components/ui/skeleton";
-import { UpgradeButton } from "@/components/ui/upgrade-button";
+import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@hanzo/ui";
 
 export default function Billing() {
   const [isTeamMemberInviteModalOpen, setTeamMemberInviteModalOpen] =

@@ -2,9 +2,7 @@ import { Play } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Badge, Button, Dialog, DialogContent } from "@hanzo/ui";
 
 interface AwayPosterProps {
   isVisible: boolean;

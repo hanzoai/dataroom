@@ -12,9 +12,7 @@ import { AddGroupModal } from "@/components/datarooms/groups/add-group-modal";
 import GroupCard from "@/components/datarooms/groups/group-card";
 import { GroupCardPlaceholder } from "@/components/datarooms/groups/group-card-placeholder";
 import AppLayout from "@/components/layouts/app";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BadgeTooltip } from "@/components/ui/tooltip";
+import { Button, Tabs, TabsList, TabsTrigger } from "@hanzo/ui";
 
 import { usePlan } from "@/lib/swr/use-billing";
 import { useDataroom } from "@/lib/swr/use-dataroom";

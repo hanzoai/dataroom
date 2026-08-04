@@ -16,13 +16,6 @@ import { NotionTheme } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { createAdaptiveSurfacePalette } from "@/lib/utils/create-adaptive-surface-palette";
 
-import {
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Portal } from "@/components/ui/portal";
 
 import { ScreenProtector } from "../../view/ScreenProtection";
 import Nav, { TNavData } from "../../view/nav";

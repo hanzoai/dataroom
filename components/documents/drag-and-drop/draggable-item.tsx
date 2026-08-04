@@ -4,7 +4,7 @@ import { useDraggable } from "@dnd-kit/core";
 
 import { cn } from "@/lib/utils";
 
-import { Checkbox } from "@/components/ui/checkbox";
+import { Checkbox } from "@hanzo/ui";
 
 interface DraggableItemProps {
   id: string;

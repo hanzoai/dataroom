@@ -12,15 +12,7 @@ import { useGetTeam } from "@/lib/swr/use-team";
 import { useTeams } from "@/lib/swr/use-teams";
 import { CustomUser } from "@/lib/types";
 
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
+import { Button } from "@hanzo/ui";
 
 import { UpgradePlanModal } from "../billing/upgrade-plan-modal";
 import { AddTeamModal } from "../teams/add-team-modal";

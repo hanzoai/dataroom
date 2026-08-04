@@ -9,7 +9,7 @@ import { ArrowRight, Sparkles } from "lucide-react";
 
 import { useAnalytics } from "@/lib/analytics";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@hanzo/ui";
 
 import { YearlyRecapModal } from "./yearly-recap-modal";
 

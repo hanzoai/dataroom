@@ -33,14 +33,6 @@ import { nFormatter } from "@/lib/utils";
 import { NavMain } from "@/components/sidebar/nav-main";
 import { NavUser } from "@/components/sidebar/nav-user";
 import { TeamSwitcher } from "@/components/sidebar/team-switcher";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar";
 
 import ProBanner from "../billing/pro-banner";
 import { Progress } from "../ui/progress";

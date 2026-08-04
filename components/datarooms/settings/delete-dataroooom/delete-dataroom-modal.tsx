@@ -12,10 +12,7 @@ import { useTeam } from "@/context/team-context";
 import { toast } from "sonner";
 import { mutate } from "swr";
 
-import { Button } from "@/components/ui/button";
-import { CardDescription, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Modal } from "@/components/ui/modal";
+import { Button, CardDescription, CardTitle, Input } from "@hanzo/ui";
 
 import { useAnalytics } from "@/lib/analytics";
 

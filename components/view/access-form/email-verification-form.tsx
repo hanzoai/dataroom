@@ -4,12 +4,7 @@ import { Brand, DataroomBrand } from "@prisma/client";
 
 import { useMediaQuery } from "@/lib/utils/use-media-query";
 
-import { Button } from "@/components/ui/button";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
+import { Button } from "@hanzo/ui";
 import { DEFAULT_ACCESS_FORM_TYPE } from "@/components/view/access-form";
 import { createAccessFormTheme } from "@/components/view/access-form/access-form-theme";
 

@@ -30,8 +30,7 @@ import {
 import DataroomDocumentCard from "@/components/datarooms/dataroom-document-card";
 import { useDeleteFolderModal } from "@/components/documents/actions/delete-folder-modal";
 import FolderCard from "@/components/documents/folder-card";
-import { Button } from "@/components/ui/button";
-import { Portal } from "@/components/ui/portal";
+import { Button } from "@hanzo/ui";
 
 import { SortableItem } from "./sortable-item";
 

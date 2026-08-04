@@ -21,24 +21,7 @@ import useDataroomPermissionGroups from "@/lib/swr/use-dataroom-permission-group
 import { cn } from "@/lib/utils";
 
 import CloudDownloadOff from "@/components/shared/icons/cloud-download-off";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Button, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@hanzo/ui";
 
 type GroupPermissions = Record<string, { view: boolean; download: boolean }>;
 type LinkPermissions = Record<string, { view: boolean; download: boolean }>;

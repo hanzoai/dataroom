@@ -13,7 +13,7 @@ import { CustomUser } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 import { GTMComponent } from "@/components/gtm-component";
-import { Button } from "@/components/ui/button";
+import { Button } from "@hanzo/ui";
 import Dataroom from "@/components/welcome/dataroom";
 import DataroomAIGenerate from "@/components/welcome/dataroom-ai-generate";
 import DataroomChoice from "@/components/welcome/dataroom-choice";

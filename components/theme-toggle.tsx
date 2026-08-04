@@ -7,14 +7,7 @@ import { useTheme } from "next-themes";
 
 import Moon from "@/components/shared/icons/moon";
 import Sun from "@/components/shared/icons/sun";
-import {
-  DropdownMenuPortal,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenuPortal, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger } from "@hanzo/ui";
 
 export function ModeToggle() {
   const { setTheme, theme } = useTheme();

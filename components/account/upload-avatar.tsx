@@ -7,16 +7,7 @@ import { toast } from "sonner";
 
 import { convertDataUrlToFile, uploadImage } from "@/lib/utils";
 
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { FileUpload } from "@/components/ui/file-upload";
+import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@hanzo/ui";
 
 interface UploadAvatarProps {
   title: string;

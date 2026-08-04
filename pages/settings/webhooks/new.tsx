@@ -16,12 +16,7 @@ import { usePlan } from "@/lib/swr/use-billing";
 import AppLayout from "@/components/layouts/app";
 import { SettingsHeader } from "@/components/settings/settings-header";
 import Copy from "@/components/shared/icons/copy";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { UpgradeButton } from "@/components/ui/upgrade-button";
+import { Button, Card, CardContent, Checkbox, Input, Label } from "@hanzo/ui";
 
 interface WebhookEvent {
   id: string;

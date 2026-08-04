@@ -1,5 +1,5 @@
 import { useOptimisticUpdate } from "@/components/hooks/use-optimistic-update";
-import { Switch } from "@/components/ui/switch";
+import { Switch } from "@hanzo/ui";
 
 export const UpdateMailSubscribe = () => {
   const { data, isLoading, update } = useOptimisticUpdate<{

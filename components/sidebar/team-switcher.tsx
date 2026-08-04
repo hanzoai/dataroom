@@ -9,20 +9,7 @@ import { usePlan } from "@/lib/swr/use-billing";
 import { Team } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
-} from "@/components/ui/sidebar";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@hanzo/ui";
 
 import { AddSeatModal } from "../billing/add-seat-modal";
 import { UpgradePlanModal } from "../billing/upgrade-plan-modal";

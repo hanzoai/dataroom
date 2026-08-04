@@ -13,10 +13,7 @@ import useSWR, { mutate } from "swr";
 import { fetcher } from "@/lib/utils";
 import { MAX_MESSAGE_LENGTH } from "@/lib/utils/sanitize-html";
 
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Button, ScrollArea, Separator } from "@hanzo/ui";
 
 // Type definitions
 interface Message {

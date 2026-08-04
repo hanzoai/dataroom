@@ -12,8 +12,7 @@ import { mutate } from "swr";
 import { usePlan } from "@/lib/swr/use-billing";
 import useLimits from "@/lib/swr/use-limits";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Badge, Button } from "@hanzo/ui";
 
 import { CancellationReason } from "../lib/constants";
 import { CancellationBaseModal } from "./reason-base-modal";

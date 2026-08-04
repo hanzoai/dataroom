@@ -9,7 +9,7 @@ import { mutate } from "swr";
 import { useAnalytics } from "@/lib/analytics";
 import { usePlan } from "@/lib/swr/use-billing";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@hanzo/ui";
 
 import { CancellationBaseModal } from "./reason-base-modal";
 

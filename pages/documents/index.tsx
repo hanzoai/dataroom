@@ -15,8 +15,7 @@ import { Pagination } from "@/components/documents/pagination";
 import { AddFolderModal } from "@/components/folders/add-folder-modal";
 import AppLayout from "@/components/layouts/app";
 import { SearchBoxPersisted } from "@/components/search-box";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+import { Button, Separator } from "@hanzo/ui";
 
 export default function Documents() {
   const router = useRouter();

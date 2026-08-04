@@ -12,7 +12,6 @@ import { SUPPORTED_DOCUMENT_SIMPLE_TYPES } from "@/lib/constants";
 import { useDisablePrint } from "@/lib/hooks/use-disable-print";
 import { LinkWithDataroomDocument, NotionTheme } from "@/lib/types";
 
-import LoadingSpinner from "@/components/ui/loading-spinner";
 import AccessForm, {
   DEFAULT_ACCESS_FORM_DATA,
   DEFAULT_ACCESS_FORM_TYPE,

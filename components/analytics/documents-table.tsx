@@ -25,16 +25,7 @@ import {
 import { toast } from "sonner";
 import useSWR from "swr";
 
-import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { TimestampTooltip } from "@/components/ui/timestamp-tooltip";
+import { Button } from "@hanzo/ui";
 import { DataTablePagination } from "@/components/visitors/data-table-pagination";
 
 import { usePlan } from "@/lib/swr/use-billing";

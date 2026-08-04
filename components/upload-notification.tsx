@@ -1,12 +1,5 @@
 import { CheckIcon, XIcon } from "lucide-react";
 
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-} from "@/components/ui/drawer";
 
 import { Gauge } from "./ui/gauge";
 import { RejectedFile, UploadState } from "./upload-zone";

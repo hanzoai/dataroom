@@ -6,16 +6,7 @@ import { toast } from "sonner";
 
 import { usePlan } from "@/lib/swr/use-billing";
 
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
+import { Button, ScrollArea, Separator } from "@hanzo/ui";
 
 import CustomFieldComponent from "./custom-field";
 

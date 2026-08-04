@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { ArrowLeft as ArrowLeftIcon } from "lucide-react";
 import { AnimatePresence } from "motion/react";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@hanzo/ui";
 import Dataroom from "@/components/welcome/dataroom";
 import DataroomTrial from "@/components/welcome/dataroom-trial";
 import Intro from "@/components/welcome/intro";

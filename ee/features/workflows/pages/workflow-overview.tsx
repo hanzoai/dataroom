@@ -10,7 +10,7 @@ import { fetcher } from "@/lib/utils";
 
 import PlanBadge from "@/components/billing/plan-badge";
 import AppLayout from "@/components/layouts/app";
-import { Button } from "@/components/ui/button";
+import { Button } from "@hanzo/ui";
 
 import { WorkflowEmptyState } from "../components/workflow-empty-state";
 import { WorkflowList } from "../components/workflow-list";

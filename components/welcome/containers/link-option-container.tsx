@@ -15,9 +15,7 @@ import {
 } from "@/lib/utils";
 
 import { DEFAULT_LINK_TYPE } from "@/components/links/link-sheet";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
+import { Button, Label, Switch } from "@hanzo/ui";
 import { OnboardingDataroomLinkOptions } from "@/components/welcome/containers/onboarding-dataroom-link-options";
 import { OnboardingLinkOptions } from "@/components/welcome/containers/onboarding-link-options";
 

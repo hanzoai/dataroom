@@ -7,7 +7,6 @@ import { LinkWithViews, TagColorProps, TagProps } from "@/lib/types";
 
 
 
-import { BadgeTooltip } from "@/components/ui/tooltip";
 
 import TagBadge from "./tag-badge";
 

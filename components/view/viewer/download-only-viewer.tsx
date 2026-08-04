@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { useSafePageViewTracker } from "@/lib/tracking/safe-page-view-tracker";
 import { getTrackingOptions } from "@/lib/tracking/tracking-config";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@hanzo/ui";
 
 import { ScreenProtector } from "../ScreenProtection";
 import Nav, { TNavData } from "../nav";

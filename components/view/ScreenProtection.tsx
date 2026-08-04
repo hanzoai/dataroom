@@ -3,7 +3,7 @@ import { useState } from "react";
 import { XOctagonIcon } from "lucide-react";
 import { useHotkeys } from "react-hotkeys-hook";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@hanzo/ui";
 
 export const ScreenProtector = () => {
   const [blockScreen, setBlockScreen] = useState<boolean>(false);

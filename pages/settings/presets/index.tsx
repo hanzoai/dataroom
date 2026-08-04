@@ -16,9 +16,7 @@ import { fetcher, formatExpirationTime } from "@/lib/utils";
 import { UpgradePlanModal } from "@/components/billing/upgrade-plan-modal";
 import AppLayout from "@/components/layouts/app";
 import { SettingsHeader } from "@/components/settings/settings-header";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { BadgeTooltip } from "@/components/ui/tooltip";
+import { Badge, Button } from "@hanzo/ui";
 
 export default function Presets() {
   const router = useRouter();

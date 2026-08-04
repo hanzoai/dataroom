@@ -14,7 +14,7 @@ import { putFile } from "@/lib/files/put-file";
 import { getSupportedContentType } from "@/lib/utils/get-content-type";
 
 import DocumentUpload from "@/components/document-upload";
-import { Button } from "@/components/ui/button";
+import { Button } from "@hanzo/ui";
 
 export function UploadContainer({
   currentFile,

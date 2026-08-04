@@ -5,7 +5,6 @@ import { useDataroomDocumentStats } from "@/lib/swr/use-dataroom-document-stats"
 import { useDataroomStats } from "@/lib/swr/use-dataroom-stats";
 
 import StatsChart from "@/components/documents/stats-chart";
-import { Gauge } from "@/components/ui/gauge";
 
 interface DataroomAnalyticsOverviewProps {
   selectedDocument: {

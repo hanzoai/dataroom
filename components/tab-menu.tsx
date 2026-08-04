@@ -2,8 +2,7 @@ import Link from "next/link";
 
 import * as React from "react";
 
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
+import { Badge, Separator } from "@hanzo/ui";
 
 import { cn } from "@/lib/utils";
 

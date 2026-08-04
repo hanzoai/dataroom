@@ -24,21 +24,7 @@ import AppLayout from "@/components/layouts/app";
 import { SettingsHeader } from "@/components/settings/settings-header";
 import SlackSettingsSkeleton from "@/components/settings/slack-settings-skeleton";
 import { SlackIcon } from "@/components/shared/icons/slack-icon";
-import { CommonAlertDialog } from "@/components/ui/alert-dialog";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { MultiSelect } from "@/components/ui/multi-select-v2";
-import { Separator } from "@/components/ui/separator";
-import { Switch } from "@/components/ui/switch";
-import { BadgeTooltip } from "@/components/ui/tooltip";
+import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Label, Separator, Switch } from "@hanzo/ui";
 
 export default function SlackSettings() {
   const router = useRouter();

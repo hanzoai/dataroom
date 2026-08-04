@@ -12,9 +12,7 @@ import { useTeam } from "@/context/team-context";
 import { toast } from "sonner";
 import { mutate } from "swr";
 
-import { Button } from "@/components/ui/button";
-import { DialogDescription, DialogTitle } from "@/components/ui/dialog";
-import { Modal } from "@/components/ui/modal";
+import { Button, DialogDescription, DialogTitle } from "@hanzo/ui";
 
 import { useAnalytics } from "@/lib/analytics";
 

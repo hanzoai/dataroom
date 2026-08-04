@@ -10,12 +10,6 @@ import useDataroomsSimple from "@/lib/swr/use-datarooms-simple";
 import { daysLeft } from "@/lib/utils";
 
 import { UpgradePlanModal } from "@/components/billing/upgrade-plan-modal";
-import {
-  Alert,
-  AlertClose,
-  AlertDescription,
-  AlertTitle,
-} from "@/components/ui/alert";
 
 export default function TrialBanner() {
   const { trial } = usePlan();

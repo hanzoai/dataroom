@@ -5,7 +5,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { DocumentPreviewData } from "@/lib/types/document-preview";
 import { cn } from "@/lib/utils";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@hanzo/ui";
 
 interface PreviewPagesViewerProps {
   documentData: DocumentPreviewData;

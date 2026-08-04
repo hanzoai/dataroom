@@ -6,15 +6,7 @@ import useSWR from "swr";
 
 import { fetcher } from "@/lib/utils";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, Label } from "@hanzo/ui";
 
 type DefaultPermissionStrategy =
   | "INHERIT_FROM_PARENT"

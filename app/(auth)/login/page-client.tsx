@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 
 import { signIn } from "next-auth/react";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@hanzo/ui";
 import { LogoCloud } from "@/components/shared/logo-cloud";
 
 const APP_NAME =

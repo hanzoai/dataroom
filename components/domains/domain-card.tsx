@@ -18,16 +18,7 @@ import { mutate } from "swr";
 
 import { cn } from "@/lib/utils";
 
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import { StatusBadge } from "@/components/ui/status-badge";
+import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, Input } from "@hanzo/ui";
 
 import { useDeleteDomainModal } from "./delete-domain-modal";
 import DomainConfiguration from "./domain-configuration";

@@ -1,7 +1,6 @@
 import { LinkWithViews } from "@/lib/types";
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button, Card, CardContent, CardHeader, CardTitle } from "@hanzo/ui";
 
 type LinkSetting = {
   key: keyof LinkWithViews;

@@ -12,16 +12,7 @@ import { mutate } from "swr";
 import { useAnalytics } from "@/lib/analytics";
 import { STAGGER_CHILD_VARIANTS } from "@/lib/constants";
 
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { PhoneInput } from "@/components/ui/phone-input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Button, Label, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@hanzo/ui";
 
 import { UpgradePlanModal } from "../billing/upgrade-plan-modal";
 import { Input } from "../ui/input";

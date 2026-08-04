@@ -26,15 +26,7 @@ import {
   useHierarchicalDisplayName,
 } from "@/lib/utils/hierarchical-display";
 
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@hanzo/ui";
 
 import { MoveToDataroomFolderModal } from "../datarooms/move-dataroom-folder-modal";
 import { EditFolderModal } from "../folders/edit-folder-modal";

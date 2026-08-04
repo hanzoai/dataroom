@@ -21,14 +21,7 @@ import {
   DEFAULT_LINK_TYPE,
 } from "@/components/links/link-sheet";
 import { LinkOptions } from "@/components/links/link-sheet/link-options";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
+import { Button, Label } from "@hanzo/ui";
 
 import Skeleton from "../Skeleton";
 

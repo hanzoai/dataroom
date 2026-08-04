@@ -15,7 +15,6 @@ import {
 } from "@/lib/utils/hierarchical-display";
 import { sortByIndexThenName } from "@/lib/utils/sort-items-by-index-name";
 
-import { FileTree } from "@/components/ui/nextra-filetree";
 
 import { buildNestedFolderStructure } from "./utils";
 

@@ -4,8 +4,7 @@ import { useState } from "react";
 
 import { useStats } from "@/lib/swr/use-stats";
 
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
+import { Label, Switch } from "@hanzo/ui";
 
 import StatsCard from "./stats-card";
 import StatsChart from "./stats-chart";

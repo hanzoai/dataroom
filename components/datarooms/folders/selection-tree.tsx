@@ -6,7 +6,6 @@ import {
 } from "@/lib/swr/use-dataroom";
 
 import { TSelectedFolder } from "@/components/documents/move-folder-modal";
-import { FileTree } from "@/components/ui/nextra-filetree";
 
 import { buildNestedFolderStructure } from "./utils";
 

@@ -10,12 +10,7 @@ import {
 } from "@/lib/constants/folder-constants";
 import { cn } from "@/lib/utils";
 
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Popover, PopoverContent, PopoverTrigger, ScrollArea } from "@hanzo/ui";
 
 interface FolderIconPickerProps {
   value: FolderIconId | null | undefined;

@@ -12,18 +12,7 @@ import { useTags } from "@/lib/swr/use-tags";
 import { TagColorProps } from "@/lib/types";
 
 import { UpgradePlanModal } from "@/components/billing/upgrade-plan-modal";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { MultiSelect } from "@/components/ui/multi-select-v2";
-import { BadgeTooltip } from "@/components/ui/tooltip";
+import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Label } from "@hanzo/ui";
 
 type TagProps = {
   id: string;

@@ -15,7 +15,6 @@ import { mutate } from "swr";
 import { FolderWithCount } from "@/lib/swr/use-documents";
 import { DocumentWithLinksAndLinkCountAndViewCount } from "@/lib/types";
 
-import { Skeleton } from "@/components/ui/skeleton";
 
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";

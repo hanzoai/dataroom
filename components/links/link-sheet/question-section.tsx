@@ -2,15 +2,7 @@ import { useEffect, useState } from "react";
 
 import { motion } from "motion/react";
 
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Input, Label, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@hanzo/ui";
 
 import { FADE_IN_ANIMATION_SETTINGS } from "@/lib/constants";
 

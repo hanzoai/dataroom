@@ -8,7 +8,6 @@ import {
 } from "lucide-react";
 
 import { BlurImage } from "@/components/blur-image";
-import { Apple, Chrome, Safari } from "@/components/ui/devices";
 
 export default function UAIcon({
   display,

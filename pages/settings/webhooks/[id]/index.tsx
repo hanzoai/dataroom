@@ -14,12 +14,7 @@ import { cn, fetcher } from "@/lib/utils";
 
 import AppLayout from "@/components/layouts/app";
 import { SettingsHeader } from "@/components/settings/settings-header";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button, Card, Checkbox, Input, Label, Tabs, TabsContent, TabsList, TabsTrigger } from "@hanzo/ui";
 import { WebhookEventList } from "@/components/webhooks/webhook-events";
 
 import { documentEvents, linkEvents, teamEvents } from "../new";

@@ -6,7 +6,7 @@ import { CheckCircle, Loader2, XCircle } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
-import { Progress } from "@/components/ui/progress";
+import { Progress } from "@hanzo/ui";
 
 import { useAIIndexingStatus } from "../hooks/use-ai-indexing-status";
 

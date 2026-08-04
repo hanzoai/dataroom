@@ -16,17 +16,7 @@ import DeleteDataroom from "@/components/datarooms/settings/delete-dataroooom";
 import DuplicateDataroom from "@/components/datarooms/settings/duplicate-dataroom";
 import SettingsTabs from "@/components/datarooms/settings/settings-tabs";
 import AppLayout from "@/components/layouts/app";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Form } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Input } from "@hanzo/ui";
 
 export default function Settings() {
   const { dataroom } = useDataroom();

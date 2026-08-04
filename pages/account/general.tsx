@@ -7,7 +7,6 @@ import { AccountHeader } from "@/components/account/account-header";
 import { UpdateMailSubscribe } from "@/components/account/update-subscription";
 import UploadAvatar from "@/components/account/upload-avatar";
 import AppLayout from "@/components/layouts/app";
-import { Form } from "@/components/ui/form";
 
 import { validateEmail } from "@/lib/utils/validate-email";
 

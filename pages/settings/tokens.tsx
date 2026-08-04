@@ -12,10 +12,7 @@ import { copyToClipboard, fetcher } from "@/lib/utils";
 
 import AppLayout from "@/components/layouts/app";
 import { SettingsHeader } from "@/components/settings/settings-header";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { BadgeTooltip } from "@/components/ui/tooltip";
+import { Button, Input, Label } from "@hanzo/ui";
 
 interface Token {
   id: string;

@@ -3,10 +3,7 @@ import { E164Number } from "libphonenumber-js";
 
 import { cn } from "@/lib/utils";
 
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import { PhoneInput } from "@/components/ui/phone-input";
-import { Textarea } from "@/components/ui/textarea";
+import { Checkbox, Input, Textarea } from "@hanzo/ui";
 import { useAccessFormTheme } from "./access-form-theme";
 
 export default function CustomFieldsSection({

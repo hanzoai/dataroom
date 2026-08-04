@@ -27,25 +27,8 @@ import { useDocumentVisits } from "@/lib/swr/use-document";
 import { durationFormat, timeAgo } from "@/lib/utils";
 
 import ChevronDown from "@/components/shared/icons/chevron-down";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { Gauge } from "@/components/ui/gauge";
-import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { TimestampTooltip } from "@/components/ui/timestamp-tooltip";
-import { BadgeTooltip } from "@/components/ui/tooltip";
+import { Badge, Collapsible, CollapsibleContent, CollapsibleTrigger } from "@hanzo/ui";
 
-import { Badge } from "@/components/ui/badge";
 
 import { UpgradePlanModal } from "../billing/upgrade-plan-modal";
 import { Pagination } from "../documents/pagination";

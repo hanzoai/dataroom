@@ -15,7 +15,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { usePlan } from "@/lib/swr/use-billing";
 import { cn } from "@/lib/utils";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@hanzo/ui";
 
 import { UpgradePlanModal } from "./upgrade-plan-modal";
 

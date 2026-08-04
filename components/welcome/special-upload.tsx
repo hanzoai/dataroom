@@ -20,13 +20,7 @@ import {
 import { getSupportedContentType } from "@/lib/utils/get-content-type";
 
 import DocumentUpload from "@/components/document-upload";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
+import { Button } from "@hanzo/ui";
 
 import Skeleton from "../Skeleton";
 import { DEFAULT_LINK_PROPS, DEFAULT_LINK_TYPE } from "../links/link-sheet";

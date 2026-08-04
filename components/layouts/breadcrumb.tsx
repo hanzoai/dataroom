@@ -9,22 +9,7 @@ import { useFolderWithParents } from "@/lib/swr/use-folders";
 import useViewer from "@/lib/swr/use-viewer";
 
 import { BreadcrumbComponent as DataroomBreadcrumb } from "@/components/datarooms/dataroom-breadcrumb";
-import {
-  Breadcrumb,
-  BreadcrumbEllipsis,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { BadgeTooltip } from "@/components/ui/tooltip";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@hanzo/ui";
 
 const FOLDERS_TO_DISPLAY = 1; // Only show the last folder in the path
 

@@ -2,8 +2,7 @@
 
 import { ArrowLeftIcon } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { Button, Textarea } from "@hanzo/ui";
 
 import { CancellationReason } from "../lib/constants";
 import { CancellationBaseModal } from "./reason-base-modal";

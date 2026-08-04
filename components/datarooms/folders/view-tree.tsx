@@ -12,7 +12,6 @@ import {
   getHierarchicalDisplayName,
 } from "@/lib/utils/hierarchical-display";
 
-import { FileTree } from "@/components/ui/nextra-filetree";
 import { useViewerSurfaceTheme } from "@/components/view/viewer/viewer-surface-theme";
 
 import { buildNestedFolderStructureWithDocs } from "./utils";
