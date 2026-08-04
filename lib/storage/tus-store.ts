@@ -24,7 +24,7 @@ export function createTusStore(): S3Store {
         accessKeyId: config.accessKeyId,
         secretAccessKey: config.secretAccessKey,
       },
-      // Set for S3-compatible backends (hanzoai/s3, MinIO); AWS ignores it.
+      // Set for hanzoai/s3; AWS ignores it.
       ...(config.endpoint
         ? { endpoint: config.endpoint, forcePathStyle: true }
         : {}),

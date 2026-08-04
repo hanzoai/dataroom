@@ -2,7 +2,7 @@
  * Object storage configuration.
  *
  * One bucket, resolved once from the environment. Any S3-compatible endpoint
- * works (hanzoai/s3, AWS S3, MinIO) — point NEXT_PRIVATE_UPLOAD_ENDPOINT at it.
+ * works — point NEXT_PRIVATE_UPLOAD_ENDPOINT at hanzoai/s3.
  */
 
 export interface StorageConfig {
