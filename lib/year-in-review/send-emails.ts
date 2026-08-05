@@ -6,7 +6,7 @@ import { resend } from "@/lib/resend";
 import { log } from "@/lib/utils";
 import { generateUnsubscribeUrl } from "@/lib/utils/unsubscribe";
 
-import YearInReviewEmail from "@/components/emails/year-in-review-papermark";
+import YearInReviewEmail from "@/components/emails/year-in-review";
 
 const BATCH_SIZE = 100; // Maximum number of emails Resend supports in one batch
 const MAX_ATTEMPTS = 3;

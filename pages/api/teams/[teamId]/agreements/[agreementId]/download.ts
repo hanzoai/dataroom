@@ -74,15 +74,15 @@ export default async function handle(
       const agreement = team.agreements[0];
 
       // Check if the content is a Hanzo Dataroom URL
-      const isPapermarkUrl =
-        agreement.content.includes("dataroom.hanzo.ai/view/") ||
-        agreement.content.includes("dataroom.hanzo.ai/view/");
+      const isDataroomUrl = agreement.content.includes(
+        "dataroom.hanzo.ai/view/",
+      );
 
       let fileContent: string;
       let filename: string;
       let link: any = null;
 
-      if (isPapermarkUrl) {
+      if (isDataroomUrl) {
         // Extract linkId from Hanzo Dataroom URL
         const urlParts = agreement.content.split("/view/");
         if (urlParts.length < 2) {

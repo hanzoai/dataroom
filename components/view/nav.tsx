@@ -34,7 +34,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-import PapermarkSparkle from "../shared/icons/papermark-sparkle";
 import {
   Breadcrumb,
   BreadcrumbItem,

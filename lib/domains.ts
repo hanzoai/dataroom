@@ -121,7 +121,7 @@ export const getApexDomain = (url: string) => {
   }
   const parts = domain.split(".");
   if (parts.length > 2) {
-    // if it's a subdomain (e.g. papermark.vercel.app), return the last 2 parts
+    // if it's a subdomain (e.g. app.vercel.app), return the last 2 parts
     return parts.slice(-2).join(".");
   }
   // if it's a normal domain (e.g. dataroom.hanzo.ai), we return the domain
