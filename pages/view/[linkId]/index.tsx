@@ -14,6 +14,7 @@ import z from "zod";
 import { fetchLinkDataById } from "@/lib/api/links/link-data";
 import { getFeatureFlags } from "@/lib/featureFlags";
 import notion from "@/lib/notion";
+import { StorageKey, localStorage } from "@/lib/webstorage";
 import {
   addSignedUrls,
   fetchMissingPageReferences,
@@ -315,7 +316,7 @@ export default function ViewPage({
     const cookieToken =
       Cookies.get("pm_vft") ||
       Cookies.get(`pm_drs_flag_${router.query.linkId}`);
-    const storedEmail = window.localStorage.getItem("papermark.email");
+    const storedEmail = localStorage.getItem(StorageKey.viewerEmail);
     if (cookieToken) {
       setStoredToken(cookieToken);
       if (storedEmail) {

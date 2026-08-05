@@ -12,6 +12,7 @@ import { useDebouncedCallback } from "use-debounce";
 
 import { cn } from "@/lib/utils";
 import { validateEmail } from "@/lib/utils/validate-email";
+import { StorageKey, localStorage } from "@/lib/webstorage";
 
 import { DEFAULT_ACCESS_FORM_TYPE } from ".";
 import { useAccessFormTheme } from "./access-form-theme";
@@ -38,7 +39,7 @@ export default function EmailSection({
 
   useEffect(() => {
     // Load email from localStorage when the component mounts
-    const storedEmail = window.localStorage.getItem("papermark.email");
+    const storedEmail = localStorage.getItem(StorageKey.viewerEmail);
     if (storedEmail) {
       setData((prevData) => ({
         ...prevData,
@@ -75,7 +76,7 @@ export default function EmailSection({
     // Update the state
     setData({ ...data, email: newEmail });
     // Store in localStorage
-    window.localStorage.setItem("papermark.email", newEmail);
+    localStorage.setItem(StorageKey.viewerEmail, newEmail);
 
     // Optional: Clear error if input becomes valid
     if (e.target.validity.valid) {

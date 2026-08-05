@@ -3,6 +3,8 @@ import type { CSSProperties } from "react";
 
 import { Brand, DataroomBrand } from "@prisma/client";
 
+import { StorageKey, localStorage } from "@/lib/webstorage";
+
 import { DEFAULT_ACCESS_FORM_TYPE } from ".";
 import { useAccessFormTheme } from "./access-form-theme";
 
@@ -20,7 +22,7 @@ export default function NameSection({
 
   useEffect(() => {
     // Load name from localStorage when the component mounts
-    const storedName = window.localStorage.getItem("papermark.name");
+    const storedName = localStorage.getItem(StorageKey.viewerName);
     if (storedName) {
       setData((prevData) => ({
         ...prevData,
@@ -32,7 +34,7 @@ export default function NameSection({
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newName = e.target.value;
     // Store the new email in localStorage
-    window.localStorage.setItem("papermark.name", newName);
+    localStorage.setItem(StorageKey.viewerName, newName);
     // Update the state
     setData({ ...data, name: newName });
   };

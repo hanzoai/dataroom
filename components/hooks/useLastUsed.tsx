@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { cn } from "@/lib/utils";
-import { localStorage } from "@/lib/webstorage";
+import { StorageKey, localStorage } from "@/lib/webstorage";
 
 type LoginType = "passkey" | "google" | "credentials" | "linkedin";
 
@@ -11,7 +11,7 @@ export function useLastUsed() {
   const [lastUsed, setLastUsed] = useState<LoginType>();
 
   useEffect(() => {
-    const storedValue = localStorage.getItem("last_papermark_login");
+    const storedValue = localStorage.getItem(StorageKey.lastLogin);
     if (storedValue) {
       setLastUsed(storedValue as LoginType);
     }
@@ -19,9 +19,9 @@ export function useLastUsed() {
 
   useEffect(() => {
     if (lastUsed) {
-      localStorage.setItem("last_papermark_login", lastUsed);
+      localStorage.setItem(StorageKey.lastLogin, lastUsed);
     } else {
-      localStorage.removeItem("last_papermark_login");
+      localStorage.removeItem(StorageKey.lastLogin);
     }
   }, [lastUsed]);
 

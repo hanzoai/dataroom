@@ -30,6 +30,7 @@ import z from "zod";
 import { LinkWithViews, WatermarkConfig } from "@/lib/types";
 import { cn, copyToClipboard, nFormatter, timeAgo } from "@/lib/utils";
 import { useMediaQuery } from "@/lib/utils/use-media-query";
+import { StorageKey, localStorage } from "@/lib/webstorage";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -701,14 +702,13 @@ export default function LinksTable({
   );
 
   // Collapsible state for "All Links" section (document pages only)
-  const ALL_LINKS_COLLAPSED_KEY = "papermark-all-links-collapsed";
   const [isAllLinksOpen, setIsAllLinksOpen] = useState<boolean>(true);
 
   // Load collapse state from localStorage on mount
   useEffect(() => {
     if (targetType !== "DOCUMENT") return;
     try {
-      const stored = localStorage.getItem(ALL_LINKS_COLLAPSED_KEY);
+      const stored = localStorage.getItem(StorageKey.linksCollapsed);
       if (stored !== null) {
         // stored value is "true" if collapsed, so we invert for isOpen
         setIsAllLinksOpen(stored !== "true");
@@ -724,7 +724,7 @@ export default function LinksTable({
     setIsAllLinksOpen(open);
     try {
       // Store "true" when collapsed, "false" when expanded
-      localStorage.setItem(ALL_LINKS_COLLAPSED_KEY, String(!open));
+      localStorage.setItem(StorageKey.linksCollapsed, String(!open));
     } catch (e) {
       console.warn("Could not write to localStorage:", e);
     }
