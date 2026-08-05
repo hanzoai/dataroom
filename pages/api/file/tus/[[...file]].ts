@@ -32,7 +32,7 @@ const BYTES_PER_MEGABYTE = 1024 * 1024;
 type TusErrorResponse = { status_code: number; body: string };
 
 type TusAuthenticatedRequest = NextApiRequest & {
-  papermarkUserId?: string;
+  authenticatedUserId?: string;
 };
 
 const tusServer = new Server({
@@ -84,7 +84,7 @@ const tusServer = new Server({
     return { status_code: 500, body: "Internal Server Error" };
   },
   async onIncomingRequest(req, res, uploadId) {
-    const userId = (req as TusAuthenticatedRequest).papermarkUserId;
+    const userId = (req as TusAuthenticatedRequest).authenticatedUserId;
     if (!userId) {
       throw { status_code: 401, body: "Unauthorized" };
     }
@@ -121,7 +121,7 @@ const tusServer = new Server({
     }
   },
   async onUploadCreate(req, res, upload) {
-    const userId = (req as TusAuthenticatedRequest).papermarkUserId;
+    const userId = (req as TusAuthenticatedRequest).authenticatedUserId;
     if (!userId) {
       throw { status_code: 401, body: "Unauthorized" };
     }
@@ -225,7 +225,7 @@ export default async function handler(
     return res.status(401).json({ message: "Unauthorized" });
   }
 
-  (req as TusAuthenticatedRequest).papermarkUserId = userId;
+  (req as TusAuthenticatedRequest).authenticatedUserId = userId;
 
   return tusServer.handle(req, res);
 }
