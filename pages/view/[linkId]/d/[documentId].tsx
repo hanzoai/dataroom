@@ -20,6 +20,7 @@ import {
   normalizeRecordMap,
 } from "@/lib/notion/utils";
 import { CustomUser, LinkWithDataroomDocument, NotionTheme } from "@/lib/types";
+import { StorageKey, localStorage } from "@/lib/webstorage";
 
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import CustomMetaTag from "@/components/view/custom-metatag";
@@ -75,7 +76,7 @@ export default function DataroomDocumentViewPage({
   useEffect(() => {
     // Retrieve token from cookie on component mount
     const cookieToken = Cookies.get(`pm_drs_flag_${router.query.linkId}`);
-    const storedEmail = window.localStorage.getItem("papermark.email");
+    const storedEmail = localStorage.getItem(StorageKey.viewerEmail);
     if (cookieToken) {
       setStoredToken(cookieToken);
       if (storedEmail) {
