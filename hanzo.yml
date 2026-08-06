@@ -1,0 +1,25 @@
+# Canonical CI/CD config for hanzoai/dataroom — the one file both the hanzoai/ci
+# reusable (.hanzo/workflows/cicd.yml) and platform.hanzo.ai read.
+#
+# No `images:` and no `deploy:`: this app's Dockerfile only produces a
+# standalone bundle when DOCKER_OUTPUT is set, and the rollout target is not a
+# Service CR this file can name honestly. A build-only gate is the correct claim
+# until it is.
+#
+# The gate is `npm ci` — whose postinstall runs `prisma generate`, so the
+# generated client matches prisma/schema.prisma or the install itself fails —
+# followed by a full typecheck. tsconfig here is `strict: true` with
+# `noEmit: true`, and the Prisma client is the type surface most of this app is
+# written against, so a schema change that breaks a query is a type error the
+# moment the client is regenerated. That is the failure this catches.
+#
+# Not `next build`: it resolves redirects and asset prefixes from
+# NEXT_PUBLIC_BASE_URL / NEXT_PUBLIC_APP_BASE_HOST / VERCEL_ENV at build time,
+# so on a runner with none of them set it fails for its environment rather than
+# for the code — noise a gate has to stay clear of.
+test:
+  - name: build
+    run: |
+      set -e
+      npm ci
+      npx tsc --noEmit
