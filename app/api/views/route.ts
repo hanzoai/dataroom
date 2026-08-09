@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getStorageConfig } from "@/lib/storage/config";
 // Import authOptions directly from the source
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { waitUntil } from "@vercel/functions";
+import { after } from "@/lib/after";
 import { getServerSession } from "next-auth";
 
 import { hashToken } from "@/lib/api/auth/token";
@@ -338,7 +338,7 @@ export async function POST(request: NextRequest) {
           },
         });
 
-        waitUntil(
+        after(
           sendOtpVerificationEmail(email, otpCode, false, link.teamId!),
         );
         return NextResponse.json({
@@ -660,7 +660,7 @@ export async function POST(request: NextRequest) {
 
       if (newView) {
         // Record view in the background to avoid blocking the response
-        waitUntil(
+        after(
           // Record link view in Tinybird
           recordLinkView({
             req: request,
@@ -673,7 +673,7 @@ export async function POST(request: NextRequest) {
           }),
         );
         if (!isPreview) {
-          waitUntil(
+          after(
             notifyDocumentView({
               teamId: link.teamId!,
               documentId,

@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { Prisma } from "@prisma/client";
-import { waitUntil } from "@vercel/functions";
+import { after } from "@/lib/after";
 import { getServerSession } from "next-auth/next";
 
 import { errorhandler } from "@/lib/errorHandler";
@@ -11,7 +11,7 @@ import { CustomUser } from "@/lib/types";
 import { sendLinkCreatedWebhook } from "@/lib/webhook/triggers/link-created";
 
 export const config = {
-  // in order to enable `waitUntil` function
+  // so background work can outlive the response
   supportsResponseStreaming: true,
 };
 
@@ -188,7 +188,7 @@ export default async function handle(
         views: [],
       };
 
-      waitUntil(
+      after(
         sendLinkCreatedWebhook({
           teamId,
           data: {

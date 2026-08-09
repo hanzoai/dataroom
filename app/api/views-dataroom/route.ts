@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getStorageConfig } from "@/lib/storage/config";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { ItemType, LinkAudienceType } from "@prisma/client";
-import { waitUntil } from "@vercel/functions";
+import { after } from "@/lib/after";
 import { getServerSession } from "next-auth";
 
 import { hashToken } from "@/lib/api/auth/token";
@@ -451,7 +451,7 @@ export async function POST(request: NextRequest) {
           },
         });
 
-        waitUntil(sendOtpVerificationEmail(email, otpCode, true, link.teamId!));
+        after(sendOtpVerificationEmail(email, otpCode, true, link.teamId!));
         return NextResponse.json(
           {
             type: "email-verification",
@@ -684,7 +684,7 @@ export async function POST(request: NextRequest) {
 
         // Send events in the background to avoid blocking the response
         if (newDataroomView) {
-          waitUntil(
+          after(
             // Record link view in Tinybird
             recordLinkView({
               req: request,
@@ -698,7 +698,7 @@ export async function POST(request: NextRequest) {
           );
 
           if (link.teamId && !isPreview) {
-            waitUntil(
+            after(
               (async () => {
                 try {
                   await notifyDataroomAccess({
@@ -796,7 +796,7 @@ export async function POST(request: NextRequest) {
             select: { id: true },
           });
 
-          waitUntil(
+          after(
             // Record link view in Tinybird
             recordLinkView({
               req: request,
@@ -824,7 +824,7 @@ export async function POST(request: NextRequest) {
         console.timeEnd("create-view");
         // Only send Slack notifications for non-preview views
         if (link.teamId && !isPreview) {
-          waitUntil(
+          after(
             (async () => {
               try {
                 await notifyDocumentView({

@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 import { LinkPreset } from "@prisma/client";
 import { put } from "@vercel/blob";
-import { waitUntil } from "@vercel/functions";
+import { after } from "@/lib/after";
 import { z } from "zod";
 
 import { hashToken } from "@/lib/api/auth/token";
@@ -30,7 +30,7 @@ import { sendLinkCreatedWebhook } from "@/lib/webhook/triggers/link-created";
 import { webhookFileUrlSchema } from "@/lib/zod/url-validation";
 
 export const config = {
-  // in order to enable `waitUntil` function
+  // so background work can outlive the response
   supportsResponseStreaming: true,
   maxDuration: 120,
 };
@@ -186,7 +186,7 @@ export default async function incomingWebhookHandler(
   }
 
   // Update last used timestamp for the token
-  waitUntil(
+  after(
     prisma.restrictedToken.update({
       where: {
         hashedKey: hashedToken,
@@ -628,7 +628,7 @@ async function handleDocumentCreate(
       },
     });
 
-    waitUntil(
+    after(
       sendLinkCreatedWebhook({
         teamId,
         data: {
@@ -993,7 +993,7 @@ async function handleLinkCreate(
       },
     });
 
-    waitUntil(
+    after(
       sendLinkCreatedWebhook({
         teamId,
         data: {
@@ -1481,7 +1481,7 @@ async function handleDataroomCreate(
     }
 
     if (createLink) {
-      waitUntil(
+      after(
         sendLinkCreatedWebhook({
           teamId,
           data: {

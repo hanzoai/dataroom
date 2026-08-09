@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import { waitUntil } from "@vercel/functions";
+import { after } from "@/lib/after";
 import { z } from "zod";
 
 import prisma from "@/lib/prisma";
@@ -14,7 +14,7 @@ const bodyValidation = z.object({
 });
 
 export const config = {
-  // in order to enable `waitUntil` function
+  // so background work can outlive the response
   supportsResponseStreaming: true,
 };
 
@@ -79,7 +79,7 @@ export default async function handler(
     }
 
     // Perform all non-dependent KV operations in parallel
-    waitUntil(
+    after(
       Promise.all([
         // Add the viewId to the KV set for this documentId
         kv.sadd(reportKey, viewIdValue),

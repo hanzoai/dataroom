@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 import { DocumentPage } from "@prisma/client";
 import { get } from "@vercel/edge-config";
-import { waitUntil } from "@vercel/functions";
+import { after } from "@/lib/after";
 import * as mupdf from "mupdf";
 
 import { putFileServer } from "@/lib/files/put-file-server";
@@ -184,7 +184,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
               );
 
               if (matchedKeyword) {
-                waitUntil(
+                after(
                   log({
                     message: `Document processing blocked: ${matchedKeyword} \n\n \`Metadata: {teamId: ${teamId}, documentVersionId: ${documentVersionId}, pageNumber: ${pageNumber}}\``,
                     type: "error",

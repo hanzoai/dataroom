@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { LinkAudienceType, Tag } from "@prisma/client";
-import { waitUntil } from "@vercel/functions";
+import { after } from "@/lib/after";
 import { getServerSession } from "next-auth/next";
 
 import { errorhandler } from "@/lib/errorHandler";
@@ -16,7 +16,7 @@ import { sendLinkCreatedWebhook } from "@/lib/webhook/triggers/link-created";
 import { authOptions } from "../auth/[...nextauth]";
 
 export const config = {
-  // in order to enable `waitUntil` function
+  // so background work can outlive the response
   supportsResponseStreaming: true,
 };
 
@@ -302,7 +302,7 @@ export default async function handler(
         return res.status(404).json({ error: "Link not found" });
       }
 
-      waitUntil(
+      after(
         sendLinkCreatedWebhook({
           teamId,
           data: {

@@ -1,4 +1,4 @@
-import { waitUntil } from "@vercel/functions";
+import { after } from "@/lib/after";
 
 import prisma from "@/lib/prisma";
 import { sendEmail } from "@/lib/resend";
@@ -37,7 +37,7 @@ export const installIntegration = async ({
     },
   });
 
-  waitUntil(
+  after(
     (async () => {
       const team = await prisma.team.findUniqueOrThrow({
         where: {

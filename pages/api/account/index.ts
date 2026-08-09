@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { waitUntil } from "@vercel/functions";
+import { after } from "@/lib/after";
 import { randomBytes } from "crypto";
 import { getServerSession } from "next-auth";
 import { z } from "zod";
@@ -78,7 +78,7 @@ export default async function handle(
           },
         );
 
-        waitUntil(
+        after(
           sendEmailChangeVerificationRequestEmail({
             email: sessionUser.email as string,
             newEmail: email,

@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 
 import NotFound from "@/pages/404";
 import { VerificationToken } from "@prisma/client";
-import { waitUntil } from "@vercel/functions";
+import { after } from "@/lib/after";
 
 import { hashToken } from "@/lib/api/auth/token";
 import prisma from "@/lib/prisma";
@@ -99,7 +99,7 @@ const VerifyEmailChange = async ({ params }: PageProps) => {
     },
   });
 
-  waitUntil(
+  after(
     Promise.all([
       deleteRequest(tokenFound),
 

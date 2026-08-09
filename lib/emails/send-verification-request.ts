@@ -1,4 +1,4 @@
-import { waitUntil } from "@vercel/functions";
+import { after } from "@/lib/after";
 import { customAlphabet } from "nanoid";
 
 import { kv } from "@/lib/kv";
@@ -54,9 +54,9 @@ export const sendVerificationRequestEmail = async (params: {
     code,
   });
 
-  // Use waitUntil to send email in background after response is sent
+  // Send in the background so the response is not held on SMTP
   // This keeps the serverless function alive until the email is sent
-  waitUntil(
+  after(
     sendEmail({
       to: email as string,
       system: true,
