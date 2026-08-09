@@ -1,23 +1,12 @@
-import { get } from "@vercel/edge-config";
+import { getConfig } from "@/lib/config";
 
+/** The per-team sender address, if that team has one configured. */
 export const getCustomEmail = async (teamId?: string) => {
-  if (!process.env.EDGE_CONFIG || !teamId) {
-    return null;
-  }
+  if (!teamId) return null;
 
-  let customEmails: Record<string, string | null> = {};
-  try {
-    const result = await get("customEmail");
-    // Make sure we get a valid object
-    customEmails =
-      typeof result === "object" && result !== null
-        ? (result as Record<string, string | null>)
-        : {};
-  } catch (e) {
-    // Error getting custom emails, return null
-    return null;
-  }
-
-  // Return the custom email for the team if it exists
+  const customEmails = await getConfig<Record<string, string | null>>(
+    "customEmail",
+    {},
+  );
   return customEmails[teamId] || null;
 };

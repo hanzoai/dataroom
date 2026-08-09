@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { get } from "@vercel/edge-config";
+import { getStringList } from "@/lib/config";
 import { getServerSession } from "next-auth/next";
 
 import { isTrustedTeam } from "@/lib/edge-config/trusted-teams";
@@ -85,7 +85,7 @@ export default async function handle(
     // Check if URL contains blocked keywords (skip for trusted teams)
     const trusted = await isTrustedTeam(teamId);
     if (!trusted) {
-      const keywords = await get("keywords");
+      const keywords = await getStringList("keywords");
       if (Array.isArray(keywords) && keywords.length > 0) {
         const matchedKeyword = keywords.find(
           (keyword) =>

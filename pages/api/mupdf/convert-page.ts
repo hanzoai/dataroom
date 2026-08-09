@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { DocumentPage } from "@prisma/client";
-import { get } from "@vercel/edge-config";
+import { getStringList } from "@/lib/config";
 import { after } from "@/lib/after";
 import * as mupdf from "mupdf";
 
@@ -173,7 +173,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     // Check embedded links for blocked keywords (skip for trusted teams)
     if (embeddedLinks.length > 0 && !trustedTeam) {
       try {
-        const keywords = await get("keywords");
+        const keywords = await getStringList("keywords");
         if (Array.isArray(keywords) && keywords.length > 0) {
           for (const link of embeddedLinks) {
             if (link.href) {
