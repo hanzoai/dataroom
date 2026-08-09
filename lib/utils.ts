@@ -1,7 +1,6 @@
 import { NextRouter } from "next/router";
 
 import slugify from "@sindresorhus/slugify";
-import { upload } from "@vercel/blob/client";
 import { transliterate } from "transliteration";
 import bcrypt from "bcryptjs";
 import * as chrono from "chrono-node";
@@ -519,12 +518,43 @@ export const uploadImage = async (
   file: File,
   uploadType: "profile" | "assets" = "assets",
 ) => {
-  const newBlob = await upload(file.name, file, {
-    access: "public",
-    handleUploadUrl: `/api/file/image-upload?type=${uploadType}`,
+  // Presign against our own bucket, then PUT straight to it. This was Vercel
+  // Blob's `upload`, which round-tripped a client token through their storage.
+  const presigned = await fetch(`/api/file/image-upload?type=${uploadType}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ fileName: file.name, contentType: file.type }),
   });
 
-  return newBlob.url;
+  if (!presigned.ok) {
+    throw new Error(`Could not start upload (${presigned.status})`);
+  }
+
+  const { url, key, maxBytes } = (await presigned.json()) as {
+    url: string;
+    key: string;
+    maxBytes: number;
+  };
+
+  // Checked here so the user is told, rather than discovering it as a rejected
+  // PUT — the store enforces it too, and that is the one that counts.
+  if (file.size > maxBytes) {
+    throw new Error(
+      `${file.name} is larger than the ${Math.round(maxBytes / 1024 / 1024)}MB limit`,
+    );
+  }
+
+  const upload = await fetch(url, {
+    method: "PUT",
+    headers: { "Content-Type": file.type },
+    body: file,
+  });
+
+  if (!upload.ok) {
+    throw new Error(`Upload failed (${upload.status})`);
+  }
+
+  return key;
 };
 
 /**

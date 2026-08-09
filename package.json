@@ -77,7 +77,6 @@
     "@tus/s3-store": "^1.9.1",
     "@tus/server": "^1.10.2",
     "@tus/utils": "^0.5.1",
-    "@vercel/blob": "^2.0.1",
     "autoprefixer": "^10.4.27",
     "base-x": "^5.0.1",
     "bcryptjs": "^3.0.3",
