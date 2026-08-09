@@ -154,7 +154,7 @@ export type DataroomCreatedWebhookPayload = z.infer<
   typeof dataroomCreatedWebhookSchema
 >;
 
-// Schema of response sent to the webhook callback URL by QStash
+// Schema of the response posted to the webhook callback URL
 export const webhookCallbackSchema = z.object({
   status: z.number(),
   url: z.string(),

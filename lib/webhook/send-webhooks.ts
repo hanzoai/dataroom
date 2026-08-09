@@ -1,6 +1,6 @@
 import { Webhook } from "@prisma/client";
 
-import { qstash } from "@/lib/cron";
+import { enqueue } from "@/lib/kv-queue/webhooks";
 
 import { createWebhookSignature } from "./signature";
 import { prepareWebhookPayload } from "./transform";
@@ -24,42 +24,42 @@ export const sendWebhooks = async ({
 
   return await Promise.all(
     webhooks.map((webhook) =>
-      publishWebhookEventToQStash({ webhook, payload }),
+      queueWebhookEvent({ webhook, payload }),
     ),
   );
 };
 
-// Publish webhook event to QStash
-const publishWebhookEventToQStash = async ({
+// Queue a webhook event for delivery (Hanzo KV).
+//
+// Was QStash, which this fork stubbed to a no-op — the event was signed, handed
+// to `publishJSON`, logged as a warning and thrown away. The signature is still
+// computed here, and now travels with the item so a retry re-sends identical
+// bytes instead of re-signing.
+const queueWebhookEvent = async ({
   webhook,
   payload,
 }: {
   webhook: Pick<Webhook, "pId" | "url" | "secret">;
   payload: WebhookPayload;
 }) => {
-  const callbackUrl = new URL(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/webhooks/callback`,
-  );
-  callbackUrl.searchParams.append("webhookId", webhook.pId);
-  callbackUrl.searchParams.append("eventId", payload.id);
-  callbackUrl.searchParams.append("event", payload.event);
-
+  const body = JSON.stringify(payload);
   const signature = await createWebhookSignature(webhook.secret, payload);
 
-  const response = await qstash.publishJSON({
+  const queued = await enqueue({
+    webhookId: webhook.pId,
     url: webhook.url,
-    body: payload,
-    headers: {
-      "X-Hanzo Dataroom-Signature": signature,
-      "Upstash-Hide-Headers": "true",
-    },
-    callback: callbackUrl.href,
-    failureCallback: callbackUrl.href,
+    body,
+    signature,
+    eventId: payload.id,
+    event: payload.event,
   });
 
-  if (!response.messageId) {
-    console.error("Failed to publish webhook event to QStash", response);
+  if (!queued) {
+    console.error("[webhooks] delivery not queued", {
+      webhookId: webhook.pId,
+      event: payload.event,
+    });
   }
 
-  return response;
+  return { queued };
 };

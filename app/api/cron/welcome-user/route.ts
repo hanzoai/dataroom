@@ -1,4 +1,4 @@
-import { verifyQstashSignature } from "@/lib/cron/verify-qstash";
+import { verifyCron } from "@/lib/cron/verify";
 import { sendWelcomeEmail } from "@/lib/emails/send-welcome";
 import prisma from "@/lib/prisma";
 import { subscribe } from "@/lib/resend";
@@ -8,7 +8,10 @@ export const dynamic = "force-dynamic";
 export async function POST(req: Request) {
   try {
     const rawBody = await req.text();
-    await verifyQstashSignature({ req, rawBody });
+  const auth = verifyCron(req);
+  if (!auth.ok) {
+    return new Response("Unauthorized", { status: auth.status });
+  }
 
     const { userId } = JSON.parse(rawBody);
 

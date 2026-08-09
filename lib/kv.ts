@@ -16,13 +16,14 @@ const kvUrl = process.env.KV_URL || "kv://localhost:6379";
  * Every shim is attached with `(kv as any).x = …`, which changes BEHAVIOUR
  * but not TYPE — TypeScript keeps seeing @hanzo/kv's `get(key): Promise<string
  * | null>`. So `kv.get<{ email: string }>(key)` reads back a `string`, and
- * the call sites written against Upstash fail with "Expected 0 type arguments"
+ * the call sites written against the options-object shape fail with
+ * "Expected 0 type arguments"
  * and "Property 'email' does not exist on type 'string'".
  *
  * The get() shim already JSON-parses (see below); this only makes the type say
  * so. Nothing here changes what runs.
  */
-type UpstashCompatible = KV & {
+type Client = KV & {
   get<T>(key: string): Promise<T | null>;
   set(
     key: string,
@@ -42,14 +43,14 @@ type UpstashCompatible = KV & {
 export const kv = new KV(kvUrl, {
   maxRetriesPerRequest: 3,
   lazyConnect: true,
-}) as unknown as UpstashCompatible;
+}) as unknown as Client;
 
 export const lockKv = new KV(kvUrl, {
   maxRetriesPerRequest: 3,
   lazyConnect: true,
 });
 
-// Upstash-compatible set() shim — translates options-object calls to @hanzo/kv positional args
+// set(): call sites pass an options object; @hanzo/kv takes positional args
 const originalSet = kv.set.bind(kv);
 (kv as any).set = async function (
   key: string,
@@ -67,7 +68,7 @@ const originalSet = kv.set.bind(kv);
   return (kv as any).call("SET", ...args);
 };
 
-// Upstash-compatible zadd() shim — translates { score, member } to positional args
+// zadd(): call sites pass { score, member }; @hanzo/kv takes positional args
 const originalZadd = kv.zadd.bind(kv);
 (kv as any).zadd = async function (key: string, ...args: any[]) {
   if (args.length === 1 && typeof args[0] === "object" && "score" in args[0]) {
@@ -77,7 +78,7 @@ const originalZadd = kv.zadd.bind(kv);
   return originalZadd(key, ...args);
 };
 
-// Upstash-compatible zrange() shim — translates { byScore, rev } options
+// zrange(): call sites pass { byScore, rev }; @hanzo/kv has a method per mode
 // Bound explicitly: `bind()` on an overloaded method resolves to ONE signature,
 // and which one shifts once `kv` carries the generic get() below — leaving
 // the numeric (index-range) form unreachable. zrange by index takes numbers.
@@ -94,7 +95,7 @@ const originalZrangebyscore = kv.zrangebyscore.bind(kv);
   return originalZrange(key, start as number, stop as number);
 };
 
-// Upstash-compatible getdel() shim — atomic GET + DEL
+// getdel(): atomic GET + DEL, which @hanzo/kv does not expose as one call
 (kv as any).getdel = async function (key: string) {
   const pipeline = kv.pipeline();
   pipeline.get(key);
@@ -103,7 +104,7 @@ const originalZrangebyscore = kv.zrangebyscore.bind(kv);
   return results?.[0]?.[1] ?? null;
 };
 
-// Upstash-compatible get() shim — try to auto-parse JSON
+// get(): call sites expect the stored JSON back as a value, not a string
 const originalGet = kv.get.bind(kv);
 (kv as any).get = async function (key: string) {
   const val = await originalGet(key);
@@ -111,7 +112,7 @@ const originalGet = kv.get.bind(kv);
   try { return JSON.parse(val); } catch { return val; }
 };
 
-// Upstash-compatible hincrby — already same signature in @hanzo/kv
+// hincrby needs no shim — same signature in @hanzo/kv
 
 // Simple sliding-window rate limiter using Hanzo KV
 export function ratelimit(

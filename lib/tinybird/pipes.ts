@@ -153,7 +153,7 @@ export const getWebhookEvents = tb.buildPipe({
   data: z.object({
     event_id: z.string(),
     webhook_id: z.string(),
-    message_id: z.string(), // QStash message ID
+    message_id: z.string(), // delivery id
     event: z.enum(WEBHOOK_TRIGGERS),
     url: z.string(),
     http_status: z.number(),

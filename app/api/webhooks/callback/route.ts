@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { verifyQstashSignature } from "@/lib/cron/verify-qstash";
+import { verifyCron } from "@/lib/cron/verify";
 import prisma from "@/lib/prisma";
 import { recordWebhookEvent } from "@/lib/tinybird/publish";
 import { getSearchParams } from "@/lib/utils/get-search-params";
@@ -19,10 +19,10 @@ const searchParamsSchema = z.object({
 // POST /api/webhooks/callback – listen to webhooks status from QStash
 export const POST = async (req: Request) => {
   const rawBody = await req.text();
-  await verifyQstashSignature({
-    req,
-    rawBody,
-  });
+  const auth = verifyCron(req);
+  if (!auth.ok) {
+    return new Response("Unauthorized", { status: auth.status });
+  }
 
   const { url, status, body, sourceBody, sourceMessageId } =
     webhookCallbackSchema.parse(JSON.parse(rawBody));
