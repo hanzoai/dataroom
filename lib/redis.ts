@@ -24,6 +24,19 @@ const kvUrl = process.env.KV_URL || process.env.REDIS_URL || "redis://localhost:
  */
 type UpstashCompatible = KV & {
   get<T>(key: string): Promise<T | null>;
+  set(
+    key: string,
+    value: unknown,
+    opts?: { ex?: number; px?: number; pxat?: number; exat?: number; nx?: boolean },
+  ): Promise<unknown>;
+  zadd(key: string, entry: { score: number; member: string }): Promise<number>;
+  zrange(
+    key: string,
+    start: number | string,
+    stop: number | string,
+    opts?: { byScore?: boolean; rev?: boolean },
+  ): Promise<string[]>;
+  getdel(key: string): Promise<string | null>;
 };
 
 export const redis = new KV(kvUrl, {
