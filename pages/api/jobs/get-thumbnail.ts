@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 
 import { getFileForDocumentPage } from "@/lib/documents/get-file-helper";
-import { ratelimit } from "@/lib/redis";
+import { ratelimit } from "@/lib/kv";
 import { CustomUser } from "@/lib/types";
 
 import { authOptions } from "../auth/[...nextauth]";

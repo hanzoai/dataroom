@@ -1,6 +1,6 @@
 import { getCustomEmail } from "@/lib/edge-config/custom-email";
 import prisma from "@/lib/prisma";
-import { redis } from "@/lib/redis";
+import { kv } from "@/lib/kv";
 import { sendEmail } from "@/lib/resend";
 
 import OtpEmailVerification from "@/components/emails/otp-verification";
@@ -18,7 +18,7 @@ export const sendOtpVerificationEmail = async (
 
   if (customEmail && teamId) {
     from = customEmail;
-    logo = await redis.get(`brand:logo:${teamId}`);
+    logo = await kv.get(`brand:logo:${teamId}`);
   }
 
   const emailTemplate = OtpEmailVerification({

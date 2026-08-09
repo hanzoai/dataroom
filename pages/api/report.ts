@@ -4,7 +4,7 @@ import { waitUntil } from "@vercel/functions";
 import { z } from "zod";
 
 import prisma from "@/lib/prisma";
-import { redis } from "@/lib/redis";
+import { kv } from "@/lib/kv";
 
 const bodyValidation = z.object({
   linkId: z.string(),
@@ -65,12 +65,12 @@ export default async function handler(
   }
 
   try {
-    // Create a unique Redis key to track reports for the documentId
+    // Create a unique KV key to track reports for the documentId
     const reportKey = `report:doc_${documentId}`;
     const viewIdValue = `view_${viewId}`;
 
     // Check if the viewId has already reported for this documentId
-    const hasReported = await redis.sismember(reportKey, viewIdValue);
+    const hasReported = await kv.sismember(reportKey, viewIdValue);
     if (hasReported) {
       return res.status(400).json({
         status: "error",
@@ -78,17 +78,17 @@ export default async function handler(
       });
     }
 
-    // Perform all non-dependent Redis operations in parallel
+    // Perform all non-dependent KV operations in parallel
     waitUntil(
       Promise.all([
-        // Add the viewId to the Redis set for this documentId
-        redis.sadd(reportKey, viewIdValue),
+        // Add the viewId to the KV set for this documentId
+        kv.sadd(reportKey, viewIdValue),
 
         // Increment the report count for the documentId
-        redis.hincrby("reportCount", `doc_${documentId}`, 1),
+        kv.hincrby("reportCount", `doc_${documentId}`, 1),
 
-        // Store the abuse type report under a Redis hash for future analysis
-        redis.hset(`report:doc_${documentId}:details`, {
+        // Store the abuse type report under a KV hash for future analysis
+        kv.hset(`report:doc_${documentId}:details`, {
           [viewIdValue]: abuseType, // Store the abuseType as a number for this viewId
         }),
       ]),

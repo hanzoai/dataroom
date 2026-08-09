@@ -1,11 +1,11 @@
 import prisma from "@/lib/prisma";
-import { redis } from "@/lib/redis";
+import { kv } from "@/lib/kv";
 
-import { getRedisKey } from "./redis";
+import { getKey } from "./kv";
 
 /**
  * Clears all redirect URLs for every domain belonging to a team,
- * removing them from both Postgres and Redis.
+ * removing them from both Postgres and KV.
  */
 export async function clearTeamDomainRedirects(
   teamId: string,
@@ -22,6 +22,6 @@ export async function clearTeamDomainRedirects(
       where: { teamId, redirectUrl: { not: null } },
       data: { redirectUrl: null },
     }),
-    ...domains.map((d) => redis.del(getRedisKey(d.slug))),
+    ...domains.map((d) => kv.del(getKey(d.slug))),
   ]);
 }

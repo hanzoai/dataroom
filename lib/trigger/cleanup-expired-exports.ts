@@ -1,7 +1,7 @@
 import { logger, schedules } from "@trigger.dev/sdk/v3";
 import { del } from "@vercel/blob";
 
-import { jobStore } from "@/lib/redis-job-store";
+import { jobStore } from "@/lib/kv-job-store";
 
 export const cleanupExpiredExports = schedules.task({
   id: "cleanup-expired-exports",

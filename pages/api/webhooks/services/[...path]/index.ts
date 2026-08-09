@@ -14,7 +14,7 @@ import { putFileServer } from "@/lib/files/put-file-server";
 import { newId } from "@/lib/id-helper";
 import { extractTeamId, isValidWebhookId } from "@/lib/incoming-webhooks";
 import prisma from "@/lib/prisma";
-import { ratelimit } from "@/lib/redis";
+import { ratelimit } from "@/lib/kv";
 import {
   convertDataUrlToBuffer,
   generateEncrpytedPassword,

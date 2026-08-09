@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { fetchAndDeleteLoginCodeData } from "@/lib/emails/send-verification-request";
-import { ratelimit } from "@/lib/redis";
+import { ratelimit } from "@/lib/kv";
 
 // Rate limiters
 const emailRateLimit = ratelimit(5, "1 m"); // 5 attempts per minute per email

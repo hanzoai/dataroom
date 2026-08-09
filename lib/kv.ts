@@ -2,20 +2,20 @@
  * Hanzo KV client
  *
  * Connects to Hanzo KV (Valkey-compatible) via standard wire protocol.
- * Uses @hanzo/kv as transport (wire-compatible with Hanzo KV / Valkey / Redis).
+ * Uses @hanzo/kv as transport (wire-compatible with Hanzo KV / Valkey / KV).
  *
- * Environment: KV_URL (e.g. redis://:password@hanzo-kv.hanzo.svc:6379)
+ * Environment: KV_URL (e.g. kv://:password@hanzo-kv.hanzo.svc:6379)
  */
 import KV from "@hanzo/kv";
 
-const kvUrl = process.env.KV_URL || process.env.REDIS_URL || "redis://localhost:6379";
+const kvUrl = process.env.KV_URL || "kv://localhost:6379";
 
 /**
  * The surface the shims below actually provide.
  *
- * Every shim is attached with `(redis as any).x = …`, which changes BEHAVIOUR
+ * Every shim is attached with `(kv as any).x = …`, which changes BEHAVIOUR
  * but not TYPE — TypeScript keeps seeing @hanzo/kv's `get(key): Promise<string
- * | null>`. So `redis.get<{ email: string }>(key)` reads back a `string`, and
+ * | null>`. So `kv.get<{ email: string }>(key)` reads back a `string`, and
  * the call sites written against Upstash fail with "Expected 0 type arguments"
  * and "Property 'email' does not exist on type 'string'".
  *
@@ -39,19 +39,19 @@ type UpstashCompatible = KV & {
   getdel(key: string): Promise<string | null>;
 };
 
-export const redis = new KV(kvUrl, {
+export const kv = new KV(kvUrl, {
   maxRetriesPerRequest: 3,
   lazyConnect: true,
 }) as unknown as UpstashCompatible;
 
-export const lockerRedisClient = new KV(kvUrl, {
+export const lockKv = new KV(kvUrl, {
   maxRetriesPerRequest: 3,
   lazyConnect: true,
 });
 
 // Upstash-compatible set() shim — translates options-object calls to @hanzo/kv positional args
-const originalSet = redis.set.bind(redis);
-(redis as any).set = async function (
+const originalSet = kv.set.bind(kv);
+(kv as any).set = async function (
   key: string,
   value: any,
   opts?: { ex?: number; px?: number; pxat?: number; exat?: number; nx?: boolean },
@@ -64,12 +64,12 @@ const originalSet = redis.set.bind(redis);
   else if (opts.pxat) { args.push("PXAT", opts.pxat); }
   else if (opts.exat) { args.push("EXAT", opts.exat); }
   if (opts.nx) { args.push("NX"); }
-  return (redis as any).call("SET", ...args);
+  return (kv as any).call("SET", ...args);
 };
 
 // Upstash-compatible zadd() shim — translates { score, member } to positional args
-const originalZadd = redis.zadd.bind(redis);
-(redis as any).zadd = async function (key: string, ...args: any[]) {
+const originalZadd = kv.zadd.bind(kv);
+(kv as any).zadd = async function (key: string, ...args: any[]) {
   if (args.length === 1 && typeof args[0] === "object" && "score" in args[0]) {
     const { score, member } = args[0];
     return originalZadd(key, score, member);
@@ -79,24 +79,24 @@ const originalZadd = redis.zadd.bind(redis);
 
 // Upstash-compatible zrange() shim — translates { byScore, rev } options
 // Bound explicitly: `bind()` on an overloaded method resolves to ONE signature,
-// and which one shifts once `redis` carries the generic get() below — leaving
+// and which one shifts once `kv` carries the generic get() below — leaving
 // the numeric (index-range) form unreachable. zrange by index takes numbers.
-const originalZrange = redis.zrange.bind(redis) as unknown as (
+const originalZrange = kv.zrange.bind(kv) as unknown as (
   key: string,
   start: number,
   stop: number,
 ) => Promise<string[]>;
-const originalZrevrange = redis.zrevrange.bind(redis);
-const originalZrangebyscore = redis.zrangebyscore.bind(redis);
-(redis as any).zrange = async function (key: string, start: number | string, stop: number | string, opts?: { byScore?: boolean; rev?: boolean }) {
+const originalZrevrange = kv.zrevrange.bind(kv);
+const originalZrangebyscore = kv.zrangebyscore.bind(kv);
+(kv as any).zrange = async function (key: string, start: number | string, stop: number | string, opts?: { byScore?: boolean; rev?: boolean }) {
   if (opts?.rev) return originalZrevrange(key, start as number, stop as number);
   if (opts?.byScore) return originalZrangebyscore(key, start, stop);
   return originalZrange(key, start as number, stop as number);
 };
 
 // Upstash-compatible getdel() shim — atomic GET + DEL
-(redis as any).getdel = async function (key: string) {
-  const pipeline = redis.pipeline();
+(kv as any).getdel = async function (key: string) {
+  const pipeline = kv.pipeline();
   pipeline.get(key);
   pipeline.del(key);
   const results = await pipeline.exec();
@@ -104,8 +104,8 @@ const originalZrangebyscore = redis.zrangebyscore.bind(redis);
 };
 
 // Upstash-compatible get() shim — try to auto-parse JSON
-const originalGet = redis.get.bind(redis);
-(redis as any).get = async function (key: string) {
+const originalGet = kv.get.bind(kv);
+(kv as any).get = async function (key: string) {
   const val = await originalGet(key);
   if (val === null) return null;
   try { return JSON.parse(val); } catch { return val; }
@@ -130,7 +130,7 @@ export function ratelimit(
       const now = Date.now();
       const windowStart = now - windowMs;
 
-      const pipeline = redis.pipeline();
+      const pipeline = kv.pipeline();
       pipeline.zremrangebyscore(key, 0, windowStart);
       pipeline.zadd(key, now, `${now}:${Math.random()}`);
       pipeline.zcard(key);

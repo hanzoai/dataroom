@@ -4,7 +4,7 @@ import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { getServerSession } from "next-auth/next";
 
 import { exportVisitsTask } from "@/lib/trigger/export-visits";
-import { jobStore } from "@/lib/redis-job-store";
+import { jobStore } from "@/lib/kv-job-store";
 import prisma from "@/lib/prisma";
 import { CustomUser } from "@/lib/types";
 

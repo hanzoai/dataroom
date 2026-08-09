@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 import { getDataroomSessionByLinkIdInPagesRouter } from "@/lib/auth/dataroom-auth";
 import prisma from "@/lib/prisma";
-import { downloadJobStore } from "@/lib/redis-download-job-store";
+import { downloadJobStore } from "@/lib/kv-download-job-store";
 
 export default async function handler(
   req: NextApiRequest,

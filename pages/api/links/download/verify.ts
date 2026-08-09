@@ -9,7 +9,7 @@ import {
 } from "@/lib/auth/dataroom-auth";
 import { sendOtpVerificationEmail } from "@/lib/emails/send-email-otp-verification";
 import prisma from "@/lib/prisma";
-import { ratelimit } from "@/lib/redis";
+import { ratelimit } from "@/lib/kv";
 import { generateOTP } from "@/lib/utils/generate-otp";
 import { getIpAddress } from "@/lib/utils/ip";
 

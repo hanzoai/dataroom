@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
 import prisma from "@/lib/prisma";
-import { ratelimit } from "@/lib/redis";
+import { ratelimit } from "@/lib/kv";
 import { verifyUnsubscribeToken } from "@/lib/utils/unsubscribe";
 import { ZUserNotificationPreferencesSchema } from "@/lib/zod/schemas/notifications";
 

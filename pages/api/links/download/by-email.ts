@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 import { getDataroomSessionByLinkIdInPagesRouter } from "@/lib/auth/dataroom-auth";
 import prisma from "@/lib/prisma";
-import { ratelimit } from "@/lib/redis";
+import { ratelimit } from "@/lib/kv";
 import { getIpAddress } from "@/lib/utils/ip";
 
 export default async function handler(

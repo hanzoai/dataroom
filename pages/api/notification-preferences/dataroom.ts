@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { z } from "zod";
 
 import prisma from "@/lib/prisma";
-import { ratelimit } from "@/lib/redis";
+import { ratelimit } from "@/lib/kv";
 import { verifyUnsubscribeToken } from "@/lib/utils/unsubscribe";
 import { ZViewerNotificationPreferencesSchema } from "@/lib/zod/schemas/notifications";
 

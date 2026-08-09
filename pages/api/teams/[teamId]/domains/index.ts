@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 import { getServerSession } from "next-auth/next";
 
-import { setDomainRedirectUrl } from "@/lib/api/domains/redis";
+import { setDomainRedirectUrl } from "@/lib/api/domains/kv";
 import { validateRedirectUrl } from "@/lib/api/domains/validate-redirect-url";
 import { addDomainToVercel, validDomainRegex } from "@/lib/domains";
 import { errorhandler } from "@/lib/errorHandler";
@@ -145,7 +145,7 @@ export default async function handle(
         try {
           await setDomainRedirectUrl(sanitizedDomain, validatedRedirectUrl);
         } catch {
-          // Domain is functional but redirect failed to persist in Redis.
+          // Domain is functional but redirect failed to persist in KV.
           // Remove redirectUrl from DB so the two stores stay consistent.
           await prisma.domain.update({
             where: { id: response.id },

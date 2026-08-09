@@ -4,7 +4,7 @@ import { Document } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 
-import { ExportJob } from "@/lib/redis-job-store";
+import { ExportJob } from "@/lib/kv-job-store";
 
 import { Button } from "../ui/button";
 

@@ -1,4 +1,4 @@
-import { redis } from "@/lib/redis";
+import { kv } from "@/lib/kv";
 
 const ITEM_TTL_SECONDS = 8 * 24 * 60 * 60; // 8 days
 
@@ -53,7 +53,7 @@ export async function queueNotification({
     queuedAt: Date.now(),
   };
 
-  const pipeline = redis.pipeline();
+  const pipeline = kv.pipeline();
   pipeline.rpush(key, JSON.stringify(item));
   pipeline.expire(key, ITEM_TTL_SECONDS);
   pipeline.sadd(
@@ -75,11 +75,11 @@ export async function popDigestQueue(
 ): Promise<DigestBatch[]> {
   const setKey = viewerSetKey(frequency);
 
-  const members = await redis.smembers(setKey);
+  const members = await kv.smembers(setKey);
   if (!members || members.length === 0) return [];
 
   // Remove the entire set atomically
-  await redis.del(setKey);
+  await kv.del(setKey);
 
   const batches: DigestBatch[] = [];
 
@@ -88,8 +88,8 @@ export async function popDigestQueue(
     const key = itemsKey(entry.viewerId, entry.dataroomId);
 
     // Get all items then delete the list
-    const rawItems = await redis.lrange(key, 0, -1);
-    await redis.del(key);
+    const rawItems = await kv.lrange(key, 0, -1);
+    await kv.del(key);
 
     if (!rawItems || rawItems.length === 0) continue;
 

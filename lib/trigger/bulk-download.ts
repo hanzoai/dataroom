@@ -2,7 +2,7 @@ import { logger, task } from "@trigger.dev/sdk/v3";
 
 import { sendDownloadReadyEmail } from "@/lib/emails/send-download-ready-email";
 import prisma from "@/lib/prisma";
-import { downloadJobStore } from "@/lib/redis-download-job-store";
+import { downloadJobStore } from "@/lib/kv-download-job-store";
 import { constructLinkUrl } from "@/lib/utils/link-url";
 
 // Maximum files per batch (Lambda payload limit)

@@ -1,7 +1,7 @@
 import crypto from "crypto";
 import { z } from "zod";
 
-import { redis } from "@/lib/redis";
+import { kv } from "@/lib/kv";
 
 export const PREVIEW_EXPIRATION_TIME = 20 * 60 * 1000; // 20 minutes
 
@@ -29,8 +29,8 @@ async function createPreviewSession(
   // Validate session data before storing
   ZPreviewSessionSchema.parse(sessionData);
 
-  // Store session in Redis
-  await redis.set(
+  // Store session in KV
+  await kv.set(
     `preview_session:${sessionToken}`,
     JSON.stringify(sessionData),
     { pxat: expiresAt },
@@ -50,7 +50,7 @@ async function verifyPreviewSession(
   const sessionToken = previewToken;
   if (!sessionToken) return null;
 
-  const session = await redis.get(`preview_session:${sessionToken}`);
+  const session = await kv.get(`preview_session:${sessionToken}`);
   if (!session) return null;
 
   try {
@@ -58,26 +58,26 @@ async function verifyPreviewSession(
 
     // Check if the session is for the correct user
     if (sessionData.userId !== userId) {
-      await redis.del(`preview_session:${sessionToken}`);
+      await kv.del(`preview_session:${sessionToken}`);
       return null;
     }
 
     // Check if session is expired
     if (sessionData.expiresAt < Date.now()) {
-      await redis.del(`preview_session:${sessionToken}`);
+      await kv.del(`preview_session:${sessionToken}`);
       return null;
     }
 
     // Check if the session is for the correct link and dataroom
     if (sessionData.linkId !== linkId) {
-      await redis.del(`preview_session:${sessionToken}`);
+      await kv.del(`preview_session:${sessionToken}`);
       return null;
     }
 
     return sessionData;
   } catch (error) {
     console.error("Preview session verification error:", error);
-    await redis.del(`preview_session:${sessionToken}`);
+    await kv.del(`preview_session:${sessionToken}`);
     return null;
   }
 }

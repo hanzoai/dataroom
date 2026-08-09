@@ -6,7 +6,7 @@ import { getServerSession } from "next-auth/next";
 import { TeamError, errorhandler } from "@/lib/errorHandler";
 import { deleteFile } from "@/lib/files/delete-file-server";
 import prisma from "@/lib/prisma";
-import { ratelimit } from "@/lib/redis";
+import { ratelimit } from "@/lib/kv";
 import { CustomUser } from "@/lib/types";
 import { serializeFileSize } from "@/lib/utils";
 

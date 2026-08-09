@@ -5,7 +5,7 @@ import { getServerSession } from "next-auth";
 
 import { errorhandler } from "@/lib/errorHandler";
 import prisma from "@/lib/prisma";
-import { redis } from "@/lib/redis";
+import { kv } from "@/lib/kv";
 import { CustomUser } from "@/lib/types";
 
 import { authOptions } from "../../auth/[...nextauth]";
@@ -88,9 +88,9 @@ export default async function handle(
       },
     });
 
-    // Cache the logo URL in Redis if logo exists
+    // Cache the logo URL in KV if logo exists
     if (logo) {
-      await redis.set(`brand:logo:${teamId}`, logo);
+      await kv.set(`brand:logo:${teamId}`, logo);
     }
 
     return res.status(200).json(brand);
@@ -136,12 +136,12 @@ export default async function handle(
       },
     });
 
-    // Update logo in Redis cache
+    // Update logo in KV cache
     if (logo) {
-      await redis.set(`brand:logo:${teamId}`, logo);
+      await kv.set(`brand:logo:${teamId}`, logo);
     } else {
       // If logo is null or undefined, delete the cache
-      await redis.del(`brand:logo:${teamId}`);
+      await kv.del(`brand:logo:${teamId}`);
     }
 
     return res.status(200).json(brand);
@@ -172,8 +172,8 @@ export default async function handle(
       },
     });
 
-    // Remove logo from Redis cache
-    await redis.del(`brand:logo:${teamId}`);
+    // Remove logo from KV cache
+    await kv.del(`brand:logo:${teamId}`);
 
     return res.status(204).end();
   } else {

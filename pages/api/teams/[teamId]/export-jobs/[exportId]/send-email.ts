@@ -4,7 +4,7 @@ import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { getServerSession } from "next-auth/next";
 
 import { sendExportReadyEmail } from "@/lib/emails/send-export-ready-email";
-import { jobStore } from "@/lib/redis-job-store";
+import { jobStore } from "@/lib/kv-job-store";
 import { CustomUser } from "@/lib/types";
 
 export default async function handler(

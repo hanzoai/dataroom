@@ -4,7 +4,7 @@ import Bottleneck from "bottleneck";
 
 import { sendExportReadyEmail } from "@/lib/emails/send-export-ready-email";
 import prisma from "@/lib/prisma";
-import { jobStore } from "@/lib/redis-job-store";
+import { jobStore } from "@/lib/kv-job-store";
 import {
   getViewPageDuration,
   getViewUserAgent,
@@ -120,7 +120,7 @@ export const exportVisitsTask = task({
         size: csvData.length,
       });
 
-      // Store the blob URL in Redis
+      // Store the blob URL in KV
       const updatedJob = await jobStore.updateJob(exportId, {
         status: "COMPLETED",
         result: blob.downloadUrl,

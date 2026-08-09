@@ -3,12 +3,12 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { DocumentStorageType } from "@prisma/client";
 import { getServerSession } from "next-auth";
 
-import { deleteDomainRedirectUrl } from "@/lib/api/domains/redis";
+import { deleteDomainRedirectUrl } from "@/lib/api/domains/kv";
 import { removeDomainFromVercelProject } from "@/lib/domains";
 import { errorhandler } from "@/lib/errorHandler";
 import { deleteFiles } from "@/lib/files/delete-team-files-server";
 import prisma from "@/lib/prisma";
-import { redis } from "@/lib/redis";
+import { kv } from "@/lib/kv";
 
 import { CustomUser } from "@/lib/types";
 import { unsubscribe } from "@/lib/resend";
@@ -203,7 +203,7 @@ export default async function handle(
         },
       });
 
-      // prepare a list of promises to delete domains and their Redis redirect entries
+      // prepare a list of promises to delete domains and their KV redirect entries
       let domainPromises: Promise<unknown>[] = [];
       if (team.domains) {
         domainPromises = team.domains.flatMap((domain) => [
@@ -224,8 +224,8 @@ export default async function handle(
             id: (session.user as CustomUser).id,
           },
         }),
-        // delete team branding from redis
-        redis.del(`brand:logo:${teamId}`),
+        // delete team branding from kv
+        kv.del(`brand:logo:${teamId}`),
 
         // delete team
         prisma.team.delete({
