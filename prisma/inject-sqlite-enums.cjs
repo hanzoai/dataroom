@@ -47,7 +47,13 @@ const dtsPayload =
     .map(([name, members]) => {
       const union = members.map((m) => JSON.stringify(m)).join(" | ");
       const obj = members.map((m) => `${m}: ${JSON.stringify(m)}`).join(", ");
-      return `export type ${name} = ${union};\nexport declare const ${name}: { ${obj} };`;
+      // `| (string & {})` because the COLUMN is a String now: sqlite has no
+      // enum, so the generated client types these fields as plain `string`,
+      // and a bare literal union rejects every read back out of the database
+      // ("Type 'string' is not assignable to type 'DocumentStorageType'").
+      // The intersection keeps the literals in autocomplete instead of
+      // collapsing the whole thing to `string`.
+      return `export type ${name} = ${union} | (string & {});\nexport declare const ${name}: { ${obj} };`;
     })
     .join("\n") + "\n";
 
@@ -80,3 +86,4 @@ if (injected === 0) {
   process.exit(1);
 }
 console.log(`sqlite enum shim: injected into ${injected} file(s), ${Object.keys(ENUMS).length} enums`);
+
