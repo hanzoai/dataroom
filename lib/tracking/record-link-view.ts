@@ -1,6 +1,6 @@
 import { NextRequest, userAgent } from "next/server";
 
-import { geolocation, ipAddress } from "@vercel/functions";
+
 
 import { recordLinkViewTB } from "@/lib/tinybird";
 import { isBot } from "@/lib/utils/user-agent";
@@ -9,7 +9,7 @@ import sendNotification from "../api/notification-helper";
 import { sendLinkViewWebhook } from "../api/views/send-webhook-event";
 import { EU_COUNTRY_CODES } from "../constants";
 import { capitalize, getDomainWithoutWWW } from "../utils";
-import { LOCALHOST_GEO_DATA, LOCALHOST_IP } from "../utils/geo";
+import { LOCALHOST_GEO_DATA, LOCALHOST_IP, getClientIp, getContinent, getGeoData } from "@/lib/utils/geo";
 
 export async function recordLinkView({
   req,
@@ -38,21 +38,13 @@ export async function recordLinkView({
     return null;
   }
 
-  const ip = process.env.VERCEL === "1" ? ipAddress(req) : LOCALHOST_IP;
+  const ip = getClientIp(req.headers) ?? LOCALHOST_IP;
 
-  // get continent, region & geolocation data
-  // interesting, geolocation().region is Vercel's edge region – NOT the actual region
-  // so we use the x-vercel-ip-country-region or geolocation().countryRegion to get the actual region
-  const { continent, region } =
-    process.env.VERCEL === "1"
-      ? {
-          continent: req.headers.get("x-vercel-ip-continent"),
-          region: geolocation(req).countryRegion,
-        }
-      : LOCALHOST_GEO_DATA;
-
-  const geo =
-    process.env.VERCEL === "1" ? geolocation(req) : LOCALHOST_GEO_DATA;
+  // Continent, region and coordinates come from our edge (Cloudflare), so they
+  // are the visitor's real location rather than a platform region.
+  const geo = getGeoData(req.headers);
+  const continent = getContinent(req.headers) ?? LOCALHOST_GEO_DATA.continent;
+  const region = geo.region ?? LOCALHOST_GEO_DATA.region;
 
   const isEuCountry = geo.country && EU_COUNTRY_CODES.includes(geo.country);
 

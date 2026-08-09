@@ -2,12 +2,12 @@
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 
-import { ipAddress } from "@vercel/functions";
+
 import crypto from "crypto";
 import { z } from "zod";
 
 import { kv } from "@/lib/kv";
-import { LOCALHOST_IP } from "@/lib/utils/geo";
+import { LOCALHOST_IP, getClientIp } from "@/lib/utils/geo";
 
 const COOKIE_EXPIRATION_TIME = 23 * 60 * 60 * 1000; // 23 hours
 
@@ -106,7 +106,7 @@ export async function verifyLinkSession(
     }
 
     // Verify IP address
-    const currentIp = ipAddress(request) ?? LOCALHOST_IP;
+    const currentIp = getClientIp(request.headers) ?? LOCALHOST_IP;
     if (currentIp !== sessionData.ipAddress) {
       await deleteLinkSession(sessionToken, sessionData.viewerId);
       return null;

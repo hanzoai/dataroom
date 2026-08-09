@@ -51,7 +51,7 @@ export default async function handle(
   }
 
   const geo: Geo =
-    process.env.VERCEL === "1" ? getGeoData(req.headers) : LOCALHOST_GEO_DATA;
+    getGeoData(req.headers);
 
   const referer = req.headers.referer;
   const ua = userAgentFromString(req.headers["user-agent"]);
