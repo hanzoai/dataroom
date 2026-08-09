@@ -10,10 +10,26 @@ import KV from "@hanzo/kv";
 
 const kvUrl = process.env.KV_URL || process.env.REDIS_URL || "redis://localhost:6379";
 
+/**
+ * The surface the shims below actually provide.
+ *
+ * Every shim is attached with `(redis as any).x = …`, which changes BEHAVIOUR
+ * but not TYPE — TypeScript keeps seeing @hanzo/kv's `get(key): Promise<string
+ * | null>`. So `redis.get<{ email: string }>(key)` reads back a `string`, and
+ * the call sites written against Upstash fail with "Expected 0 type arguments"
+ * and "Property 'email' does not exist on type 'string'".
+ *
+ * The get() shim already JSON-parses (see below); this only makes the type say
+ * so. Nothing here changes what runs.
+ */
+type UpstashCompatible = KV & {
+  get<T>(key: string): Promise<T | null>;
+};
+
 export const redis = new KV(kvUrl, {
   maxRetriesPerRequest: 3,
   lazyConnect: true,
-});
+}) as unknown as UpstashCompatible;
 
 export const lockerRedisClient = new KV(kvUrl, {
   maxRetriesPerRequest: 3,
@@ -49,7 +65,14 @@ const originalZadd = redis.zadd.bind(redis);
 };
 
 // Upstash-compatible zrange() shim — translates { byScore, rev } options
-const originalZrange = redis.zrange.bind(redis);
+// Bound explicitly: `bind()` on an overloaded method resolves to ONE signature,
+// and which one shifts once `redis` carries the generic get() below — leaving
+// the numeric (index-range) form unreachable. zrange by index takes numbers.
+const originalZrange = redis.zrange.bind(redis) as unknown as (
+  key: string,
+  start: number,
+  stop: number,
+) => Promise<string[]>;
 const originalZrevrange = redis.zrevrange.bind(redis);
 const originalZrangebyscore = redis.zrangebyscore.bind(redis);
 (redis as any).zrange = async function (key: string, start: number | string, stop: number | string, opts?: { byScore?: boolean; rev?: boolean }) {
