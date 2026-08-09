@@ -207,7 +207,11 @@ export async function calculateAndUpdateHierarchicalIndexes(
           documentsUpdated: documentUpdates.length,
         };
       },
-      { isolationLevel: Prisma.TransactionIsolationLevel.RepeatableRead },
+      {
+        // sqlite offers only Serializable — it takes one writer at a time, so
+        // this is the same guarantee under a different name, not a relaxation.
+        isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
+      },
     );
   } catch (error) {
     console.error(

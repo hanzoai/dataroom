@@ -57,17 +57,27 @@ export async function processEmailQueue() {
     return;
   }
 
-  const jobs = await prisma.yearInReview.findMany({
+  const pending = await prisma.yearInReview.findMany({
     where: {
-      AND: [
-        { status: "pending" },
-        { attempts: { lt: MAX_ATTEMPTS } },
-        { stats: { path: ["totalViews"], gt: 1 } },
-      ],
+      AND: [{ status: "pending" }, { attempts: { lt: MAX_ATTEMPTS } }],
     },
-    take: BATCH_SIZE,
     orderBy: { createdAt: "asc" },
   });
+
+  // sqlite cannot compare a value inside a json column, so the `totalViews > 1`
+  // test that used to sit in the where clause happens here. It runs BEFORE the
+  // batch is taken: a team with nothing worth mailing about stays pending
+  // forever, and taking the batch first would let those teams fill it and
+  // starve everyone behind them.
+  const jobs = pending
+    .filter((job) => {
+      const stats = job.stats;
+      if (typeof stats !== "object" || stats === null || Array.isArray(stats)) {
+        return false;
+      }
+      return Number((stats as Record<string, unknown>).totalViews ?? 0) > 1;
+    })
+    .slice(0, BATCH_SIZE);
 
   if (jobs.length === 0) {
     console.log("ℹ️ No jobs to process");

@@ -88,7 +88,7 @@ export async function verifyLinkSession(
   request: NextRequest,
   linkId: string,
 ): Promise<LinkSession | null> {
-  const sessionToken = cookies().get(`pm_ls_${linkId}`)?.value;
+  const sessionToken = (await cookies()).get(`pm_ls_${linkId}`)?.value;
 
   if (!sessionToken) return null;
 
@@ -171,7 +171,7 @@ async function deleteLinkSession(
 }
 
 export async function revokeLinkSession(linkId: string): Promise<void> {
-  const sessionToken = cookies().get(`pm_ls_${linkId}`)?.value;
+  const sessionToken = (await cookies()).get(`pm_ls_${linkId}`)?.value;
   if (sessionToken) {
     const session = await kv.get(`link_session:${sessionToken}`);
     if (session) {

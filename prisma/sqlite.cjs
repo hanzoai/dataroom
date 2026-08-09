@@ -46,7 +46,7 @@ const LISTS = {
   LinkPreset: ["allowList", "denyList"],
   VisitorGroup: ["emails"],
   ViewerGroup: ["domains"],
-  Team: ["globalBlockList"],
+  Team: ["globalBlockList", "ignoredDomains"],
   Webhook: ["triggers"],
 };
 
