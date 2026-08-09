@@ -1,13 +1,12 @@
 import { DeleteObjectsCommand, ListObjectsV2Command } from "@aws-sdk/client-s3";
 import { DocumentStorageType } from "@prisma/client";
-import { del } from "@vercel/blob";
 import { match } from "ts-pattern";
 
 import { getS3ClientAndConfig } from "./aws-client";
 
 export type DeleteFileOptions = {
   type: DocumentStorageType;
-  data: string; // url for vercel, folderpath for s3
+  data: string; // folder path in our object storage
   teamId: string; // needed to resolve storage region
 };
 
@@ -16,17 +15,11 @@ export const deleteFile = async ({ type, data, teamId }: DeleteFileOptions) => {
     .with(DocumentStorageType.S3_PATH, async () =>
       deleteAllFilesFromS3Server(data, teamId),
     )
-    .with(DocumentStorageType.VERCEL_BLOB, async () =>
-      deleteFileFromVercelServer(data),
-    )
     .otherwise(() => {
       return;
     });
 };
 
-const deleteFileFromVercelServer = async (url: string) => {
-  await del(url);
-};
 
 const deleteAllFilesFromS3Server = async (data: string, teamId: string) => {
   // get docId from url with starts with "doc_" with regex

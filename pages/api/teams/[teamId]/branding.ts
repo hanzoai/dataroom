@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { del } from "@vercel/blob";
 import { getServerSession } from "next-auth";
 
 import { errorhandler } from "@/lib/errorHandler";
@@ -9,6 +8,8 @@ import { kv } from "@/lib/kv";
 import { CustomUser } from "@/lib/types";
 
 import { authOptions } from "../../auth/[...nextauth]";
+import { deleteFile } from "@/lib/files/delete-file-server";
+import { DocumentStorageType } from "@prisma/client";
 
 export default async function handle(
   req: NextApiRequest,
@@ -155,13 +156,13 @@ export default async function handle(
     });
 
     if (brand) {
-      // delete the logo from vercel blob
+      // remove the logo from our object storage
       if (brand.logo) {
-        await del(brand.logo);
+        await deleteFile({ type: DocumentStorageType.S3_PATH, data: brand.logo, teamId });
       }
-      // delete the banner from vercel blob
+      // remove the banner from our object storage
       if (brand.banner) {
-        await del(brand.banner);
+        await deleteFile({ type: DocumentStorageType.S3_PATH, data: brand.banner, teamId });
       }
     }
 

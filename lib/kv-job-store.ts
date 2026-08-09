@@ -24,8 +24,11 @@ export interface ExportJob {
 }
 
 export interface ExportJobCleanupItem {
-  blobUrl: string;
+  /** Path in our object storage, not a URL. */
+  path: string;
   jobId: string;
+  /** Needed to resolve the storage region when deleting. */
+  teamId: string;
   scheduledAt: string;
 }
 
@@ -122,15 +125,21 @@ export class KvJobStore {
     const jobKey = this.getJobKey(jobId);
     await kv.setex(jobKey, JOB_TTL, JSON.stringify(updatedJob));
 
-    // If this update includes a blob URL, schedule it for cleanup
-    if (updates.result?.startsWith("https://")) {
-      await this.scheduleBlobForCleanup(updates.result, jobId);
+    // A finished export leaves an object behind; schedule it for deletion.
+    // This used to test `startsWith("https://")` because the result was a blob
+    // URL — it is a storage path now, so the test is simply that there is one.
+    if (updates.result) {
+      await this.scheduleForCleanup(updates.result, jobId, updatedJob.teamId);
     }
 
     return updatedJob;
   }
 
-  async scheduleBlobForCleanup(blobUrl: string, jobId: string): Promise<void> {
+  async scheduleForCleanup(
+    path: string,
+    jobId: string,
+    teamId: string,
+  ): Promise<void> {
     const cleanupTime = Date.now() + JOB_TTL * 1000; // Convert to milliseconds
     const cleanupQueueKey = this.getCleanupQueueKey();
 
@@ -138,14 +147,15 @@ export class KvJobStore {
     await kv.zadd(cleanupQueueKey, {
       score: cleanupTime,
       member: JSON.stringify({
-        blobUrl,
+        path,
         jobId,
+        teamId,
         scheduledAt: new Date().toISOString(),
       }),
     });
   }
 
-  async getBlobsForCleanup(
+  async getExpiredForCleanup(
     beforeTimestamp?: number,
   ): Promise<Array<ExportJobCleanupItem>> {
     const cleanupQueueKey = this.getCleanupQueueKey();
@@ -177,7 +187,7 @@ export class KvJobStore {
     return blobs;
   }
 
-  async removeBlobFromCleanupQueue(
+  async removeFromCleanupQueue(
     blobUrl: string,
     jobId: string,
   ): Promise<void> {

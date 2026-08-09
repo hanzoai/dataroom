@@ -1,12 +1,13 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { del } from "@vercel/blob";
 import { getServerSession } from "next-auth";
 
 import { errorhandler } from "@/lib/errorHandler";
 import prisma from "@/lib/prisma";
 import { CustomUser } from "@/lib/types";
+import { deleteFile } from "@/lib/files/delete-file-server";
+import { DocumentStorageType } from "@prisma/client";
 
 export default async function handle(
   req: NextApiRequest,
@@ -143,12 +144,12 @@ export default async function handle(
     });
 
     if (brand && brand.logo) {
-      // delete the logo from vercel blob
-      await del(brand.logo);
+      // remove the logo from our object storage
+      await deleteFile({ type: DocumentStorageType.S3_PATH, data: brand.logo, teamId });
     }
     if (brand && brand.banner) {
-      // delete the logo from vercel blob
-      await del(brand.banner);
+      // remove the logo from our object storage
+      await deleteFile({ type: DocumentStorageType.S3_PATH, data: brand.banner, teamId });
     }
 
     // delete the branding from database
