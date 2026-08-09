@@ -9,6 +9,7 @@ import { errorhandler } from "@/lib/errorHandler";
 import prisma from "@/lib/prisma";
 import { CustomUser } from "@/lib/types";
 import { sendLinkCreatedWebhook } from "@/lib/webhook/triggers/link-created";
+import { insert } from "@/lib/insert";
 
 export const config = {
   // so background work can outlive the response
@@ -162,15 +163,12 @@ export default async function handle(
         });
 
         if (linkTags?.length) {
-          await tx.tagItem.createMany({
-            data: linkTags.map((tagId: string) => ({
+          await insert(tx.tagItem, linkTags.map((tagId: string) => ({
               tagId,
               itemType: "LINK_TAG",
               linkId: createdLink.id,
               taggedBy: (session.user as CustomUser).id,
-            })),
-            skipDuplicates: true,
-          });
+            })));
         }
 
         const tags = linkTags?.length

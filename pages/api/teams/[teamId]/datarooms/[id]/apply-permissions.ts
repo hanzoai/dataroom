@@ -7,6 +7,7 @@ import { getServerSession } from "next-auth";
 import { errorhandler } from "@/lib/errorHandler";
 import prisma from "@/lib/prisma";
 import { CustomUser } from "@/lib/types";
+import { insert } from "@/lib/insert";
 
 export default async function handler(
   req: NextApiRequest,
@@ -199,17 +200,11 @@ async function applyRootLevelPermissions(
   await prisma.$transaction(async (tx) => {
     // Create new permissions
     if (viewerGroupPermissionsToCreate.length > 0) {
-      await tx.viewerGroupAccessControls.createMany({
-        data: viewerGroupPermissionsToCreate,
-        skipDuplicates: true,
-      });
+      await insert(tx.viewerGroupAccessControls, viewerGroupPermissionsToCreate);
     }
 
     if (permissionGroupPermissionsToCreate.length > 0) {
-      await tx.permissionGroupAccessControls.createMany({
-        data: permissionGroupPermissionsToCreate,
-        skipDuplicates: true,
-      });
+      await insert(tx.permissionGroupAccessControls, permissionGroupPermissionsToCreate);
     }
   });
 }
@@ -296,17 +291,11 @@ async function inheritFromParentFolder(
     });
 
     if (viewerGroupPermissionsToCreate.length > 0) {
-      await tx.viewerGroupAccessControls.createMany({
-        data: viewerGroupPermissionsToCreate,
-        skipDuplicates: true,
-      });
+      await insert(tx.viewerGroupAccessControls, viewerGroupPermissionsToCreate);
     }
 
     if (permissionGroupPermissionsToCreate.length > 0) {
-      await tx.permissionGroupAccessControls.createMany({
-        data: permissionGroupPermissionsToCreate,
-        skipDuplicates: true,
-      });
+      await insert(tx.permissionGroupAccessControls, permissionGroupPermissionsToCreate);
     }
   });
 }

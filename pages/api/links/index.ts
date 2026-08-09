@@ -14,6 +14,7 @@ import {
 import { sendLinkCreatedWebhook } from "@/lib/webhook/triggers/link-created";
 
 import { authOptions } from "../auth/[...nextauth]";
+import { insert } from "@/lib/insert";
 
 export const config = {
   // so background work can outlive the response
@@ -272,15 +273,12 @@ export default async function handler(
         let tags: Partial<Tag>[] = [];
         if (linkData.tags?.length) {
           // create tag items
-          await tx.tagItem.createMany({
-            data: linkData.tags.map((tagId: string) => ({
+          await insert(tx.tagItem, linkData.tags.map((tagId: string) => ({
               tagId,
               itemType: "LINK_TAG",
               linkId: link.id,
               taggedBy: userId,
-            })),
-            skipDuplicates: true,
-          });
+            })));
 
           // return tags
           tags = await tx.tag.findMany({

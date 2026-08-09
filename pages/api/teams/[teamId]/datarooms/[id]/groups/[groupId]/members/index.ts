@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth/next";
 
 import prisma from "@/lib/prisma";
 import { CustomUser } from "@/lib/types";
+import { insert } from "@/lib/insert";
 
 export default async function handle(
   req: NextApiRequest,
@@ -65,13 +66,10 @@ export default async function handle(
       }
 
       // First, create or connect viewers
-      await prisma.viewer.createMany({
-        data: emails.map((email) => ({
+      await insert(prisma.viewer, emails.map((email) => ({
           email,
           teamId,
-        })),
-        skipDuplicates: true,
-      });
+        })));
 
       const viewers = await prisma.viewer.findMany({
         where: {

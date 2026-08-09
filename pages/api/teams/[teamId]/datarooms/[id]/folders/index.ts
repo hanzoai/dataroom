@@ -7,6 +7,7 @@ import { getServerSession } from "next-auth/next";
 
 import prisma from "@/lib/prisma";
 import { CustomUser } from "@/lib/types";
+import { insert } from "@/lib/insert";
 
 async function applyFolderPermissions(
   dataroomId: string,
@@ -104,15 +105,9 @@ async function applyDefaultFolderPermissions(
     viewerGroupData.length > 0 &&
       dataroom.defaultPermissionStrategy ===
         DefaultPermissionStrategy.INHERIT_FROM_PARENT &&
-      prisma.viewerGroupAccessControls.createMany({
-        data: viewerGroupData,
-        skipDuplicates: true,
-      }),
+      insert(prisma.viewerGroupAccessControls, viewerGroupData),
     allPermissionGroupData.length > 0 &&
-      prisma.permissionGroupAccessControls.createMany({
-        data: allPermissionGroupData,
-        skipDuplicates: true,
-      }),
+      insert(prisma.permissionGroupAccessControls, allPermissionGroupData),
   ]);
 }
 
@@ -195,17 +190,11 @@ async function inheritFolderPermissionsFromParent(
     });
 
     if (viewerGroupPermissionsToCreate.length > 0) {
-      await tx.viewerGroupAccessControls.createMany({
-        data: viewerGroupPermissionsToCreate,
-        skipDuplicates: true,
-      });
+      await insert(tx.viewerGroupAccessControls, viewerGroupPermissionsToCreate);
     }
 
     if (permissionGroupPermissionsToCreate.length > 0) {
-      await tx.permissionGroupAccessControls.createMany({
-        data: permissionGroupPermissionsToCreate,
-        skipDuplicates: true,
-      });
+      await insert(tx.permissionGroupAccessControls, permissionGroupPermissionsToCreate);
     }
   });
 }
