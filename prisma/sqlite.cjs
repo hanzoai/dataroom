@@ -48,6 +48,7 @@ const LISTS = {
   ViewerGroup: ["domains"],
   Team: ["globalBlockList", "ignoredDomains"],
   Webhook: ["triggers"],
+  DocumentPage: ["embeddedLinks"],
 };
 
 /**

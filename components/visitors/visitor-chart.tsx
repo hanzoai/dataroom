@@ -7,6 +7,7 @@ import BarChartComponent from "@/components/charts/bar-chart";
 import { useVisitorStats } from "@/lib/swr/use-stats";
 
 import StatsChartSkeleton from "../documents/stats-chart-skeleton";
+import { DownloadType } from "@prisma/client";
 
 export default function VisitorChart({
   documentId,
@@ -20,7 +21,7 @@ export default function VisitorChart({
   viewId: string;
   totalPages?: number;
   versionNumber?: number;
-  downloadType?: "SINGLE" | "BULK" | "FOLDER" | null;
+  downloadType?: DownloadType | null;
   downloadMetadata?: {
     folderName?: string;
     folderPath?: string;

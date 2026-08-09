@@ -4,6 +4,7 @@ import { sendViewedDataroomEmail } from "@/lib/emails/send-viewed-dataroom";
 import { sendViewedDocumentEmail } from "@/lib/emails/send-viewed-document";
 import prisma from "@/lib/prisma";
 import { log } from "@/lib/utils";
+import { ViewType } from "@prisma/client";
 
 export const config = {
   maxDuration: 60,
@@ -40,7 +41,7 @@ export default async function handle(
   };
 
   let view: {
-    viewType: "DOCUMENT_VIEW" | "DATAROOM_VIEW";
+    viewType: ViewType;
     viewerEmail: string | null;
     linkId: string;
     link: { name: string | null; ownerId: string | null } | null;

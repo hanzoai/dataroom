@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { log } from "@/lib/utils";
 import { sendWebhooks } from "@/lib/webhook/send-webhooks";
 import { subscribers } from "@/lib/webhook/subscribers";
+import { LINK_TYPES } from "@/lib/zod/schemas/webhooks";
 
 export async function sendLinkCreatedWebhook({
   teamId,
@@ -86,7 +87,7 @@ export async function sendLinkCreatedWebhook({
       dataroomId: link.dataroomId,
       groupId: link.groupId,
       permissionGroupId: link.permissionGroupId,
-      linkType: link.linkType,
+      linkType: link.linkType as (typeof LINK_TYPES)[number],
       teamId: teamId,
       createdAt: link.createdAt.toISOString(),
       updatedAt: link.updatedAt.toISOString(),
