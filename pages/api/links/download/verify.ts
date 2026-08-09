@@ -64,21 +64,32 @@ export default async function handler(
           link: { select: { teamId: true } },
         },
       })
-    : await prisma.view.findFirst({
-        where: {
-          linkId,
-          viewType: "DATAROOM_VIEW",
-          viewerEmail: { equals: email, mode: "insensitive" },
-        },
-        select: {
-          id: true,
-          dataroomId: true,
-          viewerId: true,
-          viewerEmail: true,
-          link: { select: { teamId: true } },
-        },
-        orderBy: { viewedAt: "desc" },
-      });
+    : // `contains` rather than `equals` because sqlite compares strings with `=`
+      // case-sensitively, and this has to match the address however the visitor
+      // typed it. `contains` goes through LIKE, which sqlite treats
+      // case-insensitively for ascii. It is a substring match, so one address
+      // can be found inside another — the exact comparison below settles it.
+      await prisma.view
+        .findMany({
+          where: {
+            linkId,
+            viewType: "DATAROOM_VIEW",
+            viewerEmail: { contains: email },
+          },
+          select: {
+            id: true,
+            dataroomId: true,
+            viewerId: true,
+            viewerEmail: true,
+            link: { select: { teamId: true } },
+          },
+          orderBy: { viewedAt: "desc" },
+        })
+        .then((views) =>
+          views.find(
+            (v) => v.viewerEmail?.toLowerCase() === email.toLowerCase(),
+          ),
+        );
 
   if (!view || view.viewerEmail?.toLowerCase() !== email.toLowerCase()) {
     return res

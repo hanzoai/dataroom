@@ -40,7 +40,6 @@ export default async function handle(
           teamId: teamId,
           name: {
             contains: query,
-            mode: "insensitive",
           },
         },
         orderBy: {

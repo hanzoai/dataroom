@@ -37,15 +37,23 @@ export default async function handler(
   }
 
   // 3. Prevent email enumeration — always return 200 with uniform body
-  const view = await prisma.view.findFirst({
+  // `contains` rather than `equals` because sqlite compares strings with `=`
+  // case-sensitively, and this has to match the address however the visitor
+  // typed it. `contains` goes through LIKE, which sqlite treats
+  // case-insensitively for ascii. It is a substring match, so one address can
+  // be found inside another, and the exact comparison below settles it.
+  const views = await prisma.view.findMany({
     where: {
       linkId,
       viewType: "DATAROOM_VIEW",
-      viewerEmail: { equals: email, mode: "insensitive" },
+      viewerEmail: { contains: email },
     },
-    select: { id: true },
+    select: { id: true, viewerEmail: true },
     orderBy: { viewedAt: "desc" },
   });
+  const view = views.find(
+    (v) => v.viewerEmail?.toLowerCase() === email.toLowerCase(),
+  );
 
   return res.status(200).json({ viewId: view?.id ?? null });
 }

@@ -2,6 +2,7 @@
 import prisma from "@/lib/prisma";
 import { log } from "@/lib/utils";
 import { sendWebhooks } from "@/lib/webhook/send-webhooks";
+import { subscribers } from "@/lib/webhook/subscribers";
 
 export async function sendLinkCreatedWebhook({
   teamId,
@@ -37,19 +38,7 @@ export async function sendLinkCreatedWebhook({
     }
 
     // Get webhooks for team
-    const webhooks = await prisma.webhook.findMany({
-      where: {
-        teamId,
-        triggers: {
-          array_contains: ["link.created"],
-        },
-      },
-      select: {
-        pId: true,
-        url: true,
-        secret: true,
-      },
-    });
+    const webhooks = await subscribers(teamId, "link.created");
 
     if (!webhooks || (webhooks && webhooks.length === 0)) {
       // No webhooks for team, so we don't need to send webhooks

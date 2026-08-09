@@ -85,7 +85,6 @@ export default async function handle(
         ...(query && {
           name: {
             contains: query,
-            mode: "insensitive" as const,
           },
         }),
         // For root view (no search/sort), only show root-level documents

@@ -91,13 +91,11 @@ export default async function handle(
           {
             name: {
               contains: search,
-              mode: "insensitive",
             },
           },
           {
             internalName: {
               contains: search,
-              mode: "insensitive",
             },
           },
         ];

@@ -47,6 +47,7 @@ const LISTS = {
   VisitorGroup: ["emails"],
   ViewerGroup: ["domains"],
   Team: ["globalBlockList"],
+  Webhook: ["triggers"],
 };
 
 /**
