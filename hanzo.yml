@@ -1,0 +1,27 @@
+# Hanzo CI/CD — dataroom.
+#
+# One image, built by platform.hanzo.ai: the forge's system webhook reads this
+# file at the pushed sha and schedules a BuildKit job per `images:` entry. That
+# is the estate's one way to build, and this repo had no working entry into it.
+#
+# What was here instead was .hanzo/workflows/deploy.yml, which called
+# `buildctl-daemonless.sh` directly. No runner on this fleet carries buildctl —
+# the jobs run on catthehacker/ubuntu:act-24.04 — so the build step failed in
+# zero seconds while checkout passed, which reads as a broken Dockerfile rather
+# than a missing binary. Its second step then patched `app/dataroom`, a CR kind
+# deleted with infra/k8s/operator/crs; dataroom is declared today at
+# universe charts/app/values/hanzo/dataroom.yaml. So the lane could neither
+# build nor deploy, and a push looked like it had done both.
+#
+# No `deploy:` block on purpose. The tag that reaches the cluster is the one
+# pinned in that values file, and a deploy here would be a second authority
+# over the same field.
+
+images:
+  - name: dataroom
+    context: .
+    dockerfile: Dockerfile
+    repo: ghcr.io/hanzoai/dataroom
+    # The cluster has no arm64 nodes; a second arch here is a QEMU-emulated
+    # Next.js build for a consumer that does not exist.
+    platforms: [linux/amd64]
