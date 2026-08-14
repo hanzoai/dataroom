@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { FileIcon, ServerIcon } from "lucide-react";
 import { motion } from "motion/react";
 
+import { APP_NAME } from "@/lib/branding";
 import { STAGGER_CHILD_VARIANTS } from "@/lib/constants";
 
 export default function Next() {
@@ -30,7 +31,7 @@ export default function Next() {
         className="flex flex-col items-center space-y-10 text-center"
       >
         <p className="text-2xl font-bold tracking-tighter text-foreground">
-          Papermark
+          {APP_NAME}
         </p>
         <h1 className="font-display max-w-md text-3xl font-semibold transition-colors sm:text-4xl">
           What do you want to share today?
