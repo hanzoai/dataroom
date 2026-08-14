@@ -24,8 +24,14 @@ function HanzoIAMProvider(): OAuthConfig<any> {
     clientId: IAM_CLIENT_ID || "",
     clientSecret: IAM_CLIENT_SECRET || "",
     authorization: { params: { scope: "openid profile email" } },
-    idToken: false,
-    userinfo: { url: `${issuer}/v1/iam/oauth/userinfo` },
+    // IAM is an OIDC provider and the `openid` scope above makes its token
+    // response carry an id_token. openid-client refuses to read such a response
+    // through the plain OAuth2 path — "id_token detected in the response, you
+    // must use client.callback() instead of client.oauthCallback()" — so this
+    // flag is what picks the reader, and false could never complete a sign-in
+    // here. With it true the claims below come from the verified id_token
+    // (signature, iss, aud, nonce all checked) and userinfo is not fetched.
+    idToken: true,
     profile(profile) {
       return {
         id: profile.sub,
