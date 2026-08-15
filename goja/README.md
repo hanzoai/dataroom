@@ -10,7 +10,7 @@ The standalone Next.js app + Postgres is **retired**: cloud serves the whole
 dataroom surface (`/v1/dataroom/*`) itself, backed by Hanzo Base/SQLite
 (one file per org) and the cloud object-storage seam. No Postgres, no Next.js.
 
-It runs on the **reusable `clients/gojabase` binding** — the RW-Base goja host
+It runs on the **reusable `clients/goja` binding** — the RW-Base goja host
 `captable` pilots and `esign` reuses — so the bundle carries only domain logic;
 persistence, per-tenant file selection, and per-request transactions are the
 binding's job.
@@ -37,7 +37,7 @@ The Prisma models (`Document`, `Dataroom`, `DataroomDocument`, `Link`, `Viewer`,
 
 ## Host contract
 
-`clients/gojabase` injects these globals per dispatch (each dispatch runs inside
+`clients/goja` injects these globals per dispatch (each dispatch runs inside
 ONE per-tenant SQLite transaction that commits iff `status < 400`) and calls
 `handle` once per request:
 
