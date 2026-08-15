@@ -14,6 +14,8 @@ import {
   Text,
 } from "@react-email/components";
 
+import { PAY_URL } from "@/lib/billing/hosted";
+
 import { Footer } from "./shared/footer";
 
 export default function CustomDomainSetup({
@@ -100,7 +102,7 @@ export default function CustomDomainSetup({
               ) : (
                 <Button
                   className="rounded bg-black text-center text-xs font-semibold text-white no-underline"
-                  href={`https://dataroom.hanzo.ai/settings/upgrade`}
+                  href={PAY_URL}
                   style={{ padding: "12px 20px" }}
                 >
                   Upgrade to use custom domains
@@ -124,7 +126,7 @@ export default function CustomDomainSetup({
                 <>
                   Want to learn more about our plans?{" "}
                   <Link
-                    href="https://dataroom.hanzo.ai/settings/upgrade"
+                    href={PAY_URL}
                     className="font-medium text-blue-600 no-underline"
                   >
                     View pricing

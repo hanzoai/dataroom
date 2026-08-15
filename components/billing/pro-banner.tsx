@@ -31,10 +31,11 @@ export default function ProBanner({
         <span className="sr-only">Close</span>
       </button>
       <div className="flex space-x-2">
-        <span className="text-sm font-bold">✨ Hanzo Dataroom Business ✨</span>
+        <span className="text-sm font-bold">Upgrade Hanzo Dataroom</span>
       </div>
       <p className="my-4 text-sm">
-        Upgrade to unlock custom branding, team members, domains and data rooms.
+        A paid plan adds custom branding, custom domains, data rooms and more
+        team members.
       </p>
       <div className="flex">
         <UpgradePlanModal
@@ -42,7 +43,7 @@ export default function ProBanner({
           trigger={"pro_banner"}
         >
           <Button type="button" className="grow">
-            Upgrade
+            See plans
           </Button>
         </UpgradePlanModal>
       </div>

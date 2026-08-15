@@ -1,5 +1,3 @@
-import { useRouter } from "next/router";
-
 import { useMemo } from "react";
 
 import { UploadIcon } from "lucide-react";
@@ -12,6 +10,7 @@ import {
   FULL_PLAN_ACCEPTED_FILE_TYPES,
   SUPPORTED_DOCUMENT_MIME_TYPES,
 } from "@/lib/constants";
+import { PAY_URL, visit } from "@/lib/billing/hosted";
 import { usePlan } from "@/lib/swr/use-billing";
 import useLimits from "@/lib/swr/use-limits";
 import { bytesToSize } from "@/lib/utils";
@@ -29,7 +28,6 @@ export default function DocumentUpload({
   currentFile: File | null;
   setCurrentFile: React.Dispatch<React.SetStateAction<File | null>>;
 }) {
-  const router = useRouter();
   const { theme, systemTheme } = useTheme();
   const isLight =
     theme === "light" || (theme === "system" && systemTheme === "light");
@@ -69,7 +67,7 @@ export default function DocumentUpload({
             description: "Upgrade to a paid plan to increase the limit",
             action: {
               label: "Upgrade",
-              onClick: () => router.push("/settings/upgrade"),
+              onClick: () => visit(PAY_URL),
             },
             duration: 10000,
           });
@@ -112,7 +110,7 @@ export default function DocumentUpload({
             description: "Upgrade to a paid plan to increase the limit",
             action: {
               label: "Upgrade",
-              onClick: () => router.push("/settings/upgrade"),
+              onClick: () => visit(PAY_URL),
             },
             duration: 10000,
           });
@@ -126,7 +124,7 @@ export default function DocumentUpload({
             description: `Upgrade to a paid plan to upload ${file.type} files`,
             action: {
               label: "Upgrade",
-              onClick: () => router.push("/settings/upgrade"),
+              onClick: () => visit(PAY_URL),
             },
             duration: 10000,
           });
