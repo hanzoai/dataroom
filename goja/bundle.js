@@ -1,4 +1,4 @@
-// Hanzo Dataroom — goja bundle (read-WRITE, on clients/gojabase).
+// Hanzo Dataroom — goja bundle (read-WRITE, on clients/goja).
 //
 // SELF-CONTAINED, NO ESM, NO node: imports. The complete dataroom business
 // logic (documents, data rooms, shareable links with access controls, viewers,
@@ -8,7 +8,7 @@
 // data model becomes Base/SQLite tables (see the leaf's schema.go), the handlers
 // become the route table below. No Postgres, no Next.js.
 //
-// Host contract (clients/gojabase injects these per dispatch; each dispatch runs
+// Host contract (clients/goja injects these per dispatch; each dispatch runs
 // inside ONE per-tenant SQLite transaction that commits iff status < 400):
 //   globalThis.__db.query(sql, args)   -> [ {col: val, ...}, ... ]
 //   globalThis.__db.exec(sql, args)    -> { changes, lastId }
@@ -21,10 +21,9 @@
 // Document BYTES live in object storage (the cloud VFS/S3 seam) and are handled
 // by the Go leaf; this bundle only ever stores/reads the opaque storage KEY.
 //
-// CANONICAL SOURCE: github.com/hanzoai/dataroom → goja/bundle.js. This file is a
-// byte-identical VENDORED copy that clients/dataroom go:embeds (the task mandates
-// go:embed here rather than importing a Go module, since the dataroom repo is a
-// TS app, not a Go module). Edit the canonical copy, then re-vendor here.
+// This file is the bundle itself, not a copy of one. hanzoai/cloud reaches it by
+// importing this repo's Go module (embed.go -> Bundle()) at a pinned version, so
+// what cloud runs is these bytes, checked by go.sum. Edit it here.
 (function () {
   'use strict';
 
@@ -49,7 +48,7 @@
   }
 
   // err builds a route result carrying a non-200 status via __status. A >=400
-  // status also rolls back the dispatch transaction (gojabase), so a rejected
+  // status also rolls back the dispatch transaction (NewBase), so a rejected
   // request leaves the tenant DB untouched.
   function err(status, message) { return { __status: status, error: message }; }
 
@@ -76,23 +75,22 @@
     return {
       id: r.id, linkType: r.link_type, dataroomId: r.dataroom_id, documentId: r.document_id,
       name: r.name, emailProtected: truthy(r.email_protected), hasPassword: !!r.password_hash,
-      allowList: jsonList(r.allow_list), allowDownload: truthy(r.allow_download),
+      allowList: jsonList(r.allow_list), denyList: jsonList(r.deny_list), allowDownload: truthy(r.allow_download),
       expiresAt: r.expires_at, isArchived: truthy(r.is_archived),
       createdAt: r.created_at, updatedAt: r.updated_at,
     };
   }
 
-  // emailAllowed reports whether email passes the link allow list. An empty list
-  // allows anyone (email gate only). Entries may be a full email ("a@b.com"), a
-  // "@domain.com" suffix, or a bare "domain.com".
-  function emailAllowed(email, allowList) {
-    if (!allowList || !allowList.length) return true;
-    if (!email) return false;
+  // emailInList reports whether email matches ANY entry. ONE matching predicate,
+  // shared by the allow and deny gates (DRY). An entry may be a full email
+  // ("a@b.com"), a "@domain.com" suffix, or a bare "domain.com".
+  function emailInList(email, listArr) {
+    if (!email || !listArr || !listArr.length) return false;
     var lc = String(email).toLowerCase().trim();
     var at = lc.lastIndexOf('@');
     var domain = at >= 0 ? lc.slice(at + 1) : '';
-    for (var i = 0; i < allowList.length; i++) {
-      var entry = String(allowList[i]).toLowerCase().trim();
+    for (var i = 0; i < listArr.length; i++) {
+      var entry = String(listArr[i]).toLowerCase().trim();
       if (!entry) continue;
       if (entry.indexOf('@') === 0) { if (domain === entry.slice(1)) return true; }
       else if (entry.indexOf('@') > 0) { if (lc === entry) return true; }
@@ -101,12 +99,28 @@
     return false;
   }
 
+  // emailAllowed reports whether email passes the link allow list. An EMPTY list
+  // allows anyone (email gate only); a non-empty list admits only matches.
+  function emailAllowed(email, allowList) {
+    if (!allowList || !allowList.length) return true;
+    return emailInList(email, allowList);
+  }
+
+  // emailDenied reports whether email is on the link deny list. An EMPTY list
+  // denies no one; a non-empty list rejects any match. Deny is checked BEFORE
+  // allow in view.authenticate, so deny WINS over allow (an address on both the
+  // allow and deny lists is refused).
+  function emailDenied(email, denyList) {
+    if (!denyList || !denyList.length) return false;
+    return emailInList(email, denyList);
+  }
+
   function linkExpired(r) {
     return r.expires_at != null && Number(r.expires_at) > 0 && now() > Number(r.expires_at);
   }
 
   // === route handlers ========================================================
-  // Admin routes are org-scoped by the per-tenant DB gojabase selects; the Go
+  // Admin routes are org-scoped by the per-tenant DB NewBase selects; the Go
   // leaf refuses any request without a validated principal before dispatching.
   // Viewer routes run under the org resolved from the public link id.
 
@@ -245,6 +259,9 @@
 
       var email = b.email ? String(b.email).toLowerCase().trim() : '';
       if (truthy(r.email_protected) && !email) return err(401, 'email required');
+      // Deny wins over allow: an address on the deny list is refused even if the
+      // allow list would admit it. Checked FIRST so deny cannot be bypassed.
+      if (emailDenied(email, jsonList(r.deny_list))) return err(403, 'email denied');
       if (!emailAllowed(email, jsonList(r.allow_list))) return err(403, 'email not allowed');
       if (r.password_hash) {
         if (!b.password || !globalThis.__bcrypt.verify(String(b.password), r.password_hash)) {
