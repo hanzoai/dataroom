@@ -15,9 +15,6 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 
-// import { usePlan } from "@/lib/swr/use-billing";
-// import YearlyUpgradeBanner from "@/components/billing/yearly-upgrade-banner";
-
 import { BlockingModal } from "./blocking-modal";
 
 const DATAROOM_SIDEBAR_COOKIE_NAME = "sidebar:dataroom-state";
@@ -90,25 +87,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     [isDataroom],
   );
 
-  // const { isAnnualPlan, isFree } = usePlan();
-  // const [showYearlyBanner, setShowYearlyBanner] = useState<boolean | null>(null);
-
-  // Show banner only for paid monthly subscribers (not free, not yearly)
-  // useEffect(() => {
-  //   // Hide banner for free users or yearly subscribers
-  //   if (isFree || isAnnualPlan) {
-  //     setShowYearlyBanner(false);
-  //     return;
-  //   }
-
-  //   // Show banner for monthly paid users (if not dismissed)
-  //   if (Cookies.get("hideYearlyUpgradeBanner") !== "yearly-upgrade-banner") {
-  //     setShowYearlyBanner(true);
-  //   } else {
-  //     setShowYearlyBanner(false);
-  //   }
-  // }, [isFree, isAnnualPlan]);
-
   return (
     <SidebarProvider open={sidebarOpen} onOpenChange={handleSidebarOpenChange}>
       <div className="flex flex-1 flex-col gap-x-1 bg-gray-50 dark:bg-black md:flex-row">
@@ -126,9 +104,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           <main className="flex-1">{children}</main>
         </SidebarInset>
       </div>
-      {/* {showYearlyBanner && (
-        <YearlyUpgradeBanner setShowBanner={setShowYearlyBanner} />
-      )} */}
     </SidebarProvider>
   );
 }

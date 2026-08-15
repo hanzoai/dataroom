@@ -41,7 +41,6 @@ export default async function handle(
       upgradePlan,
       quantity,
       addSeat,
-      proAnnualBanner,
       return_url,
       applyYearlyDiscount,
       type = "manage",
@@ -50,7 +49,6 @@ export default async function handle(
       upgradePlan: boolean;
       quantity?: number;
       addSeat?: boolean;
-      proAnnualBanner?: boolean;
       return_url?: string;
       applyYearlyDiscount?: boolean;
       type?:
@@ -194,7 +192,6 @@ export default async function handle(
         trackAnalytics({
           event: "Stripe Billing Portal Clicked",
           teamId,
-          action: proAnnualBanner ? "pro-annual-banner" : undefined,
         }),
       );
 

@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import { useTeam } from "@/context/team-context";
 import { CancellationModal } from "@/components/billing/cancellation-modal";
+import { BILLING_URL, PAY_URL, visit } from "@/lib/billing/hosted";
 import { PlanEnum } from "@/lib/billing/legacy/constants";
 import {
   BanIcon,
@@ -37,7 +38,6 @@ import { UpgradeButton } from "@/components/ui/upgrade-button";
 
 export default function UpgradePlanContainer() {
   const router = useRouter();
-  const [loading, setLoading] = useState<boolean>(false);
   const [unpauseLoading, setUnpauseLoading] = useState<boolean>(false);
   const [cancellationModalOpen, setCancellationModalOpen] =
     useState<boolean>(false);
@@ -59,42 +59,28 @@ export default function UpgradePlanContainer() {
   } = usePlan({ withDiscount: true });
   const analytics = useAnalytics();
 
-  const manageSubscription = async ({
-    type,
-  }: {
-    type:
-      | "manage"
-      | "invoices"
-      | "subscription_update"
-      | "payment_method_update"
-      | "cancellation";
-  }) => {
+  const handleCancelSubscription = async () => {
     if (!currentTeamId) return;
 
-    setLoading(true);
-
     try {
-      fetch(`/api/teams/${currentTeamId}/billing/manage`, {
-        method: "POST",
-        body: JSON.stringify({ type }),
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        `/api/teams/${currentTeamId}/billing/manage`,
+        {
+          method: "POST",
+          body: JSON.stringify({ type: "cancellation" }),
+          headers: {
+            "Content-Type": "application/json",
+          },
         },
-      })
-        .then(async (res) => {
-          const url = await res.json();
-          router.push(url);
-        })
-        .catch((err) => {
-          throw err;
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to start cancellation");
+      }
+
+      router.push(await response.json());
     } catch (error) {
       console.error(error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -204,7 +190,7 @@ export default function UpgradePlanContainer() {
             clickedPlan={PlanEnum.Business}
             trigger="upgrade_plan"
             useModal={false}
-            onClick={() => router.push("/settings/upgrade")}
+            onClick={() => visit(PAY_URL)}
           />
         </div>
       );
@@ -234,7 +220,7 @@ export default function UpgradePlanContainer() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem
-                    onClick={() => manageSubscription({ type: "cancellation" })}
+                    onClick={handleCancelSubscription}
                     className="text-red-500"
                   >
                     <BanIcon className="h-4 w-4" />
@@ -251,13 +237,7 @@ export default function UpgradePlanContainer() {
               >
                 Cancel subscription
               </Button>
-              <Button
-                variant="outline"
-                onClick={() =>
-                  manageSubscription({ type: "subscription_update" })
-                }
-                loading={loading}
-              >
+              <Button variant="outline" onClick={() => visit(PAY_URL)}>
                 Change plan
               </Button>
 
@@ -269,9 +249,7 @@ export default function UpgradePlanContainer() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem
-                    onClick={() => manageSubscription({ type: "manage" })}
-                  >
+                  <DropdownMenuItem onClick={() => visit(BILLING_URL)}>
                     <CreditCardIcon className="h-4 w-4" />
                     Change billing information
                   </DropdownMenuItem>
