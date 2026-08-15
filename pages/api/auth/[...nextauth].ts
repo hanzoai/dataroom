@@ -8,7 +8,6 @@ import { identifyUser, trackAnalytics } from "@/lib/analytics";
 import prisma from "@/lib/prisma";
 import { CustomUser } from "@/lib/types";
 
-const VERCEL_DEPLOYMENT = !!process.env.VERCEL_URL;
 
 const IAM_URL = process.env.IAM_URL;
 const IAM_CLIENT_ID = process.env.IAM_CLIENT_ID;
@@ -61,18 +60,16 @@ export const authOptions: NextAuthOptions = {
   providers: [HanzoIAMProvider()],
   adapter: PrismaAdapter(prisma),
   session: { strategy: "jwt" },
-  cookies: {
-    sessionToken: {
-      name: `${VERCEL_DEPLOYMENT ? "__Secure-" : ""}next-auth.session-token`,
-      options: {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        domain: VERCEL_DEPLOYMENT ? ".dataroom.hanzo.ai" : undefined,
-        secure: VERCEL_DEPLOYMENT,
-      },
-    },
-  },
+  // No cookie override. The name carries a `__Secure-` prefix over https, and
+  // NextAuth derives that from NEXTAUTH_URL in BOTH directions — here when it
+  // writes the cookie, and in `getToken` when the middleware reads it.
+  //
+  // Naming it here broke that agreement. The name was keyed to VERCEL_URL, which
+  // is unset off Vercel, so this wrote the bare `next-auth.session-token` while
+  // the middleware went on looking for `__Secure-next-auth.session-token` under
+  // an https NEXTAUTH_URL. Signing in worked perfectly — a real session, a real
+  // cookie, `/api/auth/session` returning the user — and every guarded route
+  // still bounced to /login, which is indistinguishable from a rejected password.
   callbacks: {
     jwt: async (params) => {
       const { token, user, trigger, profile } = params;
