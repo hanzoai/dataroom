@@ -39,8 +39,11 @@ export const config = {
      * 3. /_static (inside /public)
      * 4. /_vercel (Vercel internals)
      * 5. /favicon.ico, /sitemap.xml, /robots.txt (static files)
+     * 6. /.well-known/ — these answer an anonymous fetch by definition. Left in
+     *    the matcher, AppMiddleware sends a signed-out caller to /login, so
+     *    security.txt would redirect the researchers it exists to reach.
      */
-    "/((?!api/|_next/|_static|vendor|_icons|_vercel|favicon.ico|sitemap.xml|robots.txt).*)",
+    "/((?!api/|_next/|_static|vendor|_icons|_vercel|favicon.ico|sitemap.xml|robots.txt|.well-known).*)",
   ],
 };
 
