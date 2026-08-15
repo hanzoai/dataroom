@@ -7,7 +7,7 @@ import { z } from "zod";
 import {
   deleteDomainRedirectUrl,
   setDomainRedirectUrl,
-} from "@/lib/api/domains/redis";
+} from "@/lib/api/domains/kv";
 import { validateRedirectUrl } from "@/lib/api/domains/validate-redirect-url";
 import { getApexDomain, removeDomainFromVercel } from "@/lib/domains";
 import { errorhandler } from "@/lib/errorHandler";

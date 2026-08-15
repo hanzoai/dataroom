@@ -2,6 +2,8 @@
 import prisma from "@/lib/prisma";
 import { log } from "@/lib/utils";
 import { sendWebhooks } from "@/lib/webhook/send-webhooks";
+import { subscribers } from "@/lib/webhook/subscribers";
+import { LINK_TYPES } from "@/lib/zod/schemas/webhooks";
 
 export async function sendLinkViewWebhook({
   teamId,
@@ -38,19 +40,7 @@ export async function sendLinkViewWebhook({
     }
 
     // Get webhooks for team
-    const webhooks = await prisma.webhook.findMany({
-      where: {
-        teamId,
-        triggers: {
-          array_contains: ["link.viewed"],
-        },
-      },
-      select: {
-        pId: true,
-        url: true,
-        secret: true,
-      },
-    });
+    const webhooks = await subscribers(teamId, "link.viewed");
 
     if (!webhooks || (webhooks && webhooks.length === 0)) {
       // No webhooks for team, so we don't need to send webhooks
@@ -98,7 +88,7 @@ export async function sendLinkViewWebhook({
       dataroomId: link.dataroomId,
       groupId: link.groupId,
       permissionGroupId: link.permissionGroupId,
-      linkType: link.linkType,
+      linkType: link.linkType as (typeof LINK_TYPES)[number],
       teamId: teamId,
       createdAt: link.createdAt.toISOString(),
       updatedAt: link.updatedAt.toISOString(),

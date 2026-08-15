@@ -1,15 +1,15 @@
 import { logger, task } from "@trigger.dev/sdk/v3";
-import { put } from "@vercel/blob";
 import Bottleneck from "bottleneck";
 
 import { sendExportReadyEmail } from "@/lib/emails/send-export-ready-email";
 import prisma from "@/lib/prisma";
-import { jobStore } from "@/lib/redis-job-store";
+import { jobStore } from "@/lib/kv-job-store";
 import {
   getViewPageDuration,
   getViewUserAgent,
   getViewUserAgent_v2,
 } from "@/lib/tinybird";
+import { putFileServer } from "@/lib/files/put-file-server";
 
 // Helper function to properly escape CSV fields
 function escapeCsvField(field: string | number | null | undefined): string {
@@ -106,24 +106,28 @@ export const exportVisitsTask = task({
       // Create timestamp for filename
       const currentTime = new Date().toISOString().split("T")[0];
 
-      // Upload CSV to Vercel Blob
+      // Write the CSV to our object storage
       const filename = `visits-${resourceName.replace(/[^a-zA-Z0-9]/g, "_")}-${currentTime}.csv`;
-      const blob = await put(filename, csvData, {
-        access: "public",
-        addRandomSuffix: true,
-        contentType: "text/csv",
+      const stored = await putFileServer({
+        file: {
+          name: filename,
+          type: "text/csv",
+          buffer: Buffer.from(csvData),
+        },
+        teamId,
+        restricted: true,
       });
 
-      logger.info("CSV uploaded to Vercel Blob", {
+      logger.info("CSV uploaded", {
         filename,
-        url: blob.downloadUrl,
+        path: stored.data,
         size: csvData.length,
       });
 
-      // Store the blob URL in Redis
+      // Store the blob URL in KV
       const updatedJob = await jobStore.updateJob(exportId, {
         status: "COMPLETED",
-        result: blob.downloadUrl,
+        result: stored.data,
         resourceName,
         completedAt: new Date().toISOString(),
       });
@@ -153,7 +157,7 @@ export const exportVisitsTask = task({
         type,
         resourceId,
         csvSize: csvData.length,
-        blobUrl: blob.downloadUrl,
+        blobUrl: stored.data,
       });
 
       return {
@@ -161,7 +165,7 @@ export const exportVisitsTask = task({
         exportId,
         resourceName,
         csvSize: csvData.length,
-        blobUrl: blob.downloadUrl,
+        blobUrl: stored.data,
       };
     } catch (error) {
       logger.error("Export visits task failed", {

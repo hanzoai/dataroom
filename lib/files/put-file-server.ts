@@ -1,6 +1,5 @@
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { DocumentStorageType } from "@prisma/client";
-import { put } from "@vercel/blob";
 import path from "node:path";
 import { match } from "ts-pattern";
 
@@ -28,37 +27,20 @@ export const putFileServer = async ({
   docId?: string;
   restricted?: boolean;
 }) => {
-  const NEXT_PUBLIC_UPLOAD_TRANSPORT = process.env.NEXT_PUBLIC_UPLOAD_TRANSPORT;
-
-  const { type, data } = await match(NEXT_PUBLIC_UPLOAD_TRANSPORT)
-    .with("s3", async () =>
-      putFileInS3Server({ file, teamId, docId, restricted }),
-    )
-    .with("vercel", async () => putFileInVercelServer(file))
-    .otherwise(() => {
-      return {
-        type: null,
-        data: null,
-        numPages: undefined,
-      };
-    });
+  // One object store, so no transport to choose. The match this replaced keyed
+  // on NEXT_PUBLIC_UPLOAD_TRANSPORT, which the deployment does not set — so it
+  // fell to `.otherwise()` and returned { type: null, data: null }, i.e. every
+  // server-side upload reported success while storing nothing.
+  const { type, data } = await putFileInS3Server({
+    file,
+    teamId,
+    docId,
+    restricted,
+  });
 
   return { type, data };
 };
 
-const putFileInVercelServer = async (file: File) => {
-  const contents = file.buffer;
-
-  const blob = await put(file.name, contents, {
-    access: "public",
-    addRandomSuffix: true,
-  });
-
-  return {
-    type: DocumentStorageType.VERCEL_BLOB,
-    data: blob.url,
-  };
-};
 
 const putFileInS3Server = async ({
   file,

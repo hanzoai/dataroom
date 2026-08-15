@@ -11,7 +11,7 @@ import { getSlackEnv } from "@/lib/integrations/slack/env";
 import { SlackCredential } from "@/lib/integrations/slack/types";
 import { encryptSlackToken } from "@/lib/integrations/slack/utils";
 import prisma from "@/lib/prisma";
-import { redis } from "@/lib/redis";
+import { kv } from "@/lib/kv";
 import { CustomUser } from "@/lib/types";
 import { getSearchParams } from "@/lib/utils/get-search-params";
 
@@ -39,12 +39,12 @@ export const GET = async (req: Request) => {
 
     // Find workspace that initiated the Stripe app install
     const stateKey = `slack:install:state:${state}`;
-    const teamId = await redis.get<string>(stateKey);
+    const teamId = await kv.get<string>(stateKey);
 
     if (!teamId) {
       return NextResponse.json({ error: "Invalid state" }, { status: 400 });
     }
-    await redis.del(stateKey);
+    await kv.del(stateKey);
 
     team = await prisma.team.findUniqueOrThrow({
       where: {

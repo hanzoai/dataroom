@@ -12,6 +12,16 @@ export const createWebhookSchema = z.object({
 export const updateWebhookSchema = createWebhookSchema.partial();
 
 // Base event schema
+
+// The link kinds this payload can carry. sqlite has no enum, so the column
+// reads back as a plain string and the value is asserted against this list
+// where the payload is built.
+export const LINK_TYPES = [
+  "DOCUMENT_LINK",
+  "DATAROOM_LINK",
+  "WORKFLOW_LINK",
+] as const;
+
 const baseEventSchema = z.object({
   id: z.string().startsWith("evt_"),
   event: z.enum(WEBHOOK_TRIGGERS),
@@ -68,7 +78,7 @@ const linkEventSchema = z.object({
   dataroomId: z.string().nullable(),
   groupId: z.string().nullable(),
 
-  linkType: z.enum(["DOCUMENT_LINK", "DATAROOM_LINK", "WORKFLOW_LINK"]),
+  linkType: z.enum(LINK_TYPES),
   teamId: z.string(),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
@@ -154,7 +164,7 @@ export type DataroomCreatedWebhookPayload = z.infer<
   typeof dataroomCreatedWebhookSchema
 >;
 
-// Schema of response sent to the webhook callback URL by QStash
+// Schema of the response posted to the webhook callback URL
 export const webhookCallbackSchema = z.object({
   status: z.number(),
   url: z.string(),

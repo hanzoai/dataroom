@@ -5,7 +5,7 @@ import { getServerSession } from "next-auth";
 
 import { generateFreshPresignedUrl } from "@/lib/files/bulk-download-presign";
 import prisma from "@/lib/prisma";
-import { downloadJobStore } from "@/lib/redis-download-job-store";
+import { downloadJobStore } from "@/lib/kv-download-job-store";
 import { CustomUser } from "@/lib/types";
 
 // Status polling endpoint for download progress modal
@@ -53,7 +53,7 @@ export default async function handler(
         .json({ error: "Unauthorized to access this team" });
     }
 
-    // Fetch the job from Redis
+    // Fetch the job from KV
     const job = await downloadJobStore.getJob(jobId);
 
     if (!job) {

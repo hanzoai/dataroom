@@ -58,7 +58,7 @@ export default async function handler(
   }
 
   const geo: Geo =
-    process.env.VERCEL === "1" ? getGeoData(req.headers) : LOCALHOST_GEO_DATA;
+    getGeoData(req.headers);
   const isEuCountry = geo.country && EU_COUNTRY_CODES.includes(geo.country);
 
   // Get user agent data

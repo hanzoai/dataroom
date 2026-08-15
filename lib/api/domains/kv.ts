@@ -1,4 +1,4 @@
-import { redis } from "@/lib/redis";
+import { kv } from "@/lib/kv";
 
 const DOMAIN_REDIRECT_PREFIX = "domain:redirect";
 
@@ -14,28 +14,28 @@ export function planSupportsRedirects(plan: string): boolean {
   return PLANS_WITH_REDIRECTS.has(normalized);
 }
 
-export function getRedisKey(domain: string): string {
+export function getKey(domain: string): string {
   return `${DOMAIN_REDIRECT_PREFIX}:${domain.toLowerCase()}`;
 }
 
 export async function getDomainRedirectUrl(
   domain: string,
 ): Promise<string | null> {
-  return redis.get<string>(getRedisKey(domain));
+  return kv.get<string>(getKey(domain));
 }
 
 export async function setDomainRedirectUrl(
   domain: string,
   redirectUrl: string | null,
 ): Promise<void> {
-  const key = getRedisKey(domain);
+  const key = getKey(domain);
   if (redirectUrl) {
-    await redis.set(key, redirectUrl);
+    await kv.set(key, redirectUrl);
   } else {
-    await redis.del(key);
+    await kv.del(key);
   }
 }
 
 export async function deleteDomainRedirectUrl(domain: string): Promise<void> {
-  await redis.del(getRedisKey(domain));
+  await kv.del(getKey(domain));
 }

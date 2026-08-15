@@ -1,50 +1,55 @@
 import { logger, schedules } from "@trigger.dev/sdk/v3";
-import { del } from "@vercel/blob";
 
-import { jobStore } from "@/lib/redis-job-store";
+import { jobStore } from "@/lib/kv-job-store";
+import { deleteFile } from "@/lib/files/delete-file-server";
+import { DocumentStorageType } from "@prisma/client";
 
 export const cleanupExpiredExports = schedules.task({
   id: "cleanup-expired-exports",
   // Run daily at 2 AM UTC
   cron: "0 2 * * *",
   run: async (payload) => {
-    logger.info("Starting cleanup of expired export blobs", {
+    logger.info("Starting cleanup of expired exports", {
       timestamp: payload.timestamp,
     });
 
     try {
       // Get all blob URLs that are due for cleanup
-      const blobsToCleanup = await jobStore.getBlobsForCleanup();
+      const expired = await jobStore.getExpiredForCleanup();
 
-      if (blobsToCleanup.length === 0) {
-        logger.info("No blobs due for cleanup");
+      if (expired.length === 0) {
+        logger.info("Nothing due for cleanup");
         return { deletedCount: 0 };
       }
 
-      logger.info(`Found ${blobsToCleanup.length} blobs to delete`);
+      logger.info(`Found ${expired.length} to delete`);
 
-      // Delete blobs from Vercel Blob
+      // Delete from our object storage
       const deletionResults = await Promise.allSettled(
-        blobsToCleanup.map(async (blob) => {
+        expired.map(async (item) => {
           try {
-            await del(blob.blobUrl);
+            await deleteFile({
+              type: DocumentStorageType.S3_PATH,
+              data: item.path,
+              teamId: item.teamId,
+            });
 
             // Remove from cleanup queue after successful deletion
-            await jobStore.removeBlobFromCleanupQueue(blob.blobUrl, blob.jobId);
+            await jobStore.removeFromCleanupQueue(item.path, item.jobId);
 
-            logger.info("Successfully deleted blob", {
-              blobUrl: blob.blobUrl,
-              jobId: blob.jobId,
+            logger.info("Deleted", {
+              path: item.path,
+              jobId: item.jobId,
             });
 
-            return { blob, success: true };
+            return { path: item.path, success: true };
           } catch (error) {
-            logger.error("Failed to delete blob", {
-              blobUrl: blob.blobUrl,
-              jobId: blob.jobId,
+            logger.error("Failed to delete", {
+              path: item.path,
+              jobId: item.jobId,
               error: error instanceof Error ? error.message : String(error),
             });
-            return { blob, success: false, error };
+            return { path: item.path, success: false, error };
           }
         }),
       );
@@ -56,7 +61,7 @@ export const cleanupExpiredExports = schedules.task({
       const failureCount = deletionResults.length - successCount;
 
       logger.info("Cleanup completed", {
-        totalBlobs: blobsToCleanup.length,
+        totalBlobs: expired.length,
         successCount,
         failureCount,
       });
@@ -64,7 +69,7 @@ export const cleanupExpiredExports = schedules.task({
       return {
         deletedCount: successCount,
         failureCount,
-        totalProcessed: blobsToCleanup.length,
+        totalProcessed: expired.length,
       };
     } catch (error) {
       logger.error("Cleanup task failed", {

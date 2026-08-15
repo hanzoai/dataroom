@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { waitUntil } from "@vercel/functions";
+import { after } from "@/lib/after";
 
 import { trackAnalytics } from "@/lib/analytics";
 import {
@@ -96,7 +96,7 @@ export default async function handle(
       });
 
       if (!currentDomain!.verified && updatedDomain.verified) {
-        waitUntil(trackAnalytics({ event: "Domain Verified", slug: domain }));
+        after(trackAnalytics({ event: "Domain Verified", slug: domain }));
       }
     } else {
       status = "Invalid Configuration";

@@ -8,10 +8,10 @@ import path from "node:path";
 import { verifyDataroomSessionInPagesRouter } from "@/lib/auth/dataroom-auth";
 import { getS3ClientAndConfig } from "@/lib/files/aws-client";
 import { safeSlugify } from "@/lib/utils";
-import { RedisLocker } from "@/lib/files/tus-redis-locker";
+import { KvLocker } from "@/lib/files/tus-kv-locker";
 import { newId } from "@/lib/id-helper";
 import prisma from "@/lib/prisma";
-import { lockerRedisClient } from "@/lib/redis";
+import { lockKv } from "@/lib/kv";
 import { log } from "@/lib/utils";
 
 export const config = {
@@ -21,8 +21,8 @@ export const config = {
   },
 };
 
-const locker = new RedisLocker({
-  redisClient: lockerRedisClient,
+const locker = new KvLocker({
+  client: lockKv,
 });
 
 const tusServer = new Server({

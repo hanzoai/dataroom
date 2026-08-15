@@ -1,7 +1,7 @@
-import { waitUntil } from "@vercel/functions";
+import { after } from "@/lib/after";
 import { customAlphabet } from "nanoid";
 
-import { redis } from "@/lib/redis";
+import { kv } from "@/lib/kv";
 import { sendEmail } from "@/lib/resend";
 
 import VerificationCodeEmail from "@/components/emails/verification-link";
@@ -12,7 +12,7 @@ const generateVerificationCode = customAlphabet(
   10,
 );
 
-// Redis key prefixes for login codes
+// KV key prefixes for login codes
 const LOGIN_CODE_PREFIX = "login_code:";
 const LOGIN_CODE_EMAIL_PREFIX = "login_code:email:";
 // Token expiration time in seconds (15 minutes)
@@ -34,7 +34,7 @@ export const sendVerificationRequestEmail = async (params: {
   // Generate verification code
   const code = generateVerificationCode();
 
-  // Store the login data in Redis with 15-minute TTL
+  // Store the login data in KV with 15-minute TTL
   const loginCodeData: LoginCodeData = {
     email,
     code,
@@ -43,7 +43,7 @@ export const sendVerificationRequestEmail = async (params: {
   };
 
   // Store with email:code as key for lookup (must complete before redirecting)
-  await redis.set(
+  await kv.set(
     `${LOGIN_CODE_EMAIL_PREFIX}${email.toLowerCase()}:${code}`,
     JSON.stringify(loginCodeData),
     { ex: TOKEN_EXPIRATION_SECONDS },
@@ -54,9 +54,9 @@ export const sendVerificationRequestEmail = async (params: {
     code,
   });
 
-  // Use waitUntil to send email in background after response is sent
+  // Send in the background so the response is not held on SMTP
   // This keeps the serverless function alive until the email is sent
-  waitUntil(
+  after(
     sendEmail({
       to: email as string,
       system: true,
@@ -70,7 +70,7 @@ export const sendVerificationRequestEmail = async (params: {
 };
 
 /**
- * Atomically fetch and delete login code data from Redis
+ * Atomically fetch and delete login code data from KV
  * Uses GETDEL to prevent TOCTOU race conditions where the same code could be used twice
  * Returns null if not found or expired
  */
@@ -83,10 +83,10 @@ export const fetchAndDeleteLoginCodeData = async (
 
     // Use GETDEL for atomic get-and-delete operation
     // This prevents race conditions where two requests could use the same code
-    const data = await redis.getdel(key);
+    const data = await kv.getdel(key);
     if (!data) return null;
 
-    // Handle both string and already-parsed object (Redis client behavior)
+    // Handle both string and already-parsed object (KV client behavior)
     if (typeof data === "string") {
       return JSON.parse(data) as LoginCodeData;
     }

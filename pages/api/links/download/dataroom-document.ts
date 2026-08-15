@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { ItemType, ViewType } from "@prisma/client";
-import { waitUntil } from "@vercel/functions";
+import { after } from "@/lib/after";
 
 import { getFile } from "@/lib/files/get-file";
 import { notifyDocumentDownload } from "@/lib/integrations/slack/events";
@@ -176,7 +176,7 @@ export default async function handle(
       });
 
       if (view.link.teamId) {
-        waitUntil(
+        after(
           notifyDocumentDownload({
             teamId: view.link.teamId,
             documentId,

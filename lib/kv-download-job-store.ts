@@ -1,6 +1,6 @@
 import { nanoid } from "@/lib/utils";
 
-import { redis } from "./redis";
+import { kv } from "./kv";
 
 export type DownloadJobStatus =
   | "PENDING"
@@ -42,9 +42,9 @@ export interface DownloadJob {
 const JOB_PREFIX = "download_job:";
 const TEAM_JOBS_PREFIX = "team_download_jobs:";
 const VIEWER_JOBS_PREFIX = "viewer_download_jobs:";
-const JOB_TTL = 60 * 60 * 24 * 3; // 3 days - Redis handles cleanup via TTL
+const JOB_TTL = 60 * 60 * 24 * 3; // 3 days - KV handles cleanup via TTL
 
-export class RedisDownloadJobStore {
+export class KvDownloadJobStore {
   private getJobKey(jobId: string): string {
     return `${JOB_PREFIX}${jobId}`;
   }
@@ -73,12 +73,12 @@ export class RedisDownloadJobStore {
     const jobKey = this.getJobKey(jobId);
     const teamJobsKey = this.getTeamJobsKey(jobData.teamId);
 
-    // Store job data with TTL (Redis handles cleanup)
-    await redis.setex(jobKey, JOB_TTL, JSON.stringify(job));
+    // Store job data with TTL (KV handles cleanup)
+    await kv.setex(jobKey, JOB_TTL, JSON.stringify(job));
 
     // Add to team's job list (sorted by creation time)
-    await redis.zadd(teamJobsKey, { score: Date.now(), member: jobId });
-    await redis.expire(teamJobsKey, JOB_TTL);
+    await kv.zadd(teamJobsKey, { score: Date.now(), member: jobId });
+    await kv.expire(teamJobsKey, JOB_TTL);
 
     // If viewer download, add to viewer index for getViewerJobs
     if (jobData.linkId && jobData.viewerEmail) {
@@ -86,8 +86,8 @@ export class RedisDownloadJobStore {
         jobData.linkId,
         jobData.viewerEmail,
       );
-      await redis.zadd(viewerJobsKey, { score: Date.now(), member: jobId });
-      await redis.expire(viewerJobsKey, JOB_TTL);
+      await kv.zadd(viewerJobsKey, { score: Date.now(), member: jobId });
+      await kv.expire(viewerJobsKey, JOB_TTL);
     }
 
     return job;
@@ -95,14 +95,14 @@ export class RedisDownloadJobStore {
 
   async getJob(jobId: string): Promise<DownloadJob | null> {
     const jobKey = this.getJobKey(jobId);
-    const jobData = await redis.get(jobKey);
+    const jobData = await kv.get(jobKey);
 
     if (!jobData) {
       return null;
     }
 
     try {
-      // Check if data is already an object (Redis client auto-parsed)
+      // Check if data is already an object (KV client auto-parsed)
       if (typeof jobData === "object") {
         return jobData as DownloadJob;
       }
@@ -130,7 +130,7 @@ export class RedisDownloadJobStore {
     };
 
     const jobKey = this.getJobKey(jobId);
-    await redis.setex(jobKey, JOB_TTL, JSON.stringify(updatedJob));
+    await kv.setex(jobKey, JOB_TTL, JSON.stringify(updatedJob));
 
     return updatedJob;
   }
@@ -142,7 +142,7 @@ export class RedisDownloadJobStore {
     const teamJobsKey = this.getTeamJobsKey(teamId);
 
     // Get job IDs sorted by creation time (newest first)
-    const jobIds = await redis.zrange(teamJobsKey, 0, limit - 1, { rev: true });
+    const jobIds = await kv.zrange(teamJobsKey, 0, limit - 1, { rev: true });
 
     if (!jobIds.length) {
       return [];
@@ -185,7 +185,7 @@ export class RedisDownloadJobStore {
     limit: number = 20,
   ): Promise<DownloadJob[]> {
     const viewerJobsKey = this.getViewerJobsKey(linkId, viewerEmail);
-    const jobIds = await redis.zrange(viewerJobsKey, 0, limit - 1, {
+    const jobIds = await kv.zrange(viewerJobsKey, 0, limit - 1, {
       rev: true,
     });
 
@@ -203,4 +203,4 @@ export class RedisDownloadJobStore {
   }
 }
 
-export const downloadJobStore = new RedisDownloadJobStore();
+export const downloadJobStore = new KvDownloadJobStore();

@@ -1,4 +1,4 @@
-import { get } from "@vercel/edge-config";
+import { getConfig } from "@/lib/config";
 
 export type BetaFeatures =
   | "tokens"
@@ -30,19 +30,14 @@ export const getFeatureFlags = async ({ teamId }: { teamId?: string }) => {
     textSelection: false,
   };
 
-  // Return all features as false if edge config is not available
-  if (!process.env.EDGE_CONFIG) {
-    return Object.fromEntries(
-      Object.entries(teamFeatures).map(([key, _v]) => [key, false]),
-    );
-  } else if (!teamId) {
+  if (!teamId) {
     return teamFeatures;
   }
 
   let betaFeatures: BetaFeaturesRecord | undefined = undefined;
 
   try {
-    betaFeatures = await get("betaFeatures");
+    betaFeatures = await getConfig<BetaFeaturesRecord | undefined>("betaFeatures", undefined);
   } catch (e) {
     console.error(`Error getting beta features: ${e}`);
   }

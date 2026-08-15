@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { waitUntil } from "@vercel/functions";
+import { after } from "@/lib/after";
 import { randomBytes } from "crypto";
 import { getServerSession } from "next-auth";
 import { z } from "zod";
@@ -10,7 +10,7 @@ import { sendEmailChangeVerificationRequestEmail } from "@/lib/emails/send-mail-
 import { errorhandler } from "@/lib/errorHandler";
 import { newId } from "@/lib/id-helper";
 import prisma from "@/lib/prisma";
-import { ratelimit, redis } from "@/lib/redis";
+import { ratelimit, kv } from "@/lib/kv";
 import { CustomUser } from "@/lib/types";
 import { trim } from "@/lib/utils";
 
@@ -67,7 +67,7 @@ export default async function handle(
           },
         });
 
-        await redis.set(
+        await kv.set(
           `email-change-request:user:${sessionUser.id}`,
           {
             email: sessionUser.email,
@@ -78,7 +78,7 @@ export default async function handle(
           },
         );
 
-        waitUntil(
+        after(
           sendEmailChangeVerificationRequestEmail({
             email: sessionUser.email as string,
             newEmail: email,

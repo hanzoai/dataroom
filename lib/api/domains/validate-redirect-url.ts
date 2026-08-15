@@ -1,4 +1,4 @@
-import { get } from "@vercel/edge-config";
+import { getStringList } from "@/lib/config";
 
 import { isTrustedTeam } from "@/lib/edge-config/trusted-teams";
 import { log } from "@/lib/utils";
@@ -39,7 +39,7 @@ export async function validateRedirectUrl(
   const trusted = await isTrustedTeam(teamId);
   if (!trusted) {
     try {
-      const keywords = await get("keywords");
+      const keywords = await getStringList("keywords");
       if (Array.isArray(keywords) && keywords.length > 0) {
         const matchedKeyword = keywords.find(
           (keyword) =>

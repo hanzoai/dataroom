@@ -24,7 +24,15 @@ function HanzoIAMProvider(): OAuthConfig<any> {
     clientId: IAM_CLIENT_ID || "",
     clientSecret: IAM_CLIENT_SECRET || "",
     authorization: { params: { scope: "openid profile email" } },
-    idToken: false,
+    // hanzo.id IS an OIDC provider and returns an id_token, so the callback
+    // has to be the OIDC one. With this false, next-auth took the plain-OAuth2
+    // path and openid-client threw on the token response it could not account
+    // for — "id_token detected in the response, you must use client.callback()
+    // instead of client.oauthCallback()" — which surfaced to a signing-in user
+    // as `/api/auth/signin?error=OAuthCallback` and nothing else. The sign-in
+    // handoff LOOKED healthy the whole time: the button reached hanzo.id and
+    // rendered a real login. Only the trip back was broken.
+    idToken: true,
     userinfo: { url: `${issuer}/v1/iam/oauth/userinfo` },
     profile(profile) {
       return {

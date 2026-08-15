@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { LinkAudienceType, Tag } from "@prisma/client";
-import { waitUntil } from "@vercel/functions";
+import { after } from "@/lib/after";
 import { getServerSession } from "next-auth/next";
 
 import { errorhandler } from "@/lib/errorHandler";
@@ -14,9 +14,10 @@ import {
 import { sendLinkCreatedWebhook } from "@/lib/webhook/triggers/link-created";
 
 import { authOptions } from "../auth/[...nextauth]";
+import { insert } from "@/lib/insert";
 
 export const config = {
-  // in order to enable `waitUntil` function
+  // so background work can outlive the response
   supportsResponseStreaming: true,
 };
 
@@ -272,15 +273,12 @@ export default async function handler(
         let tags: Partial<Tag>[] = [];
         if (linkData.tags?.length) {
           // create tag items
-          await tx.tagItem.createMany({
-            data: linkData.tags.map((tagId: string) => ({
+          await insert(tx.tagItem, linkData.tags.map((tagId: string) => ({
               tagId,
               itemType: "LINK_TAG",
               linkId: link.id,
               taggedBy: userId,
-            })),
-            skipDuplicates: true,
-          });
+            })));
 
           // return tags
           tags = await tx.tag.findMany({
@@ -302,7 +300,7 @@ export default async function handler(
         return res.status(404).json({ error: "Link not found" });
       }
 
-      waitUntil(
+      after(
         sendLinkCreatedWebhook({
           teamId,
           data: {

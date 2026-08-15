@@ -4,15 +4,19 @@ import { S3Client } from "@aws-sdk/client-s3";
 import { type StorageConfig, getStorageConfig } from "@/lib/storage/config";
 
 /**
- * Resolves the storage config, refusing when the deployment is not on S3.
+ * Resolves the storage config.
  *
- * Callers reach object storage through this, so the transport check lives here
- * once rather than at every call site.
+ * There is one object store — ours — so there is no transport to choose. This
+ * used to refuse unless NEXT_PUBLIC_UPLOAD_TRANSPORT was "s3", a variable the
+ * deployment never set: it configures S3 through NEXT_PRIVATE_UPLOAD_*, so every
+ * call through here threw "Invalid upload transport" in production while the
+ * bucket, endpoint and credentials sat correctly configured beside it.
+ *
+ * getStorageConfig() still throws when a required variable is missing — an
+ * upload route that cannot name its bucket must fail at the boundary rather
+ * than write somewhere unintended.
  */
 function requireS3Config(): StorageConfig {
-  if (process.env.NEXT_PUBLIC_UPLOAD_TRANSPORT !== "s3") {
-    throw new Error("Invalid upload transport");
-  }
   return getStorageConfig();
 }
 

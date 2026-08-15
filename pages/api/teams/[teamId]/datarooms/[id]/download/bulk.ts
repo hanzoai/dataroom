@@ -9,7 +9,7 @@ import {
   buildFolderPathsFromHierarchy,
 } from "@/lib/dataroom/build-folder-hierarchy";
 import prisma from "@/lib/prisma";
-import { downloadJobStore } from "@/lib/redis-download-job-store";
+import { downloadJobStore } from "@/lib/kv-download-job-store";
 import { bulkDownloadTask } from "@/lib/trigger/bulk-download";
 import { CustomUser } from "@/lib/types";
 
@@ -223,7 +223,7 @@ export default async function handler(
         select: { email: true },
       });
 
-      // Create download job in Redis
+      // Create download job in KV
       const job = await downloadJobStore.createJob({
         type: "bulk",
         status: "PENDING",

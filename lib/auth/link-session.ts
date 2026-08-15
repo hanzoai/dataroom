@@ -2,12 +2,12 @@
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 
-import { ipAddress } from "@vercel/functions";
+
 import crypto from "crypto";
 import { z } from "zod";
 
-import { redis } from "@/lib/redis";
-import { LOCALHOST_IP } from "@/lib/utils/geo";
+import { kv } from "@/lib/kv";
+import { LOCALHOST_IP, getClientIp } from "@/lib/utils/geo";
 
 const COOKIE_EXPIRATION_TIME = 23 * 60 * 60 * 1000; // 23 hours
 
@@ -68,14 +68,14 @@ export async function createLinkSession(
 
   LinkSessionSchema.parse(sessionData);
 
-  await redis.set(`link_session:${sessionToken}`, JSON.stringify(sessionData), {
+  await kv.set(`link_session:${sessionToken}`, JSON.stringify(sessionData), {
     pxat: expiresAt,
   });
 
   // Track active sessions per viewer (for revocation)
   if (viewerId) {
-    await redis.sadd(`viewer_sessions:${viewerId}`, sessionToken);
-    await redis.expire(
+    await kv.sadd(`viewer_sessions:${viewerId}`, sessionToken);
+    await kv.expire(
       `viewer_sessions:${viewerId}`,
       Math.floor(COOKIE_EXPIRATION_TIME / 1000),
     );
@@ -88,11 +88,11 @@ export async function verifyLinkSession(
   request: NextRequest,
   linkId: string,
 ): Promise<LinkSession | null> {
-  const sessionToken = cookies().get(`pm_ls_${linkId}`)?.value;
+  const sessionToken = (await cookies()).get(`pm_ls_${linkId}`)?.value;
 
   if (!sessionToken) return null;
 
-  const session = await redis.get(`link_session:${sessionToken}`);
+  const session = await kv.get(`link_session:${sessionToken}`);
 
   if (!session) return null;
 
@@ -106,7 +106,7 @@ export async function verifyLinkSession(
     }
 
     // Verify IP address
-    const currentIp = ipAddress(request) ?? LOCALHOST_IP;
+    const currentIp = getClientIp(request.headers) ?? LOCALHOST_IP;
     if (currentIp !== sessionData.ipAddress) {
       await deleteLinkSession(sessionToken, sessionData.viewerId);
       return null;
@@ -137,16 +137,16 @@ export async function verifyLinkSession(
 
     // Rate limit check (max 100 requests per minute per session)
     const rateLimitKey = `rate_limit:session:${sessionToken}`;
-    const requestCount = await redis.incr(rateLimitKey);
+    const requestCount = await kv.incr(rateLimitKey);
     if (requestCount === 1) {
-      await redis.expire(rateLimitKey, 60);
+      await kv.expire(rateLimitKey, 60);
     }
     if (requestCount > 100) {
       return null; // Rate limited
     }
 
-    // Update session in Redis
-    await redis.set(
+    // Update session in KV
+    await kv.set(
       `link_session:${sessionToken}`,
       JSON.stringify(sessionData),
       { pxat: sessionData.expiresAt },
@@ -155,7 +155,7 @@ export async function verifyLinkSession(
     return sessionData;
   } catch (error) {
     console.error("Session verification error:", error);
-    await redis.del(`link_session:${sessionToken}`);
+    await kv.del(`link_session:${sessionToken}`);
     return null;
   }
 }
@@ -164,16 +164,16 @@ async function deleteLinkSession(
   sessionToken: string,
   viewerId?: string,
 ): Promise<void> {
-  await redis.del(`link_session:${sessionToken}`);
+  await kv.del(`link_session:${sessionToken}`);
   if (viewerId) {
-    await redis.srem(`viewer_sessions:${viewerId}`, sessionToken);
+    await kv.srem(`viewer_sessions:${viewerId}`, sessionToken);
   }
 }
 
 export async function revokeLinkSession(linkId: string): Promise<void> {
-  const sessionToken = cookies().get(`pm_ls_${linkId}`)?.value;
+  const sessionToken = (await cookies()).get(`pm_ls_${linkId}`)?.value;
   if (sessionToken) {
-    const session = await redis.get(`link_session:${sessionToken}`);
+    const session = await kv.get(`link_session:${sessionToken}`);
     if (session) {
       const sessionData = LinkSessionSchema.parse(session);
       await deleteLinkSession(sessionToken, sessionData.viewerId);

@@ -1,7 +1,7 @@
 import { logger, task } from "@trigger.dev/sdk/v3";
 
 import prisma from "@/lib/prisma";
-import { queueNotification } from "@/lib/redis/dataroom-notification-queue";
+import { queueNotification } from "@/lib/kv-queue/dataroom-notification-queue";
 import { ZViewerNotificationPreferencesSchema } from "@/lib/zod/schemas/notifications";
 
 type NotificationPayload = {

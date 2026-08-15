@@ -7,7 +7,7 @@ export default async function DomainMiddleware(req: NextRequest) {
   const host = req.headers.get("host");
 
   // If it's the root path, check for a configured redirect URL via API
-  // (Redis can't be used directly in Edge Runtime — no TCP support)
+  // (KV can't be used directly in Edge Runtime — no TCP support)
   if (path === "/") {
     if (host) {
       try {

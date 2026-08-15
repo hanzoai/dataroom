@@ -1,13 +1,10 @@
-import { get } from "@vercel/edge-config";
+import { getStringList } from "@/lib/config";
 
 export const isTrustedTeam = async (teamId: string): Promise<boolean> => {
-  if (!process.env.EDGE_CONFIG) {
-    return false;
-  }
 
   let trustedTeams: string[] = [];
   try {
-    const result = await get("trustedTeams");
+    const result = await getStringList("trustedTeams");
     trustedTeams = Array.isArray(result)
       ? result.filter((item): item is string => typeof item === "string")
       : [];

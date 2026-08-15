@@ -5,7 +5,7 @@ import { getServerSession } from "next-auth/next";
 
 import { runs } from "@trigger.dev/sdk/v3";
 
-import { jobStore } from "@/lib/redis-job-store";
+import { jobStore } from "@/lib/kv-job-store";
 import { CustomUser } from "@/lib/types";
 
 export default async function handler(

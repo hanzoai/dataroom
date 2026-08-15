@@ -12,6 +12,35 @@ work is `MIT OR Apache-2.0`.
 
 ## Tech Stack
 - **Language**: TypeScript/JavaScript
+- **Database**: sqlite (Hanzo Base), through Prisma
+- **Storage / cache / config**: our own S3, Hanzo KV. No third-party platform SDK.
+
+## The schema is sqlite, the code came from postgres
+
+Read this before touching a query. Upstream Papermark targets postgres; this
+fork runs on sqlite, and Prisma does not paper over the difference. Where a
+postgres-only argument is passed, Prisma **rejects the whole call at runtime** —
+"Unknown argument" — so the failure is a broken request, not a slower one. Some
+of these tsc cannot see: a `where` clause assembled from spreads into a variable
+is never checked against Prisma's type.
+
+What sqlite does not have, and what to write instead:
+
+| postgres | on sqlite |
+|---|---|
+| `String[]` scalar list | `Json`, narrowed back to `string[]` by the shim |
+| `enum` | `String`, with the enum objects re-added by the shim |
+| `createMany({ skipDuplicates })` | `insert()` from `lib/insert.ts` |
+| `mode: "insensitive"` | nothing — `contains` already ignores ascii case. But `equals` does NOT: `=` is case-sensitive, so match with `contains` and confirm exactly in the caller |
+| `array_contains`, `path` json filters | read the rows and compare in the caller |
+| `RepeatableRead` | `Serializable`, the only level offered |
+
+`prisma/sqlite.cjs` runs from `postinstall`, after `prisma generate`, and puts
+back what sqlite dropped: the enum objects, and the payload types for the
+columns that hold string lists. It fails the install if a field it expects has
+moved, rather than quietly stopping. Adding a `String[]`-shaped `Json` column
+means adding it to `LISTS` there — model-scoped, because the same field name can
+be a relation on another model.
 
 ## Build & Run
 ```bash

@@ -2,7 +2,7 @@ import { ERRORS, Lock, Locker, RequestRelease } from "@tus/utils";
 import type KV from "@hanzo/kv";
 
 /**
- * RedisLocker is an implementation of the Locker interface that manages locks in key-value store using KV.
+ * KvLocker is an implementation of the Locker interface that manages locks in key-value store using KV.
  * This class is designed for exclusive access control over resources, often used in scenarios like upload management.
  *
  * Key Features:
@@ -22,29 +22,29 @@ import type KV from "@hanzo/kv";
  * - The `unlock` method releases a lock, making the resource available for other requests.
  */
 
-interface RedisLockerOptions {
+interface KvLockerOptions {
   acquireLockTimeout?: number;
-  redisClient: KV;
+  client: KV;
 }
 
-export class RedisLocker implements Locker {
+export class KvLocker implements Locker {
   timeout: number;
-  redisClient: KV;
+  client: KV;
 
-  constructor(options: RedisLockerOptions) {
+  constructor(options: KvLockerOptions) {
     this.timeout = options.acquireLockTimeout ?? 1000 * 30; // default: 30 seconds
-    this.redisClient = options.redisClient;
+    this.client = options.client;
   }
 
   newLock(id: string) {
-    return new RedisLock(id, this, this.timeout);
+    return new KvLock(id, this, this.timeout);
   }
 }
 
-class RedisLock implements Lock {
+class KvLock implements Lock {
   constructor(
     private id: string,
-    private locker: RedisLocker,
+    private locker: KvLocker,
     private timeout: number = 1000 * 30, // default: 30 seconds
   ) {}
 
@@ -76,16 +76,16 @@ class RedisLock implements Lock {
 
     const lockKey = `tus-lock-${id}`;
     // SET key value NX PX timeout
-    const lock = await this.locker.redisClient.set(lockKey, "locked", "PX", this.timeout, "NX");
+    const lock = await this.locker.client.set(lockKey, "locked", "PX", this.timeout, "NX");
 
     if (lock === "OK") {
       // Register a release request flag in KV
-      await this.locker.redisClient.set(`requestRelease:${lockKey}`, "true", "PX", this.timeout);
+      await this.locker.client.set(`requestRelease:${lockKey}`, "true", "PX", this.timeout);
       return true;
     }
 
     // Check if the release was requested
-    const releaseRequestStr = await this.locker.redisClient.get(
+    const releaseRequestStr = await this.locker.client.get(
       `requestRelease:${lockKey}`,
     );
     if (releaseRequestStr === "true") {
@@ -105,13 +105,13 @@ class RedisLock implements Lock {
 
   async unlock(): Promise<void> {
     const lockKey = `tus-lock-${this.id}`;
-    const lockExists = await this.locker.redisClient.del(lockKey);
+    const lockExists = await this.locker.client.del(lockKey);
     if (!lockExists) {
       throw new Error("Releasing an unlocked lock!");
     }
 
     // Clean up the request release entry
-    await this.locker.redisClient.del(`requestRelease:${lockKey}`);
+    await this.locker.client.del(`requestRelease:${lockKey}`);
   }
 
   protected waitTimeout(signal: AbortSignal) {

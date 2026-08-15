@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import { getDomainRedirectUrl } from "@/lib/api/domains/redis";
+import { getDomainRedirectUrl } from "@/lib/api/domains/kv";
 
 export default async function handler(
   req: NextApiRequest,

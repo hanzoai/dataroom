@@ -1,8 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { LinkPreset } from "@prisma/client";
-import { put } from "@vercel/blob";
-import { waitUntil } from "@vercel/functions";
+import { after } from "@/lib/after";
 import { z } from "zod";
 
 import { hashToken } from "@/lib/api/auth/token";
@@ -14,7 +13,7 @@ import { putFileServer } from "@/lib/files/put-file-server";
 import { newId } from "@/lib/id-helper";
 import { extractTeamId, isValidWebhookId } from "@/lib/incoming-webhooks";
 import prisma from "@/lib/prisma";
-import { ratelimit } from "@/lib/redis";
+import { ratelimit } from "@/lib/kv";
 import {
   convertDataUrlToBuffer,
   generateEncrpytedPassword,
@@ -30,7 +29,7 @@ import { sendLinkCreatedWebhook } from "@/lib/webhook/triggers/link-created";
 import { webhookFileUrlSchema } from "@/lib/zod/url-validation";
 
 export const config = {
-  // in order to enable `waitUntil` function
+  // so background work can outlive the response
   supportsResponseStreaming: true,
   maxDuration: 120,
 };
@@ -186,7 +185,7 @@ export default async function incomingWebhookHandler(
   }
 
   // Update last used timestamp for the token
-  waitUntil(
+  after(
     prisma.restrictedToken.update({
       where: {
         hashedKey: hashedToken,
@@ -542,11 +541,12 @@ async function handleDocumentCreate(
           const { buffer, mimeType, filename } = convertDataUrlToBuffer(
             preset.metaImage,
           );
-          const blob = await put(filename, buffer, {
-            access: "public",
-            addRandomSuffix: true,
+          const stored = await putFileServer({
+            file: { name: filename, type: mimeType, buffer },
+            teamId,
+            restricted: false,
           });
-          metaImage = blob.url;
+          metaImage = stored.data ?? undefined;
         }
 
         // Process favicon if present
@@ -554,11 +554,12 @@ async function handleDocumentCreate(
           const { buffer, mimeType, filename } = convertDataUrlToBuffer(
             preset.metaFavicon,
           );
-          const blob = await put(filename, buffer, {
-            access: "public",
-            addRandomSuffix: true,
+          const stored = await putFileServer({
+            file: { name: filename, type: mimeType, buffer },
+            teamId,
+            restricted: false,
           });
-          metaFavicon = blob.url;
+          metaFavicon = stored.data ?? undefined;
         }
       }
     }
@@ -628,7 +629,7 @@ async function handleDocumentCreate(
       },
     });
 
-    waitUntil(
+    after(
       sendLinkCreatedWebhook({
         teamId,
         data: {
@@ -915,11 +916,12 @@ async function handleLinkCreate(
         const { buffer, mimeType, filename } = convertDataUrlToBuffer(
           preset.metaImage,
         );
-        const blob = await put(filename, buffer, {
-          access: "public",
-          addRandomSuffix: true,
+        const stored = await putFileServer({
+          file: { name: filename, type: mimeType, buffer },
+          teamId,
+          restricted: false,
         });
-        metaImage = blob.url;
+        metaImage = stored.data ?? undefined;
       }
 
       // Process favicon if present
@@ -927,11 +929,12 @@ async function handleLinkCreate(
         const { buffer, mimeType, filename } = convertDataUrlToBuffer(
           preset.metaFavicon,
         );
-        const blob = await put(filename, buffer, {
-          access: "public",
-          addRandomSuffix: true,
+        const stored = await putFileServer({
+          file: { name: filename, type: mimeType, buffer },
+          teamId,
+          restricted: false,
         });
-        metaFavicon = blob.url;
+        metaFavicon = stored.data ?? undefined;
       }
     }
   }
@@ -993,7 +996,7 @@ async function handleLinkCreate(
       },
     });
 
-    waitUntil(
+    after(
       sendLinkCreatedWebhook({
         teamId,
         data: {
@@ -1127,11 +1130,12 @@ async function handleLinkUpdate(
         const { buffer, mimeType, filename } = convertDataUrlToBuffer(
           preset.metaImage,
         );
-        const blob = await put(filename, buffer, {
-          access: "public",
-          addRandomSuffix: true,
+        const stored = await putFileServer({
+          file: { name: filename, type: mimeType, buffer },
+          teamId,
+          restricted: false,
         });
-        metaImage = blob.url;
+        metaImage = stored.data ?? undefined;
       }
 
       // Process favicon if present
@@ -1139,11 +1143,12 @@ async function handleLinkUpdate(
         const { buffer, mimeType, filename } = convertDataUrlToBuffer(
           preset.metaFavicon,
         );
-        const blob = await put(filename, buffer, {
-          access: "public",
-          addRandomSuffix: true,
+        const stored = await putFileServer({
+          file: { name: filename, type: mimeType, buffer },
+          teamId,
+          restricted: false,
         });
-        metaFavicon = blob.url;
+        metaFavicon = stored.data ?? undefined;
       }
     }
   }
@@ -1386,11 +1391,12 @@ async function handleDataroomCreate(
         const { buffer, mimeType, filename } = convertDataUrlToBuffer(
           preset.metaImage,
         );
-        const blob = await put(filename, buffer, {
-          access: "public",
-          addRandomSuffix: true,
+        const stored = await putFileServer({
+          file: { name: filename, type: mimeType, buffer },
+          teamId,
+          restricted: false,
         });
-        metaImage = blob.url;
+        metaImage = stored.data ?? undefined;
       }
 
       // Process favicon if present
@@ -1398,11 +1404,12 @@ async function handleDataroomCreate(
         const { buffer, mimeType, filename } = convertDataUrlToBuffer(
           preset.metaFavicon,
         );
-        const blob = await put(filename, buffer, {
-          access: "public",
-          addRandomSuffix: true,
+        const stored = await putFileServer({
+          file: { name: filename, type: mimeType, buffer },
+          teamId,
+          restricted: false,
         });
-        metaFavicon = blob.url;
+        metaFavicon = stored.data ?? undefined;
       }
     }
   }
@@ -1481,7 +1488,7 @@ async function handleDataroomCreate(
     }
 
     if (createLink) {
-      waitUntil(
+      after(
         sendLinkCreatedWebhook({
           teamId,
           data: {

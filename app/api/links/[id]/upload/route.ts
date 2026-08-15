@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { waitUntil } from "@vercel/functions";
+import { after } from "@/lib/after";
 
 import { processDocument } from "@/lib/api/documents/process-document";
 import { verifyDataroomSession } from "@/lib/auth/dataroom-auth";
@@ -234,7 +234,7 @@ export async function POST(
       // One delayed notification per viewer per link: the idempotency key is
       // the batch, so a burst of uploads collapses into a single email and we
       // never have to hunt down and cancel already-scheduled runs.
-      waitUntil(
+      after(
         sendDataroomUploadNotificationTask
           .trigger(
             {

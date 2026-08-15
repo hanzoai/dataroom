@@ -1,6 +1,6 @@
 import { nanoid } from "nanoid";
 
-import { redis } from "@/lib/redis";
+import { kv } from "@/lib/kv";
 
 import { getSlackEnv } from "./env";
 
@@ -11,7 +11,7 @@ export const getSlackInstallationUrl = async (
   const env = getSlackEnv();
 
   const state = nanoid(16);
-  await redis.set(`slack:install:state:${state}`, teamId, {
+  await kv.set(`slack:install:state:${state}`, teamId, {
     ex: 30 * 60,
   });
 

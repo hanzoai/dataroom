@@ -3,11 +3,11 @@ import { redirect } from "next/navigation";
 
 import NotFound from "@/pages/404";
 import { VerificationToken } from "@prisma/client";
-import { waitUntil } from "@vercel/functions";
+import { after } from "@/lib/after";
 
 import { hashToken } from "@/lib/api/auth/token";
 import prisma from "@/lib/prisma";
-import { redis } from "@/lib/redis";
+import { kv } from "@/lib/kv";
 import { sendEmail, subscribe, unsubscribe } from "@/lib/resend";
 import { CustomUser } from "@/lib/types";
 
@@ -82,7 +82,7 @@ const VerifyEmailChange = async ({ params }: PageProps) => {
 
   const currentUserId = (session.user as CustomUser).id;
 
-  const data = await redis.get<{ email: string; newEmail: string }>(
+  const data = await kv.get<{ email: string; newEmail: string }>(
     `email-change-request:user:${currentUserId}`,
   );
 
@@ -99,7 +99,7 @@ const VerifyEmailChange = async ({ params }: PageProps) => {
     },
   });
 
-  waitUntil(
+  after(
     Promise.all([
       deleteRequest(tokenFound),
 
@@ -129,6 +129,6 @@ const deleteRequest = async (tokenFound: VerificationToken) => {
       },
     }),
 
-    redis.del(`email-change-request:user:${tokenFound.identifier}`),
+    kv.del(`email-change-request:user:${tokenFound.identifier}`),
   ]);
 };

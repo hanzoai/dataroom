@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { runs } from "@trigger.dev/sdk/v3";
-import { waitUntil } from "@vercel/functions";
+import { after } from "@/lib/after";
 import { getServerSession } from "next-auth/next";
 
 import { errorhandler } from "@/lib/errorHandler";
@@ -13,7 +13,7 @@ import { log, serializeFileSize } from "@/lib/utils";
 import { sortItemsByIndexAndName } from "@/lib/utils/sort-items-by-index-name";
 
 export const config = {
-  // in order to enable `waitUntil` function
+  // so background work can outlive the response
   supportsResponseStreaming: true,
 };
 
@@ -200,7 +200,7 @@ export default async function handle(
         // Cancel any existing unsent notification runs for this dataroom
         await Promise.all(allRuns.data.map((run) => runs.cancel(run.id)));
 
-        waitUntil(
+        after(
           sendDataroomChangeNotificationTask.trigger(
             {
               dataroomId,

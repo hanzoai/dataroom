@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 
 import { getYearInReviewStats } from "./get-stats";
+import { insert } from "@/lib/insert";
 
 export async function initializeEmailQueue() {
   const batchSize = 100; // Process teams in batches during initialization
@@ -39,10 +40,7 @@ export async function initializeEmailQueue() {
     ).filter((job): job is NonNullable<typeof job> => job !== null);
 
     // Bulk create jobs with precomputed stats
-    await prisma.yearInReview.createMany({
-      data: jobData,
-      skipDuplicates: true,
-    });
+    await insert(prisma.yearInReview, jobData);
 
     totalProcessed += teams.length;
     skip += batchSize;

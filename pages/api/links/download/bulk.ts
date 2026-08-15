@@ -10,9 +10,10 @@ import {
 } from "@/lib/dataroom/build-folder-hierarchy";
 import { notifyDocumentDownload } from "@/lib/integrations/slack/events";
 import prisma from "@/lib/prisma";
-import { downloadJobStore } from "@/lib/redis-download-job-store";
+import { downloadJobStore } from "@/lib/kv-download-job-store";
 import { bulkDownloadTask } from "@/lib/trigger/bulk-download";
 import { getIpAddress } from "@/lib/utils/ip";
+import { insert } from "@/lib/insert";
 
 export const config = {
   maxDuration: 60,
@@ -257,8 +258,7 @@ export default async function handle(
             documentCount: downloadableDocuments.length,
           };
 
-    await prisma.view.createMany({
-      data: downloadableDocuments.map((doc) => ({
+    await insert(prisma.view, downloadableDocuments.map((doc) => ({
         viewType: "DOCUMENT_VIEW",
         documentId: doc.document.id,
         linkId: linkId,
@@ -271,9 +271,7 @@ export default async function handle(
         downloadMetadata: downloadMetadata,
         viewerId: view.viewerId,
         verified: view.verified,
-      })),
-      skipDuplicates: true,
-    });
+      })));
 
     // Construct folderStructure and fileKeys
     const folderStructure: {

@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getStorageConfig } from "@/lib/storage/config";
 // Import authOptions directly from the source
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { ipAddress, waitUntil } from "@vercel/functions";
+import { after } from "@/lib/after";
 import { getServerSession } from "next-auth";
 
 import { hashToken } from "@/lib/api/auth/token";
@@ -15,14 +15,14 @@ import { getFile } from "@/lib/files/get-file";
 import { newId } from "@/lib/id-helper";
 import { notifyDocumentView } from "@/lib/integrations/slack/events";
 import prisma from "@/lib/prisma";
-import { ratelimit } from "@/lib/redis";
+import { ratelimit } from "@/lib/kv";
 import { parseSheet } from "@/lib/sheet";
 import { recordLinkView } from "@/lib/tracking/record-link-view";
 import { CustomUser, WatermarkConfigSchema } from "@/lib/types";
 import { checkPassword, decryptEncrpytedPassword, log } from "@/lib/utils";
 import { isEmailMatched } from "@/lib/utils/email-domain";
 import { generateOTP } from "@/lib/utils/generate-otp";
-import { LOCALHOST_IP } from "@/lib/utils/geo";
+import { LOCALHOST_IP, getClientIp } from "@/lib/utils/geo";
 import { checkGlobalBlockList } from "@/lib/utils/global-block-list";
 import { validateEmail } from "@/lib/utils/validate-email";
 
@@ -293,7 +293,7 @@ export async function POST(request: NextRequest) {
       // 1) email verification is required and
       // 2) code is not provided or token not provided
       if (link.emailAuthenticated && !code && !token) {
-        const ipAddressValue = ipAddress(request);
+        const ipAddressValue = getClientIp(request.headers);
 
         // Rate limit per email/link combination (1 per 30 seconds) to prevent OTP flooding
         const { success: emailLimitSuccess } = await ratelimit(1, "30 s").limit(
@@ -338,7 +338,7 @@ export async function POST(request: NextRequest) {
           },
         });
 
-        waitUntil(
+        after(
           sendOtpVerificationEmail(email, otpCode, false, link.teamId!),
         );
         return NextResponse.json({
@@ -348,7 +348,7 @@ export async function POST(request: NextRequest) {
       }
 
       if (link.emailAuthenticated && code) {
-        const ipAddressValue = ipAddress(request);
+        const ipAddressValue = getClientIp(request.headers);
         const { success } = await ratelimit(10, "1 m").limit(
           `verify-otp:${ipAddressValue}`,
         );
@@ -417,7 +417,7 @@ export async function POST(request: NextRequest) {
       }
 
       if (link.emailAuthenticated && token) {
-        const ipAddressValue = ipAddress(request);
+        const ipAddressValue = getClientIp(request.headers);
         const { success } = await ratelimit(10, "1 m").limit(
           `verify-email:${ipAddressValue}`,
         );
@@ -660,7 +660,7 @@ export async function POST(request: NextRequest) {
 
       if (newView) {
         // Record view in the background to avoid blocking the response
-        waitUntil(
+        after(
           // Record link view in Tinybird
           recordLinkView({
             req: request,
@@ -673,7 +673,7 @@ export async function POST(request: NextRequest) {
           }),
         );
         if (!isPreview) {
-          waitUntil(
+          after(
             notifyDocumentView({
               teamId: link.teamId!,
               documentId,
@@ -723,9 +723,7 @@ export async function POST(request: NextRequest) {
           WatermarkConfigSchema.parse(link.watermarkConfig).text.includes(
             "{{ipAddress}}",
           )
-            ? process.env.VERCEL === "1"
-              ? ipAddress(request)
-              : LOCALHOST_IP
+            ? getClientIp(request.headers) ?? LOCALHOST_IP
             : undefined,
         verificationToken: hashedVerificationToken ?? undefined,
         ...(isTeamMember && { isTeamMember: true }),

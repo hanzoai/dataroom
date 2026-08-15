@@ -7,10 +7,10 @@ import { getServerSession } from "next-auth/next";
 import path from "node:path";
 
 import { getS3ClientAndConfig } from "@/lib/files/aws-client";
-import { RedisLocker } from "@/lib/files/tus-redis-locker";
+import { KvLocker } from "@/lib/files/tus-kv-locker";
 import { newId } from "@/lib/id-helper";
 import prisma from "@/lib/prisma";
-import { lockerRedisClient } from "@/lib/redis";
+import { lockKv } from "@/lib/kv";
 import { CustomUser } from "@/lib/types";
 import { log, safeSlugify } from "@/lib/utils";
 import { getFileSizeLimit } from "@/lib/utils/get-file-size-limits";
@@ -24,8 +24,8 @@ export const config = {
   },
 };
 
-const locker = new RedisLocker({
-  redisClient: lockerRedisClient,
+const locker = new KvLocker({
+  client: lockKv,
 });
 
 const BYTES_PER_MEGABYTE = 1024 * 1024;

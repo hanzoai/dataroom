@@ -2,7 +2,7 @@ import prisma from "@/lib/prisma";
 import {
   DigestBatch,
   popDigestQueue,
-} from "@/lib/redis/dataroom-notification-queue";
+} from "@/lib/kv-queue/dataroom-notification-queue";
 import { log } from "@/lib/utils";
 import { generateUnsubscribeUrl } from "@/lib/utils/unsubscribe";
 

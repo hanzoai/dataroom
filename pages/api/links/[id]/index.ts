@@ -18,6 +18,7 @@ import { checkGlobalBlockList } from "@/lib/utils/global-block-list";
 
 import { DomainObject } from "..";
 import { authOptions } from "../../auth/[...nextauth]";
+import { insert } from "@/lib/insert";
 
 export default async function handle(
   req: NextApiRequest,
@@ -384,7 +385,6 @@ export default async function handle(
                     orderIndex: index,
                   }),
                 ),
-                skipDuplicates: true,
               },
             },
           }),
@@ -449,15 +449,12 @@ export default async function handle(
 
         // Create new associations
         if (linkData.visitorGroupIds?.length > 0) {
-          await tx.linkVisitorGroup.createMany({
-            data: linkData.visitorGroupIds.map(
+          await insert(tx.linkVisitorGroup, linkData.visitorGroupIds.map(
               (visitorGroupId: string) => ({
                 linkId: id,
                 visitorGroupId,
               }),
-            ),
-            skipDuplicates: true,
-          });
+            ));
         }
       }
       if (linkData.tags?.length) {
@@ -471,15 +468,12 @@ export default async function handle(
         });
 
         // Add new tags while avoiding duplicates
-        await tx.tagItem.createMany({
-          data: linkData.tags.map((tagId: string) => ({
+        await insert(tx.tagItem, linkData.tags.map((tagId: string) => ({
             tagId,
             itemType: "LINK_TAG",
             linkId: id,
             taggedBy: userId,
-          })),
-          skipDuplicates: true,
-        });
+          })));
       } else {
         // If all tags are removed, delete all tagged items for this link
         await tx.tagItem.deleteMany({

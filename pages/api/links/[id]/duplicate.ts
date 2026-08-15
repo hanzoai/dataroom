@@ -2,16 +2,17 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { Prisma } from "@prisma/client";
-import { waitUntil } from "@vercel/functions";
+import { after } from "@/lib/after";
 import { getServerSession } from "next-auth/next";
 
 import { errorhandler } from "@/lib/errorHandler";
 import prisma from "@/lib/prisma";
 import { CustomUser } from "@/lib/types";
 import { sendLinkCreatedWebhook } from "@/lib/webhook/triggers/link-created";
+import { insert } from "@/lib/insert";
 
 export const config = {
-  // in order to enable `waitUntil` function
+  // so background work can outlive the response
   supportsResponseStreaming: true,
 };
 
@@ -162,15 +163,12 @@ export default async function handle(
         });
 
         if (linkTags?.length) {
-          await tx.tagItem.createMany({
-            data: linkTags.map((tagId: string) => ({
+          await insert(tx.tagItem, linkTags.map((tagId: string) => ({
               tagId,
               itemType: "LINK_TAG",
               linkId: createdLink.id,
               taggedBy: (session.user as CustomUser).id,
-            })),
-            skipDuplicates: true,
-          });
+            })));
         }
 
         const tags = linkTags?.length
@@ -188,7 +186,7 @@ export default async function handle(
         views: [],
       };
 
-      waitUntil(
+      after(
         sendLinkCreatedWebhook({
           teamId,
           data: {

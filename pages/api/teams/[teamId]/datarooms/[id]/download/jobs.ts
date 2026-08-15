@@ -8,7 +8,7 @@ import prisma from "@/lib/prisma";
 import {
   type DownloadJob,
   downloadJobStore,
-} from "@/lib/redis-download-job-store";
+} from "@/lib/kv-download-job-store";
 import { CustomUser } from "@/lib/types";
 
 export default async function handler(

@@ -1,4 +1,4 @@
-import { get } from "@vercel/edge-config";
+import { getStringList } from "@/lib/config";
 import { parsePageId } from "notion-utils";
 
 import { DocumentData } from "@/lib/documents/create-document";
@@ -85,7 +85,7 @@ export const processDocument = async ({
       // Skip keyword check for trusted teams
       const trusted = await isTrustedTeam(teamId);
       if (!trusted) {
-        const keywords = await get("keywords");
+        const keywords = await getStringList("keywords");
         if (Array.isArray(keywords) && keywords.length > 0) {
           const matchedKeyword = keywords.find(
             (keyword) =>

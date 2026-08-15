@@ -14,7 +14,7 @@ import {
   XCircle,
 } from "lucide-react";
 
-import { DownloadJob } from "@/lib/redis-download-job-store";
+import { DownloadJob } from "@/lib/kv-download-job-store";
 import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";

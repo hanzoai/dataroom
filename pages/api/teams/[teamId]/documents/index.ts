@@ -12,9 +12,10 @@ import { CustomUser } from "@/lib/types";
 import { log, serializeFileSize } from "@/lib/utils";
 import { supportsAdvancedExcelMode } from "@/lib/utils/get-content-type";
 import { documentUploadSchema } from "@/lib/zod/url-validation";
+import { after } from "@/lib/after";
 
 export const config = {
-  // in order to enable `waitUntil` function
+  // so background work can outlive the response
   supportsResponseStreaming: true,
 };
 
@@ -84,7 +85,6 @@ export default async function handle(
         ...(query && {
           name: {
             contains: query,
-            mode: "insensitive" as const,
           },
         }),
         // For root view (no search/sort), only show root-level documents
