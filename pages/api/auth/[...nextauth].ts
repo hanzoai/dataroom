@@ -41,7 +41,13 @@ function HanzoIAMProvider(): OAuthConfig<any> {
           profile.preferred_username,
         email: profile.email,
         image: profile.avatar || profile.picture,
-        organization: profile.owner || profile.organization || profile.org,
+        // The org claim rides the TOKEN, never the user row. next-auth hands
+        // whatever profile() returns straight to prisma.user.create, and the
+        // User model has no `organization` column — so returning it made every
+        // first sign-in fail with PrismaClientValidationError, surfacing as
+        // ?error=OAuthCreateAccount. The jwt callback below already lifts the
+        // claim out of `profile` into the token, which is where the session
+        // reads it from, so nothing downstream loses the organization.
       };
     },
     allowDangerousEmailAccountLinking: true,
@@ -69,15 +75,17 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     jwt: async (params) => {
-      const { token, user, trigger } = params;
+      const { token, user, trigger, profile } = params;
       if (!token.email) {
         return {};
       }
       if (user) {
         token.user = user;
-        // Persist IAM organization claim from initial sign-in
-        if ((user as any).organization) {
-          token.organization = (user as any).organization;
+        // Persist IAM organization claim from initial sign-in. Read from the
+        // PROFILE — the user row never carries it (see profile() above).
+        const org = (profile as any)?.owner || (profile as any)?.organization || (profile as any)?.org
+        if (org) {
+          token.organization = org;
         }
       }
       // refresh the user data
