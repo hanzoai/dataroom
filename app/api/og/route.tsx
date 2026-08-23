@@ -11,8 +11,12 @@ export const runtime = "edge";
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const title = searchParams.get("title") || "Hanzo Dataroom Document";
-  const Inter = await fetch(
-    new URL("@/public/_static/Inter-Bold.ttf", import.meta.url),
+  // Satori rasterises on the server, so it needs the face as bytes and cannot
+  // use the @font-face from @hanzo/design. It reads TrueType and WOFF only — a
+  // WOFF2 throws "Unsupported OpenType signature wOF2" — so hand it the static
+  // TTF cut that @hanzo/font ships. Same family, still no vendored copy.
+  const zenBold = await fetch(
+    new URL("@hanzo/font/dist/fonts/zen-sans/Zen-Bold.ttf", import.meta.url),
   ).then((res) => res.arrayBuffer());
 
   return new ImageResponse(
@@ -33,8 +37,8 @@ export async function GET(request: NextRequest) {
       },
       fonts: [
         {
-          name: "Inter",
-          data: Inter,
+          name: "Zen",
+          data: zenBold,
         },
       ],
     },
