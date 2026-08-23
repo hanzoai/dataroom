@@ -4,16 +4,37 @@
  * declares every `--background` / `--foreground` / `--border` / `--radius`
  * custom property the components read, as plain CSS custom properties. There
  * is no Tailwind build step and no second copy of the palette in this repo.
+ *
+ * Type comes from @hanzo/design, and only the font group of it: Zen is the one
+ * family, and `tokens/fonts.css` is the narrowest entry that carries the two
+ * @font-face rules plus --font-sans / --font-mono. The full `styles.css` would
+ * also bring a second palette, which is the one thing the paragraph above rules
+ * out. The woff2 files live inside that package, so nothing is vendored here
+ * and the next Zen release arrives with a version bump.
  */
 @import "@hanzo/ui/theme.css";
+@import "@hanzo/design/tokens/fonts.css";
 
 * {
   border-color: var(--border);
 }
 
+/* Body names --font-sans directly. @hanzo/ui 8.0.x sets the family on a
+   zero-specificity `:where(html, body)`, so a plain `body` rule outranks it and
+   Zen applies without editing the dependency. Drop this and the page renders in
+   whatever sans the platform happens to ship. */
 body {
   background: var(--background);
   color: var(--foreground);
+  font-family: var(--font-sans);
+  font-feature-settings: var(--font-feature-settings);
+}
+
+code,
+kbd,
+samp,
+pre {
+  font-family: var(--font-mono);
 }
 
 @keyframes fade-in {

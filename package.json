@@ -39,6 +39,8 @@
     "@hanzo/cd": "^0.1.1",
     "@hanzo/dashboard": "^0.2.0",
     "@hanzo/data": "^1.2.2",
+    "@hanzo/design": "^0.5.21",
+    "@hanzo/font": "^1.8.0",
     "@hanzo/gui": "^8.0.1",
     "@hanzo/insights": "^1.357.1",
     "@hanzo/ui": "^8.0.39",
