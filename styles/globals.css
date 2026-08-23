@@ -1,3 +1,9 @@
+/* Zen is the one typeface. @hanzo/design carries the woff2 files and the
+   @font-face rules, so nothing is vendored here and a Zen release arrives with a
+   version bump. Must stay above the @tailwind directives: a CSS @import that
+   does not precede every other rule is dropped. */
+@import "@hanzo/design/tokens/fonts.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

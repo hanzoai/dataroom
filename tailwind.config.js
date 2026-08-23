@@ -20,6 +20,14 @@ module.exports = {
       },
     },
     extend: {
+      // The one place a family is named. Preflight puts fontFamily.sans on
+      // <html> and fontFamily.mono on code/kbd/samp/pre, so Zen reaches the
+      // whole document from here and the font-sans / font-mono utilities agree
+      // with it. The tokens come from @hanzo/design.
+      fontFamily: {
+        sans: ["var(--font-sans)"],
+        mono: ["var(--font-mono)"],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

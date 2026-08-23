@@ -4,12 +4,16 @@ import { NextRequest } from "next/server";
 export const runtime = "edge";
 
 export async function GET(req: NextRequest) {
-  const inter = await fetch(
-    new URL("@/styles/Inter-Regular.ttf", import.meta.url),
+  // Satori rasterises on the server, so it needs the face as bytes and cannot
+  // use the @font-face from @hanzo/design. It reads TrueType and WOFF only — a
+  // WOFF2 throws "Unsupported OpenType signature wOF2" — so hand it the static
+  // TTF cuts that @hanzo/font ships. Same family, still no vendored copy.
+  const zen = await fetch(
+    new URL("@hanzo/font/dist/fonts/zen-sans/Zen-Regular.ttf", import.meta.url),
   ).then((res) => res.arrayBuffer());
 
-  const interBold = await fetch(
-    new URL("@/public/_static/Inter-Bold.ttf", import.meta.url),
+  const zenBold = await fetch(
+    new URL("@hanzo/font/dist/fonts/zen-sans/Zen-Bold.ttf", import.meta.url),
   ).then((res) => res.arrayBuffer());
 
   const year = req.nextUrl.searchParams.get("year") || "2024";
@@ -83,14 +87,14 @@ export async function GET(req: NextRequest) {
       },
       fonts: [
         {
-          name: "Inter",
-          data: inter,
+          name: "Zen",
+          data: zen,
           weight: 400,
           style: "normal",
         },
         {
-          name: "Inter",
-          data: interBold,
+          name: "Zen",
+          data: zenBold,
           weight: 700,
           style: "normal",
         },
