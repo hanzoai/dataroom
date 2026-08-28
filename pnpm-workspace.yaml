@@ -1,0 +1,15 @@
+allowBuilds:
+  '@prisma/client': set this to true or false
+  '@prisma/engines': set this to true or false
+  canvas: set this to true or false
+  core-js: set this to true or false
+  esbuild: set this to true or false
+  prisma: set this to true or false
+  protobufjs: set this to true or false
+  sharp: set this to true or false
+  sqlite3: set this to true or false
+  unrs-resolver: set this to true or false
+minimumReleaseAgeExclude:
+  - '@hanzo/design@0.5.24'
+  - '@hanzo/font@1.9.2'
+  - '@hanzo/ui@8.25.0'

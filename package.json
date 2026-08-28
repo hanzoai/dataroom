@@ -35,16 +35,16 @@
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
     "@github/webauthn-json": "^2.1.1",
-    "@hanzo/canvas": "^0.2.1",
-    "@hanzo/cd": "^0.1.1",
-    "@hanzo/dashboard": "^0.2.0",
-    "@hanzo/data": "^1.2.2",
-    "@hanzo/design": "^0.5.21",
-    "@hanzo/font": "^1.8.0",
-    "@hanzo/gui": "^8.0.1",
-    "@hanzo/insights": "^1.357.1",
-    "@hanzo/ui": "^8.0.39",
-    "@hanzo/usage": "^0.1.6",
+    "@hanzo/canvas": "0.2.3",
+    "@hanzo/cd": "0.1.2",
+    "@hanzo/dashboard": "0.2.0",
+    "@hanzo/data": "1.2.4",
+    "@hanzo/design": "0.5.24",
+    "@hanzo/font": "1.9.2",
+    "@hanzo/gui": "8.3.0",
+    "@hanzo/insights": "1.358.1",
+    "@hanzo/ui": "8.25.0",
+    "@hanzo/usage": "0.1.7",
     "@hanzogui/config": "^8.0.1",
     "@hanzogui/next-theme": "^8.0.0",
     "@hookform/resolvers": "^5.2.2",
@@ -167,5 +167,6 @@
       "axios": "1.13.6"
     },
     "tar": "7.5.10"
-  }
+  },
+  "packageManager": "pnpm@11.24.0"
 }
