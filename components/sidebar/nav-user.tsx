@@ -13,7 +13,7 @@ import {
   MailIcon,
 } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 import { Avatar, AvatarFallback, AvatarImage, Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, Dialog, DialogContent, DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@hanzo/ui";
 

@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { useLimits } from "@/ee/limits/swr-handler";
 import { PlanEnum } from "@/ee/stripe/constants";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { mutate } from "swr";
 
 import { UpgradePlanModal } from "@/components/billing/upgrade-plan-modal";

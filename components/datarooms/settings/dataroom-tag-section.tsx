@@ -4,7 +4,7 @@ import { Dispatch, SetStateAction, useMemo, useState } from "react";
 
 import { PlanEnum } from "@/ee/stripe/constants";
 import { CircleHelpIcon, Tag } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { mutate } from "swr";
 
 import { usePlan } from "@/lib/swr/use-billing";
@@ -13,6 +13,7 @@ import { TagColorProps } from "@/lib/types";
 
 import { UpgradePlanModal } from "@/components/billing/upgrade-plan-modal";
 import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Label } from "@hanzo/ui";
+import { BadgeTooltip } from "@/components/button-tooltip";
 
 type TagProps = {
   id: string;

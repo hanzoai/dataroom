@@ -21,7 +21,7 @@ import { Pagination } from "@/components/documents/pagination";
 import { Button } from "@hanzo/ui";
 import { VisitorAvatar } from "@/components/visitors/visitor-avatar";
 
-import { Skeleton } from "../ui/skeleton";
+import Skeleton from "@/components/Skeleton";
 
 type Viewer = {
   id: string;

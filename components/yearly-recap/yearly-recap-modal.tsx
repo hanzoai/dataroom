@@ -25,7 +25,7 @@ import {
   X,
 } from "lucide-react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import useSWRImmutable from "swr/immutable";
 
 import { useAnalytics } from "@/lib/analytics";

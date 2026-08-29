@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 import { AlertTriangle, Lock, LockOpen } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 import useSAML from "@/lib/swr/use-saml";
 

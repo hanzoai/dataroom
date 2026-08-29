@@ -24,7 +24,7 @@ import {
   XIcon,
 } from "lucide-react";
 import { motion } from "motion/react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 import { moveDataroomDocumentToFolder } from "@/lib/documents/move-dataroom-documents";
 import { moveDataroomFolderToFolder } from "@/lib/documents/move-dataroom-folders";
@@ -55,6 +55,7 @@ import UploadZone, {
 
 import { itemsMessage } from "./folders/utils";
 import { MoveToDataroomFolderModal } from "./move-dataroom-folder-modal";
+import { ButtonTooltip } from "@/components/button-tooltip";
 
 type FolderOrDocument =
   | (DataroomFolderWithCount & { itemType: "folder" })

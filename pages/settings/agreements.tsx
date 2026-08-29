@@ -13,6 +13,8 @@ import AppLayout from "@/components/layouts/app";
 import AgreementSheet from "@/components/links/link-sheet/agreement-panel";
 import { SettingsHeader } from "@/components/settings/settings-header";
 import { Button } from "@hanzo/ui";
+import { BadgeTooltip } from "@/components/button-tooltip";
+import { createUpgradeButton } from "@/components/billing/upgrade-button";
 
 const AgreementsUpgradeButton = createUpgradeButton(
   "Create Agreements",

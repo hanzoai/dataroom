@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 import { useTeam } from "@/context/team-context";
 import { CheckCircleIcon, XIcon } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 const DEAL_TYPE_OPTIONS = [
   { value: "startup-fundraising", label: "Startup Fundraising" },

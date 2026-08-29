@@ -6,8 +6,8 @@ import { getSubdomain } from "@/lib/domains";
 import { DomainVerificationStatusProps } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-import { CopyButton } from "../ui/copy-button";
-import { TabSelect } from "../ui/tab-select";
+import { CopyButton } from "@/components/copy-button";
+import { TabSelect } from "@/components/tab-select";
 
 export default function DomainConfiguration({
   status,

@@ -17,7 +17,7 @@ import {
   X,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import useSWR, { mutate } from "swr";
 import z from "zod";
 

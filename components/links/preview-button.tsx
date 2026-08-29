@@ -3,8 +3,8 @@ import { EyeOffIcon } from "lucide-react";
 
 import { LinkWithViews } from "@/lib/types";
 
-import { Button } from "../ui/button";
-import { ButtonTooltip } from "../ui/tooltip";
+import { Button } from "@hanzo/ui";
+import { ButtonTooltip } from "@/components/button-tooltip";
 
 const PreviewButton = ({
   link,

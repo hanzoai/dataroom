@@ -7,7 +7,7 @@ import {
 } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 import { Button, DialogDescription, DialogTitle, Input } from "@hanzo/ui";
 

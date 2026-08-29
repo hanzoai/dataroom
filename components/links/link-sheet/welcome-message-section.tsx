@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Label } from "@radix-ui/react-label";
+import { Label } from "@hanzo/ui";
 import { motion } from "motion/react";
 
 import { FADE_IN_ANIMATION_SETTINGS } from "@/lib/constants";

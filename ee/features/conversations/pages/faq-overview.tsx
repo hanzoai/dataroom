@@ -17,7 +17,7 @@ import {
   ServerIcon,
   Trash2Icon,
 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import useSWR, { mutate } from "swr";
 import { z } from "zod";
 

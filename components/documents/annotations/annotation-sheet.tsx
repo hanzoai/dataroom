@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 import { Edit2, Eye, EyeOff, Plus, Trash2 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 import { useAnnotations } from "@/lib/swr/use-annotations";
 

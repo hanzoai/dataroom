@@ -5,7 +5,7 @@ import {
   publishFAQFormSchema,
 } from "@/ee/features/conversations/lib/schemas/faq";
 import { BookOpen, Check, FileText, Link2 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 import { Button, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, Label, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Textarea } from "@hanzo/ui";
 

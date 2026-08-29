@@ -3,7 +3,7 @@
 import { ReactNode, useEffect, useState } from "react";
 
 import { useSession } from "next-auth/react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 import { convertDataUrlToFile, uploadImage } from "@/lib/utils";
 

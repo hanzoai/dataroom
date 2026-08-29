@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { useEffect, useRef } from "react";
 
 import { Download } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 import { useSafePageViewTracker } from "@/lib/tracking/safe-page-view-tracker";
 import { getTrackingOptions } from "@/lib/tracking/tracking-config";

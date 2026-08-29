@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useTeam } from "@/context/team-context";
 import { getPriceIdFromPlan } from "@/ee/stripe/functions/get-price-id-from-plan";
 import { getQuantityFromPriceId } from "@/ee/stripe/functions/get-quantity-from-plan";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 import { useAnalytics } from "@/lib/analytics";
 import { usePlan } from "@/lib/swr/use-billing";

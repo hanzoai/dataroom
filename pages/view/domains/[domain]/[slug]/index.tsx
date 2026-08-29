@@ -30,6 +30,7 @@ import {
 import CustomMetaTag from "@/components/view/custom-metatag";
 import DataroomView from "@/components/view/dataroom/dataroom-view";
 import DocumentView from "@/components/view/document-view";
+import { Spinner as LoadingSpinner } from "@hanzo/gui";
 
 type DocumentLinkData = {
   linkType: "DOCUMENT_LINK";

@@ -21,7 +21,7 @@ import {
   Folder,
   HomeIcon,
 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { useDebounce } from "use-debounce";
 
 import { useFeatureFlags } from "@/lib/hooks/use-feature-flags";

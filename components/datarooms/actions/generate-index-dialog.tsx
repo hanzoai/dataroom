@@ -7,7 +7,7 @@ import {
   FileSpreadsheet,
   FileText,
 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 import { useAnalytics } from "@/lib/analytics";
 import { usePlan } from "@/lib/swr/use-billing";

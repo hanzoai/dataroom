@@ -1,4 +1,4 @@
-import { Skeleton } from "../ui/skeleton";
+import Skeleton from "@/components/Skeleton";
 
 export function LoadingDocuments({ count }: { count: number }) {
   return (

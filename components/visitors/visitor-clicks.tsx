@@ -4,8 +4,8 @@ import useSWR from "swr";
 
 import { fetcher } from "@/lib/utils";
 
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Skeleton } from "../ui/skeleton";
+import { Card, CardContent, CardHeader, CardTitle } from "@hanzo/ui";
+import Skeleton from "@/components/Skeleton";
 
 type ClickEvent = {
   timestamp: string;

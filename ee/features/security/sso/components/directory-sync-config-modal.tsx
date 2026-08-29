@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 import { Copy, Eye, EyeOff, FolderSync, Trash2 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 import useSCIM from "@/lib/swr/use-scim";
 

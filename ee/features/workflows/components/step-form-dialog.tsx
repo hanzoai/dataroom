@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { z } from "zod";
 
 import { cn } from "@/lib/utils";

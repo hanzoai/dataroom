@@ -22,7 +22,7 @@ import {
   Download,
   FileIcon,
 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import useSWR from "swr";
 
 import { Button } from "@hanzo/ui";
@@ -31,7 +31,7 @@ import { DataTablePagination } from "@/components/visitors/data-table-pagination
 import { usePlan } from "@/lib/swr/use-billing";
 import { fetcher, timeAgo } from "@/lib/utils";
 import { downloadCSV } from "@/lib/utils/csv";
-import { UpgradeButton } from "../ui/upgrade-button";
+import { UpgradeButton } from "@/components/billing/upgrade-button";
 
 
 interface Document {

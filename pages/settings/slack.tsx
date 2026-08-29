@@ -10,7 +10,7 @@ import {
   Settings,
   XCircleIcon,
 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 import { useAnalytics } from "@/lib/analytics";
 import {
@@ -25,6 +25,7 @@ import { SettingsHeader } from "@/components/settings/settings-header";
 import SlackSettingsSkeleton from "@/components/settings/slack-settings-skeleton";
 import { SlackIcon } from "@/components/shared/icons/slack-icon";
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Label, Separator, Switch } from "@hanzo/ui";
+import { BadgeTooltip } from "@/components/button-tooltip";
 
 export default function SlackSettings() {
   const router = useRouter();

@@ -24,7 +24,7 @@ import {
   Download,
   Link2Icon,
 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import useSWR from "swr";
 
 import { usePlan } from "@/lib/swr/use-billing";
@@ -35,7 +35,7 @@ import { downloadCSV } from "@/lib/utils/csv";
 import { Button } from "@hanzo/ui";
 import { DataTablePagination } from "@/components/visitors/data-table-pagination";
 
-import { UpgradeButton } from "../ui/upgrade-button";
+import { UpgradeButton } from "@/components/billing/upgrade-button";
 
 interface Link {
   id: string;

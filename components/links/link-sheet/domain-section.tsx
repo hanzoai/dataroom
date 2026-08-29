@@ -25,6 +25,7 @@ import { AddDomainModal } from "@/components/domains/add-domain-modal";
 import { Button, Input, Label, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@hanzo/ui";
 
 import { DEFAULT_LINK_TYPE } from ".";
+import { ButtonTooltip } from "@/components/button-tooltip";
 
 // Unambiguous alphabet: excludes easily confused characters (0/O, 1/l/I)
 const generateRandomSlug = customAlphabet(

@@ -13,6 +13,7 @@ import { Button, Dialog, DialogContent, DialogDescription, DialogFooter, DialogH
 import { DEFAULT_LINK_TYPE } from "..";
 import LinkItem from "../link-item";
 import { LinkUpgradeOptions } from "../link-options";
+import { BadgeTooltip } from "@/components/button-tooltip";
 
 function FolderSelectionModal({
   open,

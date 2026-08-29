@@ -16,8 +16,8 @@ import { capitalize, cn } from "@/lib/utils";
 
 import { DataroomTrialModal } from "../datarooms/dataroom-trial-modal";
 import X from "../shared/icons/x";
-import { Badge } from "../ui/badge";
-import { Switch } from "../ui/switch";
+import { Badge } from "@hanzo/ui";
+import { Switch } from "@hanzo/ui";
 
 export function UpgradePlanModal({
   clickedPlan,

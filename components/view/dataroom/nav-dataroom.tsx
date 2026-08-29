@@ -4,15 +4,16 @@ import React, { useEffect, useMemo, useState } from "react";
 
 import { DataroomBrand } from "@prisma/client";
 import { BadgeInfoIcon, Download } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 import { formatDate } from "@/lib/utils";
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@hanzo/ui";
 
-import { Button } from "../../ui/button";
+import { Button } from "@hanzo/ui";
 import { ConversationSidebar } from "../conversations/sidebar";
 import { ViewerDownloadProgressModal } from "./viewer-download-progress-modal";
+import { ButtonTooltip } from "@/components/button-tooltip";
 
 const DEFAULT_BANNER_IMAGE = "/_static/papermark-banner.png";
 

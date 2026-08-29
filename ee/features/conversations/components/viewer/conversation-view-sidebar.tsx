@@ -7,7 +7,7 @@ import { ConversationMessage } from "@/ee/features/conversations/components/shar
 import { FAQSection } from "@/ee/features/conversations/components/viewer/faq-section";
 import { format } from "date-fns";
 import { ArrowLeftIcon, BellIcon, BellOffIcon, Plus } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import useSWR, { mutate } from "swr";
 
 import { fetcher } from "@/lib/utils";

@@ -18,6 +18,7 @@ import { usePlan } from "@/lib/swr/use-billing";
 import { useDataroom } from "@/lib/swr/use-dataroom";
 import useDataroomGroups from "@/lib/swr/use-dataroom-groups";
 import { cn } from "@/lib/utils";
+import { BadgeTooltip } from "@/components/button-tooltip";
 
 export default function DataroomGroupPage() {
   const { isDatarooms, isDataroomsPlus, isTrial } = usePlan();

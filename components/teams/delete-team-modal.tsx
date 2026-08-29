@@ -3,14 +3,14 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { mutate } from "swr";
 
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@hanzo/ui";
 
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
+import { Button } from "@hanzo/ui";
+import { Input } from "@hanzo/ui";
+import { Label } from "@hanzo/ui";
 
 export function DeleteTeamModal({ children }: { children: React.ReactNode }) {
   const router = useRouter();

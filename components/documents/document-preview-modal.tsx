@@ -1,13 +1,14 @@
 import { useEffect } from "react";
 
 import { XIcon } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 import { useDocumentPreview } from "@/lib/swr/use-document-preview";
 
 import { Button, Dialog, DialogContent } from "@hanzo/ui";
 
 import { PreviewViewer } from "./preview-viewers/preview-viewer";
+import { Spinner as LoadingSpinner } from "@hanzo/gui";
 
 interface DocumentPreviewModalProps {
   documentId: string;

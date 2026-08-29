@@ -1,7 +1,7 @@
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 
 import { LinkPreset } from "@prisma/client";
-import { Label } from "@radix-ui/react-label";
+import { Label } from "@hanzo/ui";
 import { Upload as ArrowUpTrayIcon, PlusIcon } from "lucide-react";
 import { motion } from "motion/react";
 
@@ -14,6 +14,7 @@ import { Input, Textarea } from "@hanzo/ui";
 import { DEFAULT_LINK_TYPE } from ".";
 import LinkItem from "./link-item";
 import { LinkUpgradeOptions } from "./link-options";
+import { Spinner as LoadingSpinner } from "@hanzo/gui";
 
 export default function OGSection({
   data,

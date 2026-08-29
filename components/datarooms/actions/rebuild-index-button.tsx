@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { PlanEnum } from "@/ee/stripe/constants";
 import { ListOrderedIcon } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 import { useFeatureFlags } from "@/lib/hooks/use-feature-flags";
 import { usePlan } from "@/lib/swr/use-billing";

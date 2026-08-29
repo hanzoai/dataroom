@@ -9,9 +9,11 @@ import {
   ExternalLink,
   RefreshCw,
 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 import { Button, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, Input, Label } from "@hanzo/ui";
+import { ButtonTooltip } from "@/components/button-tooltip";
+import { Spinner as LoadingSpinner } from "@hanzo/gui";
 
 interface NotionAccessibilityIndicatorProps {
   documentId: string;

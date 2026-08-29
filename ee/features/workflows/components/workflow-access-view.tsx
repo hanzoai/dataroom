@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import NotFound from "@/pages/404";
 import { Brand, DataroomBrand } from "@prisma/client";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 import AccessForm, {
   DEFAULT_ACCESS_FORM_TYPE,

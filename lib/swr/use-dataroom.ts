@@ -4,7 +4,7 @@ import { useMemo } from "react";
 
 import { useTeam } from "@/context/team-context";
 import { Dataroom, DataroomDocument, DataroomFolder } from "@prisma/client";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import useSWR from "swr";
 
 import { LinkWithViews } from "@/lib/types";

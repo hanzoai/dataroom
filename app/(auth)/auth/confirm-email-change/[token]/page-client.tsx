@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 
 import { useSession } from "next-auth/react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
+import { Spinner as LoadingSpinner } from "@hanzo/gui";
 
 
 export default function ConfirmEmailChangePageClient() {

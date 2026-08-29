@@ -10,9 +10,9 @@ import { useAnalytics } from "@/lib/analytics";
 import { STAGGER_CHILD_VARIANTS } from "@/lib/constants";
 
 import { timeFormatter } from "../charts/utils";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
+import { Button } from "@hanzo/ui";
+import { Input } from "@hanzo/ui";
+import { Label } from "@hanzo/ui";
 
 function formatTotalDuration(totalDuration: number | null | undefined): string {
   if (totalDuration == null) {

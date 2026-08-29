@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { useTeam } from "@/context/team-context";
 import { PlanEnum } from "@/ee/stripe/constants";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { mutate } from "swr";
 import { z } from "zod";
 

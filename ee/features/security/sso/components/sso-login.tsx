@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 
 import { Shield } from "lucide-react";
 import { signIn } from "next-auth/react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 import { Button, Input, Label } from "@hanzo/ui";
 

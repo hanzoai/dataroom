@@ -12,7 +12,7 @@ import {
   Loader2,
   Users,
 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { mutate } from "swr";
 
 import { useDataroomLinks } from "@/lib/swr/use-dataroom";

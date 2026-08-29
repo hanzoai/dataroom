@@ -4,12 +4,13 @@ import { useEffect, useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { z } from "zod";
 
 import { uploadImage } from "@/lib/utils";
 
 import { Button, Checkbox, Input, Switch } from "@hanzo/ui";
+import { Spinner as LoadingSpinner } from "@hanzo/gui";
 
 const formSchema = z.object({
   title: z

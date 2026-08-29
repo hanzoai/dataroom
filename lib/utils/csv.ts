@@ -1,4 +1,4 @@
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 export function downloadCSV(data: any[], filename: string) {
   try {

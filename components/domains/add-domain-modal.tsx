@@ -4,7 +4,7 @@ import { useTeam } from "@/context/team-context";
 import { PlanEnum } from "@/ee/stripe/constants";
 import { LinkType } from "@prisma/client";
 import { AlertTriangleIcon, CircleCheckIcon, InfoIcon } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { useDebounce } from "use-debounce";
 
 import { useAnalytics } from "@/lib/analytics";
@@ -16,7 +16,8 @@ import { cn } from "@/lib/utils";
 import { Button, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, Input, Label } from "@hanzo/ui";
 
 import { UpgradePlanModal } from "../billing/upgrade-plan-modal";
-import { UpgradeButton } from "../ui/upgrade-button";
+import { UpgradeButton } from "@/components/billing/upgrade-button";
+import { Spinner as LoadingSpinner } from "@hanzo/gui";
 
 const sanitizeDomain = (value: string) =>
   value

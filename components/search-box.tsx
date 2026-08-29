@@ -16,8 +16,8 @@ import { CircleXIcon, SearchIcon } from "lucide-react";
 import { useDebouncedCallback } from "use-debounce";
 
 import { cn } from "@/lib/utils";
+import { Spinner as LoadingSpinner } from "@hanzo/gui";
 
-import LoadingSpinner from "./ui/loading-spinner";
 
 type SearchBoxProps = {
   value: string;

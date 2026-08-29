@@ -3,11 +3,13 @@ import { useEffect, useState } from "react";
 import { useTeam } from "@/context/team-context";
 import { DocumentVersion } from "@prisma/client";
 import { Edit, ExternalLink, LinkIcon } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 import { useAnalytics } from "@/lib/analytics";
 
 import { Button, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, Input, Label } from "@hanzo/ui";
+import { ButtonTooltip } from "@/components/button-tooltip";
+import { Spinner as LoadingSpinner } from "@hanzo/gui";
 
 interface LinkDocumentIndicatorProps {
   documentId: string;

@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { Check, Copy } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 import { Button, Dialog, DialogContent, DialogHeader, DialogTitle } from "@hanzo/ui";
 

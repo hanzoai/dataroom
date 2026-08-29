@@ -9,16 +9,16 @@ import { createHighlighter, type Highlighter } from "shiki";
 import { useCopyToClipboard } from "@/lib/utils/use-copy-to-clipboard";
 import { useMediaQuery } from "@/lib/utils/use-media-query";
 
-import { Button } from "../ui/button";
-import { ScrollArea } from "../ui/scroll-area";
+import { Button } from "@hanzo/ui";
+import { ScrollArea } from "@hanzo/ui";
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from "../ui/sheet";
-import { ButtonTooltip } from "../ui/tooltip";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@hanzo/ui";
+import { ButtonTooltip } from "@/components/button-tooltip";
 
 export type EventListProps = PropsWithChildren<{
   events: any[];
@@ -148,11 +148,11 @@ const WebhookEvent = ({ event }: { event: any }) => {
           })()}
         </div>
       </button>
-      <Sheet open={isOpen} onOpenChange={setIsOpen}>
-        <SheetContent className="flex w-[90%] flex-col justify-between border-l border-gray-200 bg-background px-4 text-foreground dark:border-gray-800 dark:bg-gray-900 sm:w-[600px] sm:max-w-2xl md:px-5">
-          <SheetHeader className="text-start">
-            <SheetTitle>{event.event}</SheetTitle>
-            <SheetDescription className="group flex items-center gap-2">
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent className="flex w-[90%] flex-col justify-between border-l border-gray-200 bg-background px-4 text-foreground dark:border-gray-800 dark:bg-gray-900 sm:w-[600px] sm:max-w-2xl md:px-5">
+          <DialogHeader className="text-start">
+            <DialogTitle>{event.event}</DialogTitle>
+            <DialogDescription className="group flex items-center gap-2">
               <p className="font-mono text-sm text-gray-500">
                 {event.event_id}
               </p>
@@ -165,8 +165,8 @@ const WebhookEvent = ({ event }: { event: any }) => {
               >
                 <CopyIcon className="size-4 opacity-0 transition-opacity group-hover:opacity-100" />
               </Button>
-            </SheetDescription>
-          </SheetHeader>
+            </DialogDescription>
+          </DialogHeader>
           <ScrollArea className="flex-grow">
             <div className="grid gap-4 border-t border-gray-200 bg-transparent py-4">
               <h4 className="font-semibold">Response</h4>
@@ -193,8 +193,8 @@ const WebhookEvent = ({ event }: { event: any }) => {
               </div>
             </div>
           </ScrollArea>
-        </SheetContent>
-      </Sheet>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

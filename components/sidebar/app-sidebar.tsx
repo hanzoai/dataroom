@@ -35,9 +35,9 @@ import { NavUser } from "@/components/sidebar/nav-user";
 import { TeamSwitcher } from "@/components/sidebar/team-switcher";
 
 import ProBanner from "../billing/pro-banner";
-import { Progress } from "../ui/progress";
-import { BadgeTooltip } from "../ui/tooltip";
+import { Progress } from "@hanzo/ui";
 import SlackBanner from "./banners/slack-banner";
+import { BadgeTooltip } from "@/components/button-tooltip";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const router = useRouter();

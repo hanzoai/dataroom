@@ -7,7 +7,7 @@ import { PlanEnum } from "@/ee/stripe/constants";
 import { Check, CircleHelpIcon, UploadIcon } from "lucide-react";
 import { HexColorInput, HexColorPicker } from "react-colorful";
 import sanitizeHtml from "sanitize-html";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { mutate } from "swr";
 import { useDebounce } from "use-debounce";
 
@@ -19,6 +19,7 @@ import { UpgradePlanModal } from "@/components/billing/upgrade-plan-modal";
 import AppLayout from "@/components/layouts/app";
 import { NavMenu } from "@/components/navigation-menu";
 import { Button, Card, CardContent, CardFooter, Checkbox, Label, Popover, PopoverContent, PopoverTrigger, Tabs, TabsContent, TabsList, TabsTrigger, Textarea } from "@hanzo/ui";
+import { BadgeTooltip } from "@/components/button-tooltip";
 
 export default function Branding() {
   const teamInfo = useTeam();

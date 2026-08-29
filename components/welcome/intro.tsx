@@ -4,7 +4,7 @@ import { motion } from "motion/react";
 
 import { STAGGER_CHILD_VARIANTS } from "@/lib/constants";
 
-import { Button } from "../ui/button";
+import { Button } from "@hanzo/ui";
 
 export default function Intro() {
   const router = useRouter();

@@ -4,7 +4,7 @@ import { Dispatch, SetStateAction, useState } from "react";
 
 import { useTeam } from "@/context/team-context";
 import { motion } from "motion/react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import z from "zod";
 
 import { useAnalytics } from "@/lib/analytics";

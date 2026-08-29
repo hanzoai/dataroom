@@ -6,7 +6,7 @@ import { useTeam } from "@/context/team-context";
 import { PlanEnum } from "@/ee/stripe/constants";
 import { LinkPreset } from "@prisma/client";
 import { AlertCircle, ArrowLeft, Trash2, X } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import useSWR from "swr";
 import z from "zod";
 

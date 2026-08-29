@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 
 import { FileUp } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 import { usePendingUploads } from "@/context/pending-uploads-context";
 import { DocumentData } from "@/lib/documents/create-document";

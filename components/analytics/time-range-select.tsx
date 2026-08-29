@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 
+type DateRange = { from?: Date; to?: Date };
+
 import { PlanEnum } from "@/ee/stripe/constants";
 import { differenceInDays, format, startOfDay, subDays } from "date-fns";
 import { CalendarIcon, ChevronDown, CrownIcon } from "lucide-react";
-import { DateRange } from "react-day-picker";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 import { Button, Popover, PopoverContent, PopoverTrigger } from "@hanzo/ui";
 
@@ -149,23 +150,45 @@ export function TimeRangeSelect({
       </PopoverTrigger>
       <PopoverContent className="w-auto p-2" align="end">
         <div className="flex gap-2">
-          <div className="rounded-md border">
-            <Calendar
-              mode="range"
-              defaultMonth={date?.from}
-              selected={date}
-              onSelect={handleRangeChange}
-              numberOfMonths={2}
-              disabled={
-                !isPremium
-                  ? (date) => {
-                      if (!date) return false;
-                      return differenceInDays(new Date(), date) > 30;
-                    }
-                  : undefined
-              }
-              fromDate={minDate}
-            />
+          <div
+            className="rounded-md border"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "0.5rem",
+              padding: "0.75rem",
+            }}
+          >
+            <label style={{ display: "grid", gap: "0.25rem", fontSize: "0.8125rem" }}>
+              From
+              <input
+                type="date"
+                value={date?.from ? format(date.from, "yyyy-MM-dd") : ""}
+                min={minDate ? format(minDate, "yyyy-MM-dd") : undefined}
+                max={format(new Date(), "yyyy-MM-dd")}
+                onChange={(e) => {
+                  const from = e.target.value
+                    ? startOfDay(new Date(e.target.value + "T00:00:00"))
+                    : undefined;
+                  handleRangeChange({ from, to: date?.to });
+                }}
+              />
+            </label>
+            <label style={{ display: "grid", gap: "0.25rem", fontSize: "0.8125rem" }}>
+              To
+              <input
+                type="date"
+                value={date?.to ? format(date.to, "yyyy-MM-dd") : ""}
+                min={date?.from ? format(date.from, "yyyy-MM-dd") : undefined}
+                max={format(new Date(), "yyyy-MM-dd")}
+                onChange={(e) => {
+                  const to = e.target.value
+                    ? startOfDay(new Date(e.target.value + "T00:00:00"))
+                    : undefined;
+                  handleRangeChange({ from: date?.from, to });
+                }}
+              />
+            </label>
           </div>
           <div className="flex flex-col gap-2">
             <div className="grid gap-1">

@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 
 import { useState } from "react";
 
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { mutate } from "swr";
 
 import { Team } from "@/lib/types";

@@ -6,7 +6,7 @@ import { useState } from "react";
 
 import { useTeam } from "@/context/team-context";
 import { PLANS } from "@/ee/stripe/utils";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { mutate } from "swr";
 
 import { usePlan } from "@/lib/swr/use-billing";

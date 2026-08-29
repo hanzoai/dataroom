@@ -15,22 +15,14 @@ import {
   ZoomInIcon,
   ZoomOutIcon,
 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 import { createAdaptiveSurfacePalette } from "@/lib/utils/create-adaptive-surface-palette";
 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuTrigger, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@hanzo/ui";
 
 import PapermarkSparkle from "../shared/icons/papermark-sparkle";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "../ui/breadcrumb";
-import { Button } from "../ui/button";
+import { Button } from "@hanzo/ui";
 import { AnnotationToggle } from "./annotations/annotation-toggle";
 import { ConversationSidebar } from "./conversations/sidebar";
 import ReportForm from "./report-form";
@@ -252,10 +244,20 @@ export default function Nav({
               )}
             </div>
             {isDataroom ? (
-              <Breadcrumb className="ml-6">
-                <BreadcrumbList>
-                  <BreadcrumbItem>
-                    <BreadcrumbLink
+              <nav aria-label="breadcrumb" className="ml-6">
+                <ol
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.375rem",
+                    listStyle: "none",
+                    margin: 0,
+                    padding: 0,
+                    fontSize: "0.875rem",
+                  }}
+                >
+                  <li>
+                    <a
                       className="cursor-pointer underline underline-offset-4 hover:font-medium"
                       href={`${dataroomPath}${isPreview ? "?previewToken=" + previewToken + "&preview=" + preview : ""}`}
                       style={{
@@ -263,24 +265,32 @@ export default function Nav({
                       }}
                     >
                       Home
-                    </BreadcrumbLink>
-                  </BreadcrumbItem>
+                    </a>
+                  </li>
                   {type === "notion" ? (
                     <>
-                      <BreadcrumbSeparator>
+                      <li role="presentation" aria-hidden="true">
                         <Slash />
-                      </BreadcrumbSeparator>
+                      </li>
                       <div id="view-breadcrump-portal"></div>
                     </>
                   ) : null}
-                </BreadcrumbList>
-              </Breadcrumb>
+                </ol>
+              </nav>
             ) : type === "notion" ? (
-              <Breadcrumb>
-                <BreadcrumbList>
+              <nav aria-label="breadcrumb">
+                <ol
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    listStyle: "none",
+                    margin: 0,
+                    padding: 0,
+                  }}
+                >
                   <div id="view-breadcrump-portal"></div>
-                </BreadcrumbList>
-              </Breadcrumb>
+                </ol>
+              </nav>
             ) : null}
           </div>
           <div className="absolute inset-y-0 right-0 flex items-center space-x-2 pr-2 sm:static sm:inset-auto sm:ml-6 sm:space-x-4 sm:pr-0">

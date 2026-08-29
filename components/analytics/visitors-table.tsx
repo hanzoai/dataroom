@@ -24,7 +24,7 @@ import {
   Download,
   UserIcon,
 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import useSWR from "swr";
 
 import { usePlan } from "@/lib/swr/use-billing";
@@ -35,7 +35,8 @@ import { Button } from "@hanzo/ui";
 import { DataTablePagination } from "@/components/visitors/data-table-pagination";
 import { VisitorAvatar } from "@/components/visitors/visitor-avatar";
 
-import { UpgradeButton } from "../ui/upgrade-button";
+import { UpgradeButton } from "@/components/billing/upgrade-button";
+import { BadgeTooltip } from "@/components/button-tooltip";
 
 interface Visitor {
   email: string;

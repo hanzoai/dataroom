@@ -5,7 +5,7 @@ import { useRef, useState } from "react";
 import { useTeam } from "@/context/team-context";
 import { addDays, format } from "date-fns";
 import { BarChart3 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import useSWR from "swr";
 
 import { usePlan } from "@/lib/swr/use-billing";

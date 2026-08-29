@@ -10,6 +10,7 @@ import DataroomView from "@/components/view/dataroom/dataroom-view";
 import DocumentView from "@/components/view/document-view";
 
 import { ViewPageProps } from "./index";
+import { Spinner as LoadingSpinner } from "@hanzo/gui";
 
 // Reuse the same getStaticProps and getStaticPaths from the main view page
 export { getStaticProps, getStaticPaths } from "./index";

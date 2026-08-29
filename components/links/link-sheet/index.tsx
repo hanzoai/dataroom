@@ -8,7 +8,7 @@ import { PlanEnum } from "@/ee/stripe/constants";
 import { LinkAudienceType, LinkPreset, LinkType } from "@prisma/client";
 import { RefreshCwIcon } from "lucide-react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { mutate } from "swr";
 import useSWR from "swr";
 
@@ -28,6 +28,7 @@ import { type ItemPermission } from "./dataroom-link-sheet";
 import DomainSection from "./domain-section";
 import { LinkOptions } from "./link-options";
 import TagSection from "./tags/tag-section";
+import { ButtonTooltip } from "@/components/button-tooltip";
 
 export const DEFAULT_LINK_PROPS = (
   linkType: Omit<LinkType, "WORKFLOW_LINK">,

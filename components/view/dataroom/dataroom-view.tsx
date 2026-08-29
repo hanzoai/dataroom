@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 
 import { DataroomBrand } from "@prisma/client";
 import Cookies from "js-cookie";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 import { PendingUploadsProvider } from "@/context/pending-uploads-context";
 import { useAnalytics } from "@/lib/analytics";
@@ -19,6 +19,7 @@ import AccessForm, {
 
 import EmailVerificationMessage from "../access-form/email-verification-form";
 import DataroomViewer from "../viewer/dataroom-viewer";
+import { Spinner as LoadingSpinner } from "@hanzo/gui";
 
 export type TSupportedDocumentSimpleType =
   (typeof SUPPORTED_DOCUMENT_SIMPLE_TYPES)[number];

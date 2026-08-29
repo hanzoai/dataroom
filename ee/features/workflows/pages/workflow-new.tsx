@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { useTeam } from "@/context/team-context";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import useSWR from "swr";
 import { fetcher } from "@/lib/utils";
 import AppLayout from "@/components/layouts/app";

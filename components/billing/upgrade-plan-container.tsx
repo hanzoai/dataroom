@@ -12,7 +12,7 @@ import {
   MoreVertical,
   ReceiptTextIcon,
 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { mutate } from "swr";
 
 import { useAnalytics } from "@/lib/analytics";

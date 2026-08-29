@@ -7,7 +7,7 @@ import { ExternalLink, Shield, Sparkles } from "lucide-react";
 
 import PapermarkSparkle from "@/components/shared/icons/papermark-sparkle";
 import { useSession } from "next-auth/react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import useSWR from "swr";
 
 import { useFeatureFlags } from "@/lib/hooks/use-feature-flags";
@@ -18,6 +18,7 @@ import { fetcher } from "@/lib/utils";
 import AppLayout from "@/components/layouts/app";
 import { SettingsHeader } from "@/components/settings/settings-header";
 import { Badge, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Label, Switch } from "@hanzo/ui";
+import { Spinner as LoadingSpinner } from "@hanzo/gui";
 
 interface AISettings {
   agentsEnabled: boolean;

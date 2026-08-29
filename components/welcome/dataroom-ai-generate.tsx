@@ -4,17 +4,17 @@ import { useState } from "react";
 import { useTeam } from "@/context/team-context";
 import { FolderIcon, Sparkles } from "lucide-react";
 import { motion } from "motion/react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { mutate } from "swr";
 
 import { useAnalytics } from "@/lib/analytics";
 import { STAGGER_CHILD_VARIANTS } from "@/lib/constants";
 
-import { Button } from "../ui/button";
-import { Checkbox } from "../ui/checkbox";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
-import { Textarea } from "../ui/textarea";
+import { Button } from "@hanzo/ui";
+import { Checkbox } from "@hanzo/ui";
+import { Input } from "@hanzo/ui";
+import { Label } from "@hanzo/ui";
+import { Textarea } from "@hanzo/ui";
 
 export default function DataroomAIGenerate() {
   const router = useRouter();

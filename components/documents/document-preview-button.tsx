@@ -5,6 +5,7 @@ import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { Button } from "@hanzo/ui";
 
 import { DocumentPreviewModal } from "./document-preview-modal";
+import { ButtonTooltip } from "@/components/button-tooltip";
 
 interface DocumentPreviewButtonProps {
   documentId: string;

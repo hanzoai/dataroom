@@ -2,7 +2,7 @@ import { useCallback } from "react";
 
 import { DocumentStorageType } from "@prisma/client";
 import { FileRejection, useDropzone } from "react-dropzone";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 import { VIEWER_ACCEPTED_FILE_TYPES } from "@/lib/constants";
 import { DocumentData } from "@/lib/documents/create-document";

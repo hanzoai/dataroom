@@ -15,8 +15,7 @@ import {
   PermissionGroupAccessControls,
   ViewerGroupAccessControls,
 } from "@prisma/client";
-import * as SheetPrimitive from "@radix-ui/react-dialog";
-import { PanelLeftIcon, UploadIcon, XIcon } from "lucide-react";
+import { ChevronRightIcon, PanelLeftIcon, UploadIcon, XIcon } from "lucide-react";
 
 import { usePendingUploads } from "@/context/pending-uploads-context";
 import { cn } from "@/lib/utils";
@@ -28,7 +27,14 @@ import { sortByIndexThenName } from "@/lib/utils/sort-items-by-index-name";
 
 import { ViewFolderTree } from "@/components/datarooms/folders";
 import { SearchBoxPersisted } from "@/components/search-box";
-import { ScrollArea, ScrollBar } from "@hanzo/ui";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogTrigger,
+  ScrollArea,
+  ScrollBar,
+} from "@hanzo/ui";
 
 import { DEFAULT_DATAROOM_VIEW_TYPE } from "../dataroom/dataroom-view";
 import DocumentCard from "../dataroom/document-card";
@@ -65,23 +71,25 @@ const ViewerBreadcrumbItem = ({
 
   if (isLast) {
     return (
-      <BreadcrumbPage
+      <span
+        role="link"
+        aria-current="page"
         className="capitalize text-[var(--viewer-text)]"
-        style={HIERARCHICAL_DISPLAY_STYLE}
+        style={{ ...HIERARCHICAL_DISPLAY_STYLE, textTransform: "capitalize" }}
       >
         {displayName}
-      </BreadcrumbPage>
+      </span>
     );
   }
 
   return (
-    <BreadcrumbLink
+    <a
       onClick={() => setFolderId(folder.id)}
       className="cursor-pointer capitalize text-[var(--viewer-muted-text)] hover:text-[var(--viewer-text)]"
-      style={HIERARCHICAL_DISPLAY_STYLE}
+      style={{ ...HIERARCHICAL_DISPLAY_STYLE, textTransform: "capitalize", cursor: "pointer" }}
     >
       {displayName}
-    </BreadcrumbLink>
+    </a>
   );
 };
 
@@ -540,8 +548,8 @@ export default function DataroomViewer({
                 <div className="flex items-center gap-x-2">
                   {/* sidebar for mobile */}
                   <div className="flex md:hidden">
-                    <Sheet>
-                      <SheetTrigger asChild>
+                    <Dialog>
+                      <DialogTrigger asChild>
                         <button className={cn(
                           "lg:hidden",
                           "text-[var(--viewer-subtle-text)]",
@@ -551,65 +559,74 @@ export default function DataroomViewer({
                             aria-hidden="true"
                           />
                         </button>
-                      </SheetTrigger>
-                      <SheetPortal>
-                        <SheetOverlay className="fixed top-[35dvh] z-50 bg-background/80 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
-                        <SheetPrimitive.Content
-                          className={cn(
-                            "fixed top-[35dvh] z-50 gap-4 bg-background p-6 shadow-lg transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500 data-[state=open]:animate-in data-[state=closed]:animate-out",
-                            "left-0 h-full w-3/4 border-r data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left sm:max-w-lg",
-                            "m-0 w-[280px] p-0 sm:w-[300px] lg:hidden",
-                          )}
-                        >
-                          <div className="mt-8 h-full space-y-8 overflow-auto px-2 py-3">
-                            <ViewerSurfaceThemeProvider value={mobileTreeTheme}>
-                              <ViewFolderTree
-                                folders={folders}
-                                documents={documents}
-                                setFolderId={setFolderId}
-                                folderId={folderId}
-                                dataroomIndexEnabled={dataroomIndexEnabled}
-                              />
-                            </ViewerSurfaceThemeProvider>
-                          </div>
-                          <SheetPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
+                      </DialogTrigger>
+                      <DialogContent className="m-0 w-[280px] p-0 sm:w-[300px] lg:hidden">
+                        <div className="mt-8 h-full space-y-8 overflow-auto px-2 py-3">
+                          <ViewerSurfaceThemeProvider value={mobileTreeTheme}>
+                            <ViewFolderTree
+                              folders={folders}
+                              documents={documents}
+                              setFolderId={setFolderId}
+                              folderId={folderId}
+                              dataroomIndexEnabled={dataroomIndexEnabled}
+                            />
+                          </ViewerSurfaceThemeProvider>
+                        </div>
+                        <DialogClose asChild>
+                          <button className="absolute right-4 top-4 rounded-sm opacity-70">
                             <XIcon className="h-4 w-4" />
                             <span className="sr-only">Close</span>
-                          </SheetPrimitive.Close>
-                        </SheetPrimitive.Content>
-                      </SheetPortal>
-                    </Sheet>
+                          </button>
+                        </DialogClose>
+                      </DialogContent>
+                    </Dialog>
                   </div>
 
                   <div className="flex flex-1 items-center justify-between gap-x-2">
-                    <Breadcrumb>
-                      <BreadcrumbList className="text-[var(--viewer-muted-text)]">
-                        <BreadcrumbItem key={"root"}>
-                          <BreadcrumbLink
+                    <nav aria-label="breadcrumb">
+                      <ol
+                        className="text-[var(--viewer-muted-text)]"
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "0.375rem",
+                          listStyle: "none",
+                          margin: 0,
+                          padding: 0,
+                          fontSize: "0.875rem",
+                        }}
+                      >
+                        <li key={"root"}>
+                          <a
                             onClick={() => setFolderId(null)}
                             className="cursor-pointer text-[var(--viewer-muted-text)] hover:text-[var(--viewer-text)]"
+                            style={{ cursor: "pointer" }}
                           >
                             Home
-                          </BreadcrumbLink>
-                        </BreadcrumbItem>
+                          </a>
+                        </li>
 
                         {breadcrumbFolders.map((folder, index) => (
                           <React.Fragment key={folder.id}>
-                            <BreadcrumbSeparator
+                            <li
+                              role="presentation"
+                              aria-hidden="true"
                               className="text-[var(--viewer-subtle-text)]"
-                            />
-                            <BreadcrumbItem>
+                            >
+                              <ChevronRightIcon size={14} />
+                            </li>
+                            <li>
                               <ViewerBreadcrumbItem
                                 folder={folder}
                                 setFolderId={setFolderId}
                                 isLast={index === breadcrumbFolders.length - 1}
                                 dataroomIndexEnabled={dataroomIndexEnabled}
                               />
-                            </BreadcrumbItem>
+                            </li>
                           </React.Fragment>
                         ))}
-                      </BreadcrumbList>
-                    </Breadcrumb>
+                      </ol>
+                    </nav>
 
                     <div className="flex items-center gap-x-2">
                       <IntroductionInfoButton />

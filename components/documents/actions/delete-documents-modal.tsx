@@ -9,7 +9,7 @@ import {
 } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { mutate } from "swr";
 
 import { useAnalytics } from "@/lib/analytics";

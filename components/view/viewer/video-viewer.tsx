@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 import { createVideoTracker } from "@/lib/tracking/video-tracking";
 import { cn } from "@/lib/utils";

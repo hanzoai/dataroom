@@ -4,7 +4,7 @@ import { Dispatch, SetStateAction, useMemo, useState } from "react";
 
 import { PlanEnum } from "@/ee/stripe/constants";
 import { CircleHelpIcon, Tag } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { mutate } from "swr";
 
 import { usePlan } from "@/lib/swr/use-billing";
@@ -15,6 +15,7 @@ import { UpgradePlanModal } from "@/components/billing/upgrade-plan-modal";
 import { Label } from "@hanzo/ui";
 
 import { DEFAULT_LINK_TYPE } from "..";
+import { BadgeTooltip } from "@/components/button-tooltip";
 
 function getTagOption(tag: TagProps) {
   return {

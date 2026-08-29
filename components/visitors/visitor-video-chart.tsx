@@ -11,6 +11,7 @@ import useSWR from "swr";
 import { Card } from "@hanzo/ui";
 
 import { fetcher } from "@/lib/utils";
+import { Spinner as LoadingSpinner } from "@hanzo/gui";
 
 export default function VisitorVideoChart({
   documentId,

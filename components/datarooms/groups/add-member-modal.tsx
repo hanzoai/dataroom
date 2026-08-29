@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { mutate } from "swr";
 
 import { Button, Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, Label, Tabs, TabsContent, TabsList, TabsTrigger, Textarea } from "@hanzo/ui";

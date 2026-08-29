@@ -4,7 +4,7 @@ import React from "react";
 
 import { Download, MoreVerticalIcon } from "lucide-react";
 import { useTheme } from "next-themes";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 import { timeAgo } from "@/lib/utils";
 import { cn } from "@/lib/utils";

@@ -23,6 +23,7 @@ import { CustomUser, LinkWithDataroomDocument, NotionTheme } from "@/lib/types";
 
 import CustomMetaTag from "@/components/view/custom-metatag";
 import DataroomDocumentView from "@/components/view/dataroom/dataroom-document-view";
+import { Spinner as LoadingSpinner } from "@hanzo/gui";
 
 type DataroomDocumentLinkData = {
   linkType: "DATAROOM_LINK";

@@ -26,6 +26,7 @@ import { DataroomViewStats } from "./dataroom-view-stats";
 import DataroomVisitorCustomFields from "./dataroom-visitor-custom-fields";
 import { DataroomVisitorUserAgent } from "./dataroom-visitor-useragent";
 import { VisitorAvatar } from "./visitor-avatar";
+import { BadgeTooltip } from "@/components/button-tooltip";
 
 export default function DataroomVisitorsTable({
   dataroomId,

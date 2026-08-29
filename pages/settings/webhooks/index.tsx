@@ -11,6 +11,7 @@ import PlanBadge from "@/components/billing/plan-badge";
 import AppLayout from "@/components/layouts/app";
 import { SettingsHeader } from "@/components/settings/settings-header";
 import { Button } from "@hanzo/ui";
+import { BadgeTooltip } from "@/components/button-tooltip";
 
 interface Webhook {
   id: string;

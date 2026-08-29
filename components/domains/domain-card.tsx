@@ -13,7 +13,7 @@ import {
   TrashIcon,
 } from "lucide-react";
 import { motion } from "motion/react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { mutate } from "swr";
 
 import { cn } from "@/lib/utils";

@@ -4,8 +4,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@hanzo/ui";
 
 import { generateGravatarHash } from "@/lib/utils";
 import { cn } from "@/lib/utils";
+import { BadgeTooltip } from "@/components/button-tooltip";
 
-import { BadgeTooltip } from "../ui/tooltip";
 
 export const VisitorAvatar = ({
   viewerEmail,

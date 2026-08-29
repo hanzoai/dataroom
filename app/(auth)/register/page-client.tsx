@@ -8,7 +8,7 @@ import { useState } from "react";
 
 import HanzoLogo from "@/public/_static/papermark-logo.svg";
 import { signIn } from "next-auth/react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 import LinkedIn from "@/components/shared/icons/linkedin";
 import { Button, Input } from "@hanzo/ui";

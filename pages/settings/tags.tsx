@@ -11,7 +11,7 @@ import {
   TagIcon,
   TrashIcon,
 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { z } from "zod";
 
 import { useTags } from "@/lib/swr/use-tags";
@@ -27,6 +27,7 @@ import { SearchBoxPersisted } from "@/components/search-box";
 import { SettingsHeader } from "@/components/settings/settings-header";
 import { AddTagsModal } from "@/components/tags/add-tag-modal";
 import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@hanzo/ui";
+import { BadgeTooltip } from "@/components/button-tooltip";
 
 const schema = z.object({
   name: z

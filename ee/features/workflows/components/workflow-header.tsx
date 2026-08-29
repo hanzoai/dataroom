@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { z } from "zod";
 import { TrashIcon, CopyIcon } from "lucide-react";
 import { Button, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, Label, Switch } from "@hanzo/ui";

@@ -17,6 +17,7 @@ import { UpgradePlanModal } from "@/components/billing/upgrade-plan-modal";
 import AppLayout from "@/components/layouts/app";
 import { SettingsHeader } from "@/components/settings/settings-header";
 import { Badge, Button } from "@hanzo/ui";
+import { BadgeTooltip } from "@/components/button-tooltip";
 
 export default function Presets() {
   const router = useRouter();

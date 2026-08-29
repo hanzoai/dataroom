@@ -29,7 +29,7 @@ import {
   Trash2Icon,
 } from "lucide-react";
 import { useQueryState } from "nuqs";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { mutate } from "swr";
 import z from "zod";
 
@@ -47,9 +47,8 @@ import FileProcessStatusBar from "../documents/file-process-status-bar";
 import BarChart from "../shared/icons/bar-chart";
 import ChevronDown from "../shared/icons/chevron-down";
 import MoreHorizontal from "../shared/icons/more-horizontal";
-import { Badge } from "../ui/badge";
-import { Label } from "../ui/label";
-import { ButtonTooltip } from "../ui/tooltip";
+import { Badge } from "@hanzo/ui";
+import { Label } from "@hanzo/ui";
 import { useDeleteLinkModal } from "./delete-link-modal";
 import EmbedCodeModal from "./embed-code-modal";
 import LinkActiveControls, {
@@ -63,6 +62,7 @@ import { DataroomLinkSheet } from "./link-sheet/dataroom-link-sheet";
 import { PermissionsSheet } from "./link-sheet/permissions-sheet";
 import { TagColumn } from "./link-sheet/tags/tag-details";
 import LinksVisitors from "./links-visitors";
+import { ButtonTooltip } from "@/components/button-tooltip";
 
 const isDocumentProcessing = (version?: DocumentVersion) => {
   if (!version) return false;

@@ -9,6 +9,7 @@ import { LinkWithViews, TagColorProps, TagProps } from "@/lib/types";
 
 
 import TagBadge from "./tag-badge";
+import { BadgeTooltip } from "@/components/button-tooltip";
 
 
 function useOrganizedTags(tags: LinkWithViews["tags"]) {

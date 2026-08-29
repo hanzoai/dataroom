@@ -19,7 +19,7 @@ import {
   ThumbsDownIcon,
   ThumbsUpIcon,
 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { mutate } from "swr";
 
 import { usePlan } from "@/lib/swr/use-billing";
@@ -32,7 +32,7 @@ import { Badge, Collapsible, CollapsibleContent, CollapsibleTrigger } from "@han
 
 import { UpgradePlanModal } from "../billing/upgrade-plan-modal";
 import { Pagination } from "../documents/pagination";
-import { Button } from "../ui/button";
+import { Button } from "@hanzo/ui";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -40,7 +40,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+} from "@hanzo/ui";
 import { VisitorAvatar } from "./visitor-avatar";
 import VisitorChart from "./visitor-chart";
 import VisitorClicks from "./visitor-clicks";
@@ -48,6 +48,7 @@ import VisitorCustomFields from "./visitor-custom-fields";
 import VisitorUserAgent from "./visitor-useragent";
 import VisitorUserAgentPlaceholder from "./visitor-useragent-placeholder";
 import VisitorVideoChart from "./visitor-video-chart";
+import { BadgeTooltip } from "@/components/button-tooltip";
 
 export default function VisitorsTable({
   primaryVersion,

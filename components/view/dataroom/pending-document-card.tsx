@@ -12,7 +12,7 @@ import {
   Upload,
 } from "lucide-react";
 import { useTheme } from "next-themes";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import useSWRImmutable from "swr/immutable";
 
 import {

@@ -25,7 +25,7 @@ import {
   XIcon,
 } from "lucide-react";
 import { motion } from "motion/react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { mutate } from "swr";
 
 import { moveDocumentToFolder } from "@/lib/documents/move-documents";
@@ -42,10 +42,9 @@ import UploadZone, {
 } from "@/components/upload-zone";
 
 import { itemsMessage } from "../datarooms/folders/utils";
-import { Button } from "../ui/button";
-import { Checkbox } from "../ui/checkbox";
-import { Portal } from "../ui/portal";
-import { ButtonTooltip } from "../ui/tooltip";
+import { Button } from "@hanzo/ui";
+import { Checkbox } from "@hanzo/ui";
+import { Portal } from "@/components/portal";
 import { useDeleteDocumentsAndFoldersModal } from "./actions/delete-documents-modal";
 import { useDeleteFolderModal } from "./actions/delete-folder-modal";
 import DocumentCard from "./document-card";
@@ -54,6 +53,7 @@ import { DroppableFolder } from "./drag-and-drop/droppable-folder";
 import { EmptyDocuments } from "./empty-document";
 import FolderCard from "./folder-card";
 import { MoveToFolderModal, TSelectedFolder } from "./move-folder-modal";
+import { ButtonTooltip } from "@/components/button-tooltip";
 
 export type Upload = {
   fileName: string;

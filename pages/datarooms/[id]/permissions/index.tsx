@@ -12,6 +12,7 @@ import AppLayout from "@/components/layouts/app";
 import LinkSheet from "@/components/links/link-sheet";
 import LinksTable from "@/components/links/links-table";
 import { Button, Tabs, TabsContent, TabsList, TabsTrigger } from "@hanzo/ui";
+import { BadgeTooltip } from "@/components/button-tooltip";
 
 export default function DataroomAnalyticsPage() {
   const { dataroom } = useDataroom();

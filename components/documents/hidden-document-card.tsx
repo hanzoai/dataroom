@@ -10,7 +10,7 @@ import {
   TrashIcon,
 } from "lucide-react";
 import { useTheme } from "next-themes";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { mutate } from "swr";
 
 import { DocumentWithLinksAndLinkCountAndViewCount } from "@/lib/types";
@@ -19,6 +19,7 @@ import { fileIcon } from "@/lib/utils/get-file-icon";
 
 import BarChart from "@/components/shared/icons/bar-chart";
 import { Button, Checkbox, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@hanzo/ui";
+import { BadgeTooltip } from "@/components/button-tooltip";
 
 type HiddenDocumentCardProps = {
   document: DocumentWithLinksAndLinkCountAndViewCount;

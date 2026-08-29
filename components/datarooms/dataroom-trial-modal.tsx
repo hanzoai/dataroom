@@ -4,8 +4,7 @@ import { useState } from "react";
 
 import { useTeam } from "@/context/team-context";
 import { PlanEnum } from "@/ee/stripe/constants";
-import { E164Number } from "libphonenumber-js";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { mutate } from "swr";
 
 import { useAnalytics } from "@/lib/analytics";
@@ -13,14 +12,13 @@ import { useAnalytics } from "@/lib/analytics";
 import { Button, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, Input, Label } from "@hanzo/ui";
 
 import { UpgradePlanModal } from "../billing/upgrade-plan-modal";
-import { PhoneInput } from "../ui/phone-input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
+} from "@hanzo/ui";
 
 export function DataroomTrialModal({
   children,
@@ -37,7 +35,7 @@ export function DataroomTrialModal({
   const [companySize, setCompanySize] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [companyName, setCompanyName] = useState<string>("");
-  const [phoneNumber, setPhoneNumber] = useState<E164Number | null>(null);
+  const [phoneNumber, setPhoneNumber] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(openModal);
 
@@ -225,10 +223,10 @@ export function DataroomTrialModal({
           </div>
           <div className="space-y-1">
             <Label className="opacity-80">Phone Number</Label>
-            <PhoneInput
+            <Input
+              type="tel"
               placeholder="+1 123 456 7890"
-              onChange={(value) => setPhoneNumber(value)}
-              defaultCountry="US"
+              onChange={(e) => setPhoneNumber(e.target.value)}
             />
           </div>
 

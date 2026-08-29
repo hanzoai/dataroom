@@ -1,7 +1,6 @@
 import { CheckIcon, XIcon } from "lucide-react";
 
 
-import { Gauge } from "./ui/gauge";
 import { RejectedFile, UploadState } from "./upload-zone";
 
 interface UploadNotificationDrawerProps {
@@ -81,11 +80,14 @@ export function UploadNotificationDrawer({
                 ) : (
                   <div className="flex items-center justify-between">
                     <span className="w-72 truncate text-sm text-gray-500 dark:text-gray-400">{upload.fileName}</span>
-                    <Gauge
-                      value={upload.progress}
-                      size={"xs"}
-                      showValue={true}
-                    />
+                    <span
+                      style={{
+                        fontSize: "0.65rem",
+                        fontVariantNumeric: "tabular-nums",
+                      }}
+                    >
+                      {Math.round(upload.progress)}%
+                    </span>
                   </div>
                 )}
               </div>

@@ -9,7 +9,7 @@ import {
   MoreVertical,
   TrashIcon,
 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { mutate } from "swr";
 
 import { FolderWithCount } from "@/lib/swr/use-documents";

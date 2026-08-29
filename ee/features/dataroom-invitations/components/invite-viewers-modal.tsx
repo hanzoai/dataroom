@@ -5,7 +5,7 @@ import { invitationEmailSchema } from "@/ee/features/dataroom-invitations/lib/sc
 import { useUninvitedMembers } from "@/ee/features/dataroom-invitations/lib/swr/use-dataroom-invitations";
 import { Link } from "@prisma/client";
 import { useSession } from "next-auth/react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import useSWR from "swr";
 
 import { fetcher } from "@/lib/utils";

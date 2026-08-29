@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 
 import { useSession } from "next-auth/react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 import { AccountHeader } from "@/components/account/account-header";
 import { UpdateMailSubscribe } from "@/components/account/update-subscription";

@@ -22,6 +22,7 @@ import AppLayout from "@/components/layouts/app";
 import LinkSheet from "@/components/links/link-sheet";
 import LinksTable from "@/components/links/links-table";
 import { Button } from "@hanzo/ui";
+import { Spinner as LoadingSpinner } from "@hanzo/gui";
 
 const StatsComponent = dynamic(
   () =>

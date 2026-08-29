@@ -6,7 +6,7 @@ import { useTeam } from "@/context/team-context";
 import { LinkType } from "@prisma/client";
 import { motion } from "motion/react";
 import { parsePageId } from "notion-utils";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 import { useAnalytics } from "@/lib/analytics";
 import { STAGGER_CHILD_VARIANTS } from "@/lib/constants";

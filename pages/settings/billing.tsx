@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 import { useTeam } from "@/context/team-context";
 import { sendGTMEvent } from "@next/third-parties/google";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 import { useAnalytics } from "@/lib/analytics";
 import { useIsAdmin } from "@/lib/hooks/use-is-admin";

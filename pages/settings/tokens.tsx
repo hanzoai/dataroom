@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useTeam } from "@/context/team-context";
 import { format } from "date-fns";
 import { CircleHelpIcon, CopyIcon } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import useSWR from "swr";
 
 import { copyToClipboard, fetcher } from "@/lib/utils";
@@ -13,6 +13,7 @@ import { copyToClipboard, fetcher } from "@/lib/utils";
 import AppLayout from "@/components/layouts/app";
 import { SettingsHeader } from "@/components/settings/settings-header";
 import { Button, Input, Label } from "@hanzo/ui";
+import { BadgeTooltip } from "@/components/button-tooltip";
 
 interface Token {
   id: string;

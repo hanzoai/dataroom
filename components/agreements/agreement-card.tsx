@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { useTeam } from "@/context/team-context";
 import { DownloadIcon, FileTextIcon, MoreVertical, TrashIcon } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 import { AgreementWithLinksCount } from "@/lib/swr/use-agreements";
 

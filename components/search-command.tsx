@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 
-import { DialogProps } from "@radix-ui/react-dialog";
 import { FileText } from "lucide-react";
 
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, Dialog, DialogContent } from "@hanzo/ui";
@@ -15,7 +14,9 @@ interface Article {
   };
 }
 
-interface SearchCommandProps extends DialogProps {
+interface SearchCommandProps {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
   articles: Article[];
   locale: string;
   placeholder: string;

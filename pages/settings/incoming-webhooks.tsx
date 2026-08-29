@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useTeam } from "@/context/team-context";
 import { format } from "date-fns";
 import { CircleHelpIcon, CopyIcon, Loader } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import useSWR from "swr";
 
 import AppLayout from "@/components/layouts/app";
@@ -13,6 +13,7 @@ import { SettingsHeader } from "@/components/settings/settings-header";
 import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Input, Label, Separator } from "@hanzo/ui";
 
 import { copyToClipboard, fetcher } from "@/lib/utils";
+import { BadgeTooltip } from "@/components/button-tooltip";
 
 interface Webhook {
   id: string;

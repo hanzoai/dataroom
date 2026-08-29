@@ -23,7 +23,7 @@ import {
   ViewIcon,
 } from "lucide-react";
 import { useTheme } from "next-themes";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { mutate } from "swr";
 
 import { getFile } from "@/lib/files/get-file";
@@ -47,12 +47,12 @@ import PlanBadge from "../billing/plan-badge";
 import { UpgradePlanModal } from "../billing/upgrade-plan-modal";
 import AdvancedSheet from "../shared/icons/advanced-sheet";
 import PortraitLandscape from "../shared/icons/portrait-landscape";
-import LoadingSpinner from "../ui/loading-spinner";
-import { ButtonTooltip } from "../ui/tooltip";
 import { AddDocumentModal } from "./add-document-modal";
 import { AddToDataroomModal } from "./add-document-to-dataroom-modal";
 import AlertBanner from "./alert";
 import { ExportVisitsModal } from "./export-visits-modal";
+import { ButtonTooltip } from "@/components/button-tooltip";
+import { Spinner as LoadingSpinner } from "@hanzo/gui";
 
 export default function DocumentHeader({
   prismaDocument,

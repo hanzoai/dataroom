@@ -14,7 +14,7 @@ import {
   MoreVertical,
 } from "lucide-react";
 import { useTheme } from "next-themes";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { mutate } from "swr";
 
 import { type DataroomFolderDocument } from "@/lib/swr/use-dataroom";

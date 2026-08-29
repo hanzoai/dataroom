@@ -1,11 +1,11 @@
 import { useState } from "react";
 
 import { Flag } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 import { Button, Label, Popover, PopoverContent, PopoverTrigger } from "@hanzo/ui";
+import { ButtonTooltip } from "@/components/button-tooltip";
 
-import { ButtonTooltip } from "../ui/tooltip";
 
 export default function ReportForm({
   linkId,

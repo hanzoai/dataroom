@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 import { Copy, Shield, Trash2, UploadCloud } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 import useSAML from "@/lib/swr/use-saml";
 import { copyToClipboard } from "@/lib/utils";

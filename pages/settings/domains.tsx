@@ -12,6 +12,7 @@ import DomainCard from "@/components/domains/domain-card";
 import AppLayout from "@/components/layouts/app";
 import { SettingsHeader } from "@/components/settings/settings-header";
 import { Button } from "@hanzo/ui";
+import { BadgeTooltip } from "@/components/button-tooltip";
 
 export default function Domains() {
   const { domains } = useDomains({ enabled: true });

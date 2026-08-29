@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useTeam } from "@/context/team-context";
 import { Webhook } from "@prisma/client";
 import { ArrowLeft, Check, Copy, WebhookIcon } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import useSWR from "swr";
 import z from "zod";
 

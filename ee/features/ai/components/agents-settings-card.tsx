@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { CheckCircle, Loader2, XCircle } from "lucide-react";
 
 import PapermarkSparkle from "@/components/shared/icons/papermark-sparkle";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { mutate } from "swr";
 
 import { useFeatureFlags } from "@/lib/hooks/use-feature-flags";
@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Label, Progress, Switch } from "@hanzo/ui";
 
 import { useAIIndexingStatus } from "../hooks/use-ai-indexing-status";
+import { Spinner as LoadingSpinner } from "@hanzo/gui";
 
 interface AgentsSettingsCardProps {
   dataroomId: string;

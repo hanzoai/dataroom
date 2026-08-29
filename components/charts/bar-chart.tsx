@@ -1,12 +1,18 @@
-import { useState } from "react";
-
-import { BarChart } from "@tremor/react";
+import {
+  Bar,
+  BarChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 import CustomTooltip from "./bar-chart-tooltip";
 import {
   type Data,
   type SumData,
   type TransformedData,
+  colorToHex,
   getColors,
   timeFormatter,
 } from "./utils";
@@ -64,6 +70,52 @@ const getVersionNumbers = (data: TransformedData[]) => {
   ];
 };
 
+function DurationBarChart({
+  data,
+  categories,
+  colors,
+  customTooltip,
+}: {
+  data: any[];
+  categories: string[];
+  colors: string[];
+  customTooltip?: boolean;
+}) {
+  return (
+    <div className="mt-6" style={{ width: "100%", height: 300 }}>
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart data={data}>
+          <XAxis dataKey="pageNumber" tickLine={false} axisLine={false} />
+          <YAxis
+            width={50}
+            tickFormatter={timeFormatter}
+            tickLine={false}
+            axisLine={false}
+          />
+          {customTooltip ? (
+            <Tooltip
+              content={({ active, payload }) => (
+                <CustomTooltip active={active} payload={payload} />
+              )}
+              cursor={{ fill: "var(--muted)", opacity: 0.4 }}
+            />
+          ) : (
+            <Tooltip cursor={{ fill: "var(--muted)", opacity: 0.4 }} />
+          )}
+          {categories.map((category, i) => (
+            <Bar
+              key={category}
+              dataKey={category}
+              fill={colorToHex(colors[i % colors.length])}
+              radius={[2, 2, 0, 0]}
+            />
+          ))}
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
 export default function BarChartComponent({
   data,
   isSum = false,
@@ -77,30 +129,22 @@ export default function BarChartComponent({
   versionNumber?: number;
   documentId?: string;
 }) {
-  const [, setValue] = useState<any>(null);
-
   if (isSum) {
     const renamedData = renameSumDurationKey(data, versionNumber, documentId);
 
     return (
-      <BarChart
-        className="mt-6 rounded-tremor-small"
+      <DurationBarChart
         data={renamedData}
-        index="pageNumber"
         categories={["Time spent per page"]}
         colors={["emerald"]}
-        valueFormatter={timeFormatter}
-        yAxisWidth={50}
-        showGridLines={false}
-        onValueChange={(v) => setValue(v)}
-        customTooltip={isDummy ? undefined : CustomTooltip}
+        customTooltip={!isDummy}
       />
     );
   }
 
   let renamedData = transformData(data);
   let versionNumbers = getVersionNumbers(renamedData);
-  let colors = getColors(versionNumbers);
+  let colors: string[] = getColors(versionNumbers);
 
   if (isDummy) {
     colors = ["gray-300"];
@@ -109,17 +153,11 @@ export default function BarChartComponent({
   }
 
   return (
-    <BarChart
-      className="mt-6 rounded-tremor-small"
+    <DurationBarChart
       data={renamedData}
-      index="pageNumber"
       categories={versionNumbers}
       colors={colors}
-      valueFormatter={timeFormatter}
-      yAxisWidth={50}
-      showGridLines={false}
-      onValueChange={(v) => setValue(v)}
-      customTooltip={isDummy ? undefined : CustomTooltip}
+      customTooltip={!isDummy}
     />
   );
 }

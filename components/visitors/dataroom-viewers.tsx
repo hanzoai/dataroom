@@ -16,6 +16,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@hanzo/ui";
 
 import { DataroomViewStats } from "./dataroom-view-stats";
 import { VisitorAvatar } from "./visitor-avatar";
+import { BadgeTooltip } from "@/components/button-tooltip";
 
 export default function DataroomViewersTable({
   dataroomId,

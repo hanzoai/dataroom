@@ -5,17 +5,37 @@ import { upload } from "@vercel/blob/client";
 import { transliterate } from "transliteration";
 import bcrypt from "bcryptjs";
 import * as chrono from "chrono-node";
-import { type ClassValue, clsx } from "clsx";
 import crypto from "crypto";
 import ms from "ms";
 import { customAlphabet } from "nanoid";
 import { rgb } from "pdf-lib";
 import { ParsedUrlQuery } from "querystring";
-import { toast } from "sonner";
-import { twMerge } from "tailwind-merge";
+import { toast } from "@hanzo/ui";
 
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
+export type ClassValue =
+  | string
+  | number
+  | null
+  | undefined
+  | false
+  | ClassValue[]
+  | Record<string, boolean | null | undefined>;
+
+/** Join class names. Tailwind is gone, so this is a plain truthy join. */
+export function cn(...inputs: ClassValue[]): string {
+  const out: string[] = [];
+  for (const input of inputs) {
+    if (!input && input !== 0) continue;
+    if (typeof input === "string" || typeof input === "number") {
+      out.push(String(input));
+    } else if (Array.isArray(input)) {
+      const inner = cn(...input);
+      if (inner) out.push(inner);
+    } else if (typeof input === "object") {
+      for (const [k, v] of Object.entries(input)) if (v) out.push(k);
+    }
+  }
+  return out.join(" ");
 }
 
 export function classNames(...classes: string[]) {

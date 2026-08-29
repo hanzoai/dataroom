@@ -14,7 +14,7 @@ import {
   PackagePlusIcon,
   TrashIcon,
 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { mutate } from "swr";
 
 import { getFolderColorClasses, getFolderIcon } from "@/lib/constants/folder-constants";

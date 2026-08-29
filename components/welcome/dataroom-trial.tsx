@@ -4,9 +4,8 @@ import { useState } from "react";
 
 import { useTeam } from "@/context/team-context";
 import { PlanEnum } from "@/ee/stripe/constants";
-import { E164Number } from "libphonenumber-js";
 import { motion } from "motion/react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { mutate } from "swr";
 
 import { useAnalytics } from "@/lib/analytics";
@@ -15,7 +14,7 @@ import { STAGGER_CHILD_VARIANTS } from "@/lib/constants";
 import { Button, Label, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@hanzo/ui";
 
 import { UpgradePlanModal } from "../billing/upgrade-plan-modal";
-import { Input } from "../ui/input";
+import { Input } from "@hanzo/ui";
 
 export default function DataroomTrial() {
   const teamInfo = useTeam();

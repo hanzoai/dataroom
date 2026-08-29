@@ -6,7 +6,7 @@ import { useTeam } from "@/context/team-context";
 import { Check, CircleHelpIcon, UploadIcon } from "lucide-react";
 import { HexColorInput, HexColorPicker } from "react-colorful";
 import sanitizeHtml from "sanitize-html";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { mutate } from "swr";
 import { useDebounce } from "use-debounce";
 
@@ -18,6 +18,7 @@ import { DataroomHeader } from "@/components/datarooms/dataroom-header";
 import { DataroomNavigation } from "@/components/datarooms/dataroom-navigation";
 import AppLayout from "@/components/layouts/app";
 import { Button, Card, CardContent, Checkbox, Label, Popover, PopoverContent, PopoverTrigger, Tabs, TabsContent, TabsList, TabsTrigger, Textarea } from "@hanzo/ui";
+import { BadgeTooltip } from "@/components/button-tooltip";
 
 const DEFAULT_BANNER_IMAGE = "/_static/papermark-banner.png";
 

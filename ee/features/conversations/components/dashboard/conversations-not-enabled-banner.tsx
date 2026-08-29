@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { ChevronDown, ChevronUp, X } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import z from "zod";
 
 import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Switch } from "@hanzo/ui";

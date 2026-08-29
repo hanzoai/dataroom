@@ -3,56 +3,69 @@ import { useRouter } from "next/router";
 
 import React, { useMemo } from "react";
 
+import { ChevronRightIcon } from "lucide-react";
+
 import { useFolderWithParents } from "@/lib/swr/use-folders";
 
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "../ui/breadcrumb";
+const crumbListStyle: React.CSSProperties = {
+  display: "flex",
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: "0.375rem",
+  listStyle: "none",
+  margin: 0,
+  padding: 0,
+  fontSize: "0.875rem",
+  color: "var(--muted-foreground)",
+};
 
 function BreadcrumbComponentBase({ name }: { name: string[] }) {
   const { folders: folderNames } = useFolderWithParents({ name });
 
   return (
-    <Breadcrumb>
-      <BreadcrumbList>
-        <BreadcrumbItem key={"root"}>
-          <BreadcrumbLink asChild>
-            <Link href="/documents">Documents</Link>
-          </BreadcrumbLink>
-        </BreadcrumbItem>
+    <nav aria-label="breadcrumb">
+      <ol style={crumbListStyle}>
+        <li key={"root"}>
+          <Link href="/documents">Documents</Link>
+        </li>
         {folderNames &&
           folderNames.map((item, index: number, array) => {
             return (
               <React.Fragment key={index}>
-                <BreadcrumbSeparator />
+                <li role="presentation" aria-hidden="true">
+                  <ChevronRightIcon size={14} />
+                </li>
                 {index === array.length - 1 ? (
-                  <BreadcrumbItem>
-                    <BreadcrumbPage className="capitalize">
+                  <li>
+                    <span
+                      role="link"
+                      aria-disabled="true"
+                      aria-current="page"
+                      className="capitalize"
+                      style={{
+                        color: "var(--foreground)",
+                        textTransform: "capitalize",
+                      }}
+                    >
                       {item.name}
-                    </BreadcrumbPage>
-                  </BreadcrumbItem>
+                    </span>
+                  </li>
                 ) : (
-                  <BreadcrumbItem>
-                    <BreadcrumbLink asChild>
-                      <Link
-                        href={`/documents/tree${item.path}`}
-                        className="capitalize"
-                      >
-                        {item.name}
-                      </Link>
-                    </BreadcrumbLink>
-                  </BreadcrumbItem>
+                  <li>
+                    <Link
+                      href={`/documents/tree${item.path}`}
+                      className="capitalize"
+                      style={{ textTransform: "capitalize" }}
+                    >
+                      {item.name}
+                    </Link>
+                  </li>
                 )}
               </React.Fragment>
             );
           })}
-      </BreadcrumbList>
-    </Breadcrumb>
+      </ol>
+    </nav>
   );
 }
 

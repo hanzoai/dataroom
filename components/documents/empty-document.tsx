@@ -1,6 +1,6 @@
 import { FilePlusIcon, PlusIcon, UploadIcon } from "lucide-react";
 
-import { Button } from "../ui/button";
+import { Button } from "@hanzo/ui";
 import { AddDocumentModal } from "./add-document-modal";
 
 export function EmptyDocuments({

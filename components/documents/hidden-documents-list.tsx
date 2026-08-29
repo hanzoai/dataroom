@@ -9,21 +9,21 @@ import {
   Trash2Icon,
   XIcon,
 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { mutate } from "swr";
 
 import { FolderWithCount } from "@/lib/swr/use-documents";
 import { DocumentWithLinksAndLinkCountAndViewCount } from "@/lib/types";
 
 
-import { Button } from "../ui/button";
-import { Checkbox } from "../ui/checkbox";
-import { Portal } from "../ui/portal";
-import { ButtonTooltip } from "../ui/tooltip";
+import { Button } from "@hanzo/ui";
+import { Checkbox } from "@hanzo/ui";
+import { Portal } from "@/components/portal";
 import { useDeleteDocumentsAndFoldersModal } from "./actions/delete-documents-modal";
 import { useDeleteFolderModal } from "./actions/delete-folder-modal";
 import { HiddenDocumentCard } from "./hidden-document-card";
 import { HiddenFolderCard } from "./hidden-folder-card";
+import { ButtonTooltip } from "@/components/button-tooltip";
 
 export function HiddenDocumentsList({
   folders,

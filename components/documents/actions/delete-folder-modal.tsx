@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { mutate } from "swr";
 
 import { DataroomFolderWithCount } from "@/lib/swr/use-dataroom";

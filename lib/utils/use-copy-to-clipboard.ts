@@ -2,7 +2,7 @@
 
 import * as React from "react";
 
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 export interface useCopyToClipboardProps {
   timeout?: number;

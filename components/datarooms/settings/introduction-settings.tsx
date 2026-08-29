@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import { useTeam } from "@/context/team-context";
 import { BookOpenIcon, EyeIcon } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { mutate } from "swr";
 
 import { usePlan } from "@/lib/swr/use-billing";
@@ -12,6 +12,7 @@ import { uploadImage } from "@/lib/utils";
 
 import PlanBadge from "@/components/billing/plan-badge";
 import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Dialog, DialogContent, DialogHeader, DialogTitle, Label, ScrollArea, Switch, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@hanzo/ui";
+import { Spinner as LoadingSpinner } from "@hanzo/gui";
 
 interface IntroductionSettingsProps {
   dataroomId: string;

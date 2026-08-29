@@ -22,6 +22,7 @@ import { usePlan } from "@/lib/swr/use-billing";
 import { capitalize, cn } from "@/lib/utils";
 
 import { Button, Dialog, DialogContent, DialogTrigger, Switch, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@hanzo/ui";
+import { BadgeTooltip } from "@/components/button-tooltip";
 
 // Start Data Room Trial Button Component
 const StartDataRoomTrialButton = ({ teamId }: { teamId?: string }) => {

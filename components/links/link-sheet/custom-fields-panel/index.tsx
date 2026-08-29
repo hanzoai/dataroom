@@ -2,7 +2,7 @@ import { useCallback, useMemo } from "react";
 
 import { CustomField, CustomFieldType } from "@prisma/client";
 import { Plus } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 import { usePlan } from "@/lib/swr/use-billing";
 

@@ -12,7 +12,7 @@ import {
   MessageSquare,
   Search,
 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import useSWR from "swr";
 import z from "zod";
 

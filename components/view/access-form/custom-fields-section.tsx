@@ -1,5 +1,4 @@
 import { Brand, CustomField, DataroomBrand } from "@prisma/client";
-import { E164Number } from "libphonenumber-js";
 
 import { cn } from "@/lib/utils";
 
@@ -26,7 +25,7 @@ export default function CustomFieldsSection({
     setData({ ...data, [identifier]: e.target.value });
   };
 
-  const handlePhoneChange = (value: E164Number | null, identifier: string) => {
+  const handlePhoneChange = (value: string | null, identifier: string) => {
     setData({ ...data, [identifier]: value || "" });
   };
 
@@ -85,24 +84,21 @@ export default function CustomFieldsSection({
                 </label>
               </div>
             ) : isPhoneNumber ? (
-              <PhoneInput
+              <Input
+                type="tel"
                 id={field.identifier}
-                value={value as E164Number}
-                onChange={(phoneValue) =>
-                  handlePhoneChange(phoneValue, field.identifier!)
+                value={(value as string) ?? ""}
+                onChange={(e) =>
+                  handlePhoneChange(e.target.value, field.identifier!)
                 }
                 placeholder={field.placeholder || "+1 123 456 7890"}
-                defaultCountry="US"
                 disabled={field.disabled}
                 translate="no"
-                className={cn(
-                  "notranslate flex w-full cursor-text rounded-md border-0 bg-black text-gray-500 placeholder:text-[var(--access-placeholder)] sm:text-sm sm:leading-6",
-                )}
+                className="notranslate flex w-full cursor-text rounded-md border-0"
                 style={
                   {
-                    "--phone-input-bg": theme.controlBgColor,
-                    "--phone-input-color": theme.textColor,
-                    "--access-placeholder": theme.controlPlaceholderColor,
+                    backgroundColor: theme.controlBgColor,
+                    color: theme.textColor,
                   } as React.CSSProperties
                 }
               />

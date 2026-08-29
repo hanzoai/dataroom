@@ -3,7 +3,7 @@ import type { CSSProperties } from "react";
 
 import { DataroomFolder } from "@prisma/client";
 import { Download, MoreVerticalIcon } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 import { getFolderColorClasses, getFolderIcon } from "@/lib/constants/folder-constants";
 import { cn, timeAgo } from "@/lib/utils";

@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 import { moveDocumentToFolder } from "@/lib/documents/move-documents";
 import { moveFolderToFolder } from "@/lib/documents/move-folder";

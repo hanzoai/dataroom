@@ -1,4 +1,4 @@
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { mutate } from "swr";
 
 export const moveDataroomDocumentToFolder = async ({

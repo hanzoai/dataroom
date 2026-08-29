@@ -1,4 +1,4 @@
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import useSWR from "swr";
 
 import { fetcher } from "@/lib/utils";

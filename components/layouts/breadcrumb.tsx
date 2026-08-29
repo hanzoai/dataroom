@@ -10,6 +10,7 @@ import useViewer from "@/lib/swr/use-viewer";
 
 import { BreadcrumbComponent as DataroomBreadcrumb } from "@/components/datarooms/dataroom-breadcrumb";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@hanzo/ui";
+import { BadgeTooltip } from "@/components/button-tooltip";
 
 const FOLDERS_TO_DISPLAY = 1; // Only show the last folder in the path
 

@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 
 import { useTeam } from "@/context/team-context";
 import { View } from "@prisma/client";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import useSWR from "swr";
 
 import { DocumentWithVersion, LinkWithViews } from "@/lib/types";

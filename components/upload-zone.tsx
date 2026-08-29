@@ -6,7 +6,7 @@ import { useTeam } from "@/context/team-context";
 import { DocumentStorageType } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { DropEvent, FileRejection, useDropzone } from "react-dropzone";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { mutate } from "swr";
 
 import { useAnalytics } from "@/lib/analytics";

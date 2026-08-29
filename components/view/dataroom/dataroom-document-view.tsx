@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { DataroomBrand } from "@prisma/client";
 import Cookies from "js-cookie";
 import { ExtendedRecordMap } from "notion-types";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 
 import { useAnalytics } from "@/lib/analytics";
 import { SUPPORTED_DOCUMENT_SIMPLE_TYPES } from "@/lib/constants";
@@ -19,6 +19,7 @@ import AccessForm, {
 
 import EmailVerificationMessage from "../access-form/email-verification-form";
 import ViewData, { TViewDocumentData } from "../view-data";
+import { Spinner as LoadingSpinner } from "@hanzo/gui";
 
 type RowData = { [key: string]: any };
 type SheetData = {

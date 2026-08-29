@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { useTeam } from "@/context/team-context";
 import { PlanEnum } from "@/ee/stripe/constants";
 import { ArrowLeft, Check } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import { z } from "zod";
 
 import { newId } from "@/lib/id-helper";

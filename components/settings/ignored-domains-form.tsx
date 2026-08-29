@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { toast } from "sonner";
+import { toast } from "@hanzo/ui";
 import useSWR from "swr";
 
 import { fetcher, sanitizeList } from "@/lib/utils";

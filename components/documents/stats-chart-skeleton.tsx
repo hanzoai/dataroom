@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-import { Skeleton } from "../ui/skeleton";
+import Skeleton from "@/components/Skeleton";
 
 const StatsChartSkeleton = ({ className }: { className?: string }) => {
   return (
