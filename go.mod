@@ -18,4 +18,4 @@
 // domain bundle.
 module github.com/hanzoai/dataroom
 
-go 1.26.4
+go 1.27.1
