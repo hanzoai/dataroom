@@ -5,13 +5,18 @@
 // per-page view analytics), authored to run verbatim inside the dop251/goja
 // engine embedded in hanzoai/cloud (HIP-0106, task #101). It is the ESM-free
 // port of the Papermark/Next.js API handlers this fold replaces — the Prisma
-// data model becomes Base/SQLite tables (see the leaf's schema.go), the handlers
+// data model becomes per-tenant tables (see the leaf's schema.go), the handlers
 // become the route table below. No Postgres, no Next.js.
 //
 // Host contract (clients/goja injects these per dispatch; each dispatch runs
-// inside ONE per-tenant SQLite transaction that commits iff status < 400):
+// inside ONE per-tenant transaction that commits iff status < 400):
 //   globalThis.__db.query(sql, args)   -> [ {col: val, ...}, ... ]
-//   globalThis.__db.exec(sql, args)    -> { changes, lastId }
+//   globalThis.__db.exec(sql, args)    -> { changes }
+//
+// The SQL is the dialect SQLite and PostgreSQL share, so the same bundle runs on a
+// tenant's SQLite file and on a schema of hanzo-sql: $n placeholders in the order
+// they first appear, BIGINT integers, ON CONFLICT, and a text argument that is
+// always a string (a number bound to a text column is an error on PostgreSQL).
 //   globalThis.__newId()               -> collision-resistant id (crypto/rand)
 //   globalThis.__now()                 -> unix milliseconds
 //   globalThis.__bcrypt.hash(pw)       -> bcrypt hash   (leaf HostFn, vetted Go)
@@ -41,6 +46,10 @@
     catch (_) { return []; }
   }
   function truthy(v) { return v === true || v === 1 || v === '1'; }
+  // text is a caller's value bound to a TEXT column: always a string, or null. A
+  // number there is a type error on PostgreSQL where SQLite compared it anyway, so
+  // the bundle states it instead of leaving the engine to.
+  function text(v) { return v == null || v === '' ? null : String(v); }
   function asInt(v, dflt) {
     if (v == null || v === '') return dflt == null ? null : dflt;
     var n = parseInt(v, 10);
@@ -135,22 +144,22 @@
       var docId = id('doc_');
       var t = now();
       e('INSERT INTO document (id,name,file_key,content_type,type,num_pages,file_size,created_at,updated_at) ' +
-        'VALUES (?,?,?,?,?,?,?,?,?)',
-        [docId, String(b.name), String(b.fileKey), b.contentType || null, b.type || null,
+        'VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)',
+        [docId, String(b.name), String(b.fileKey), text(b.contentType), text(b.type),
          asInt(b.numPages), asInt(b.fileSize), t, t]);
-      return { document: documentOut(one(q('SELECT * FROM document WHERE id=?', [docId]))) };
+      return { document: documentOut(one(q('SELECT * FROM document WHERE id=$1', [docId]))) };
     },
     'documents.list': function () {
       return { documents: q('SELECT * FROM document ORDER BY created_at DESC').map(documentOut) };
     },
     'documents.get': function (ctx) {
-      var r = one(q('SELECT * FROM document WHERE id=?', [ctx.params.id]));
+      var r = one(q('SELECT * FROM document WHERE id=$1', [ctx.params.id]));
       if (!r) return err(404, 'document not found');
       return { document: documentOut(r) };
     },
     // documents.file returns the storage key so the Go leaf can stream the bytes.
     'documents.file': function (ctx) {
-      var r = one(q('SELECT * FROM document WHERE id=?', [ctx.params.id]));
+      var r = one(q('SELECT * FROM document WHERE id=$1', [ctx.params.id]));
       if (!r) return err(404, 'document not found');
       return { fileKey: r.file_key, contentType: r.content_type, name: r.name };
     },
@@ -162,19 +171,19 @@
       var roomId = id('room_');
       var pId = 'dr_' + globalThis.__newId().slice(1, 13);
       var t = now();
-      e('INSERT INTO dataroom (id,p_id,name,description,created_at,updated_at) VALUES (?,?,?,?,?,?)',
-        [roomId, pId, String(b.name), b.description || null, t, t]);
-      return { dataroom: dataroomOut(one(q('SELECT * FROM dataroom WHERE id=?', [roomId]))) };
+      e('INSERT INTO dataroom (id,p_id,name,description,created_at,updated_at) VALUES ($1,$2,$3,$4,$5,$6)',
+        [roomId, pId, String(b.name), text(b.description), t, t]);
+      return { dataroom: dataroomOut(one(q('SELECT * FROM dataroom WHERE id=$1', [roomId]))) };
     },
     'datarooms.list': function () {
       return { datarooms: q('SELECT * FROM dataroom ORDER BY created_at DESC').map(dataroomOut) };
     },
     'datarooms.get': function (ctx) {
-      var r = one(q('SELECT * FROM dataroom WHERE id=?', [ctx.params.id]));
+      var r = one(q('SELECT * FROM dataroom WHERE id=$1', [ctx.params.id]));
       if (!r) return err(404, 'dataroom not found');
       var docs = q(
         'SELECT dd.id AS dd_id, dd.order_index, doc.* FROM dataroom_document dd ' +
-        'JOIN document doc ON doc.id = dd.document_id WHERE dd.dataroom_id=? ' +
+        'JOIN document doc ON doc.id = dd.document_id WHERE dd.dataroom_id=$1 ' +
         'ORDER BY dd.order_index IS NULL, dd.order_index, dd.created_at', [r.id]);
       var out = dataroomOut(r);
       out.documents = docs.map(function (d) {
@@ -188,15 +197,15 @@
     'datarooms.addDocument': function (ctx) {
       var b = ctx.body || {};
       var roomId = ctx.params.id;
-      var docId = b.documentId;
+      var docId = text(b.documentId);
       if (!docId) return err(400, 'documentId required');
-      if (!one(q('SELECT id FROM dataroom WHERE id=?', [roomId]))) return err(404, 'dataroom not found');
-      if (!one(q('SELECT id FROM document WHERE id=?', [docId]))) return err(404, 'document not found');
-      if (one(q('SELECT id FROM dataroom_document WHERE dataroom_id=? AND document_id=?', [roomId, docId]))) {
+      if (!one(q('SELECT id FROM dataroom WHERE id=$1', [roomId]))) return err(404, 'dataroom not found');
+      if (!one(q('SELECT id FROM document WHERE id=$1', [docId]))) return err(404, 'document not found');
+      if (one(q('SELECT id FROM dataroom_document WHERE dataroom_id=$1 AND document_id=$2', [roomId, docId]))) {
         return err(409, 'document already in dataroom');
       }
       var ddId = id('dd_');
-      e('INSERT INTO dataroom_document (id,dataroom_id,document_id,order_index,created_at) VALUES (?,?,?,?,?)',
+      e('INSERT INTO dataroom_document (id,dataroom_id,document_id,order_index,created_at) VALUES ($1,$2,$3,$4,$5)',
         [ddId, roomId, docId, asInt(b.orderIndex), now()]);
       return { dataroomDocumentId: ddId, dataroomId: roomId, documentId: docId };
     },
@@ -204,11 +213,11 @@
     // ---- links --------------------------------------------------------------
     'links.create': function (ctx) {
       var b = ctx.body || {};
-      var roomId = b.dataroomId || null;
-      var docId = b.documentId || null;
+      var roomId = text(b.dataroomId);
+      var docId = text(b.documentId);
       if (!roomId && !docId) return err(400, 'dataroomId or documentId required');
-      if (roomId && !one(q('SELECT id FROM dataroom WHERE id=?', [roomId]))) return err(404, 'dataroom not found');
-      if (docId && !one(q('SELECT id FROM document WHERE id=?', [docId]))) return err(404, 'document not found');
+      if (roomId && !one(q('SELECT id FROM dataroom WHERE id=$1', [roomId]))) return err(404, 'dataroom not found');
+      if (docId && !one(q('SELECT id FROM document WHERE id=$1', [docId]))) return err(404, 'document not found');
       var pwHash = null;
       if (b.password) pwHash = globalThis.__bcrypt.hash(String(b.password));
       var allowList = Array.isArray(b.allowList) ? b.allowList : [];
@@ -218,11 +227,11 @@
       var linkType = docId && !roomId ? 'DOCUMENT_LINK' : 'DATAROOM_LINK';
       e('INSERT INTO link (id,link_type,dataroom_id,document_id,name,password_hash,email_protected,' +
         'allow_list,deny_list,allow_download,expires_at,is_archived,created_at,updated_at) ' +
-        'VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
-        [linkId, linkType, roomId, docId, b.name || null, pwHash,
+        'VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)',
+        [linkId, linkType, roomId, docId, text(b.name), pwHash,
          b.emailProtected === false ? 0 : 1, JSON.stringify(allowList), JSON.stringify(denyList),
          b.allowDownload ? 1 : 0, asInt(b.expiresAt), 0, t, t]);
-      return { link: linkOut(one(q('SELECT * FROM link WHERE id=?', [linkId]))) };
+      return { link: linkOut(one(q('SELECT * FROM link WHERE id=$1', [linkId]))) };
     },
     'links.list': function () {
       return { links: q('SELECT * FROM link WHERE is_archived=0 ORDER BY created_at DESC').map(linkOut) };
@@ -231,7 +240,7 @@
     // ---- viewer surface (public) -------------------------------------------
     // view.link returns the pre-auth metadata a visitor sees (what gates apply).
     'view.link': function (ctx) {
-      var r = one(q('SELECT * FROM link WHERE id=?', [ctx.params.linkId]));
+      var r = one(q('SELECT * FROM link WHERE id=$1', [ctx.params.linkId]));
       if (!r || truthy(r.is_archived)) return err(404, 'link not found');
       var out = {
         id: r.id, name: r.name, linkType: r.link_type,
@@ -239,11 +248,11 @@
         allowDownload: truthy(r.allow_download), expired: linkExpired(r),
       };
       if (r.dataroom_id) {
-        var room = one(q('SELECT * FROM dataroom WHERE id=?', [r.dataroom_id]));
+        var room = one(q('SELECT * FROM dataroom WHERE id=$1', [r.dataroom_id]));
         if (room) out.dataroom = { id: room.id, pId: room.p_id, name: room.name, description: room.description };
       }
       if (r.document_id) {
-        var doc = one(q('SELECT * FROM document WHERE id=?', [r.document_id]));
+        var doc = one(q('SELECT * FROM document WHERE id=$1', [r.document_id]));
         if (doc) out.document = { id: doc.id, name: doc.name, numPages: doc.num_pages };
       }
       return { link: out };
@@ -253,7 +262,7 @@
     // Viewer + a View (the analytics session) and returns the viewable payload.
     'view.authenticate': function (ctx) {
       var b = ctx.body || {};
-      var r = one(q('SELECT * FROM link WHERE id=?', [ctx.params.linkId]));
+      var r = one(q('SELECT * FROM link WHERE id=$1', [ctx.params.linkId]));
       if (!r || truthy(r.is_archived)) return err(404, 'link not found');
       if (linkExpired(r)) return err(403, 'link expired');
 
@@ -271,12 +280,12 @@
 
       var viewerId = null;
       if (email) {
-        var existing = one(q('SELECT * FROM viewer WHERE email=?', [email]));
+        var existing = one(q('SELECT * FROM viewer WHERE email=$1', [email]));
         if (existing) { viewerId = existing.id; }
         else {
           viewerId = id('viewer_');
           var tv = now();
-          e('INSERT INTO viewer (id,email,verified,created_at,updated_at) VALUES (?,?,?,?,?)',
+          e('INSERT INTO viewer (id,email,verified,created_at,updated_at) VALUES ($1,$2,$3,$4,$5)',
             [viewerId, email, 0, tv, tv]);
         }
       }
@@ -284,20 +293,20 @@
       var viewId = id('view_');
       var viewType = r.dataroom_id ? 'DATAROOM_VIEW' : 'DOCUMENT_VIEW';
       e('INSERT INTO view (id,link_id,dataroom_id,document_id,viewer_id,viewer_email,view_type,verified,viewed_at) ' +
-        'VALUES (?,?,?,?,?,?,?,?,?)',
+        'VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)',
         [viewId, r.id, r.dataroom_id, r.document_id, viewerId, email || null, viewType, 0, now()]);
 
       var payload = { viewId: viewId, viewerId: viewerId, allowDownload: truthy(r.allow_download) };
       if (r.dataroom_id) {
         var docs = q(
           'SELECT dd.id AS dd_id, doc.* FROM dataroom_document dd ' +
-          'JOIN document doc ON doc.id = dd.document_id WHERE dd.dataroom_id=? ' +
+          'JOIN document doc ON doc.id = dd.document_id WHERE dd.dataroom_id=$1 ' +
           'ORDER BY dd.order_index IS NULL, dd.order_index, dd.created_at', [r.dataroom_id]);
         payload.documents = docs.map(function (d) {
           return { id: d.id, dataroomDocumentId: d.dd_id, name: d.name, numPages: d.num_pages };
         });
       } else if (r.document_id) {
-        var single = one(q('SELECT * FROM document WHERE id=?', [r.document_id]));
+        var single = one(q('SELECT * FROM document WHERE id=$1', [r.document_id]));
         if (single) payload.document = { id: single.id, name: single.name, numPages: single.num_pages };
       }
       return payload;
@@ -308,13 +317,13 @@
     'view.recordPage': function (ctx) {
       var b = ctx.body || {};
       var linkId = ctx.params.linkId;
-      var v = one(q('SELECT * FROM view WHERE id=? AND link_id=?', [b.viewId, linkId]));
+      var v = one(q('SELECT * FROM view WHERE id=$1 AND link_id=$2', [text(b.viewId), linkId]));
       if (!v) return err(404, 'view not found');
       if (b.pageNumber == null) return err(400, 'pageNumber required');
       var pvId = id('pv_');
       e('INSERT INTO page_view (id,view_id,link_id,document_id,dataroom_id,page_number,version_number,duration,viewed_at) ' +
-        'VALUES (?,?,?,?,?,?,?,?,?)',
-        [pvId, v.id, linkId, b.documentId || v.document_id, v.dataroom_id,
+        'VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)',
+        [pvId, v.id, linkId, text(b.documentId) || v.document_id, v.dataroom_id,
          asInt(b.pageNumber, 0), asInt(b.versionNumber), asInt(b.duration, 0), now()]);
       return { ok: true, id: pvId };
     },
@@ -324,20 +333,20 @@
       var linkId = ctx.params.linkId;
       var docId = ctx.params.documentId;
       var viewId = ctx.query.viewId;
-      var r = one(q('SELECT * FROM link WHERE id=?', [linkId]));
+      var r = one(q('SELECT * FROM link WHERE id=$1', [linkId]));
       if (!r || truthy(r.is_archived)) return err(404, 'link not found');
-      if (!one(q('SELECT id FROM view WHERE id=? AND link_id=?', [viewId, linkId]))) return err(403, 'no active view');
+      if (!one(q('SELECT id FROM view WHERE id=$1 AND link_id=$2', [viewId, linkId]))) return err(403, 'no active view');
       if (truthy(ctx.query.download) && !truthy(r.allow_download)) return err(403, 'download disabled');
       // The document must be reachable through this link (dataroom membership or
       // the link's own document) — a viewer cannot address an unrelated doc.
       if (r.dataroom_id) {
-        if (!one(q('SELECT id FROM dataroom_document WHERE dataroom_id=? AND document_id=?', [r.dataroom_id, docId]))) {
+        if (!one(q('SELECT id FROM dataroom_document WHERE dataroom_id=$1 AND document_id=$2', [r.dataroom_id, docId]))) {
           return err(404, 'document not in dataroom');
         }
       } else if (r.document_id !== docId) {
         return err(404, 'document not on link');
       }
-      var doc = one(q('SELECT * FROM document WHERE id=?', [docId]));
+      var doc = one(q('SELECT * FROM document WHERE id=$1', [docId]));
       if (!doc) return err(404, 'document not found');
       return { fileKey: doc.file_key, contentType: doc.content_type, name: doc.name };
     },
@@ -345,13 +354,13 @@
     // ---- analytics ----------------------------------------------------------
     'analytics.link': function (ctx) {
       var linkId = ctx.params.linkId;
-      if (!one(q('SELECT id FROM link WHERE id=?', [linkId]))) return err(404, 'link not found');
+      if (!one(q('SELECT id FROM link WHERE id=$1', [linkId]))) return err(404, 'link not found');
       return linkAnalytics(linkId);
     },
     'analytics.dataroom': function (ctx) {
       var roomId = ctx.params.dataroomId;
-      if (!one(q('SELECT id FROM dataroom WHERE id=?', [roomId]))) return err(404, 'dataroom not found');
-      var links = q('SELECT id FROM link WHERE dataroom_id=?', [roomId]);
+      if (!one(q('SELECT id FROM dataroom WHERE id=$1', [roomId]))) return err(404, 'dataroom not found');
+      var links = q('SELECT id FROM link WHERE dataroom_id=$1', [roomId]);
       var perLink = links.map(function (l) { return linkAnalytics(l.id); });
       var totalViews = 0, totalPageViews = 0;
       perLink.forEach(function (a) { totalViews += a.totalViews; totalPageViews += a.totalPageViews; });
@@ -360,11 +369,11 @@
   };
 
   function linkAnalytics(linkId) {
-    var totalViews = Number((one(q('SELECT COUNT(*) AS n FROM view WHERE link_id=?', [linkId])) || {}).n || 0);
-    var totalPageViews = Number((one(q('SELECT COUNT(*) AS n FROM page_view WHERE link_id=?', [linkId])) || {}).n || 0);
+    var totalViews = Number((one(q('SELECT COUNT(*) AS n FROM view WHERE link_id=$1', [linkId])) || {}).n || 0);
+    var totalPageViews = Number((one(q('SELECT COUNT(*) AS n FROM page_view WHERE link_id=$1', [linkId])) || {}).n || 0);
     var pages = q(
-      'SELECT page_number, COUNT(*) AS views, SUM(duration) AS total_duration ' +
-      'FROM page_view WHERE link_id=? GROUP BY page_number ORDER BY page_number', [linkId]);
+      'SELECT page_number, COUNT(*) AS views, CAST(SUM(duration) AS BIGINT) AS total_duration ' +
+      'FROM page_view WHERE link_id=$1 GROUP BY page_number ORDER BY page_number', [linkId]);
     return {
       linkId: linkId, totalViews: totalViews, totalPageViews: totalPageViews,
       pages: pages.map(function (p) {

@@ -38,12 +38,12 @@ The Prisma models (`Document`, `Dataroom`, `DataroomDocument`, `Link`, `Viewer`,
 ## Host contract
 
 `clients/goja` injects these globals per dispatch (each dispatch runs inside
-ONE per-tenant SQLite transaction that commits iff `status < 400`) and calls
+ONE per-tenant transaction that commits iff `status < 400`) and calls
 `handle` once per request:
 
 ```
 globalThis.__db.query(sql, args)   -> [ {col: val, ...}, ... ]   // tenant-scoped
-globalThis.__db.exec(sql, args)    -> { changes, lastId }
+globalThis.__db.exec(sql, args)    -> { changes }
 globalThis.__newId()               -> collision-resistant id (crypto/rand)
 globalThis.__now()                 -> unix milliseconds
 globalThis.__bcrypt.hash(pw)       -> bcrypt hash   (leaf HostFn, vetted Go)
@@ -51,9 +51,15 @@ globalThis.__bcrypt.verify(pw, h)  -> bool
 globalThis.handle({ route, params, query, orgId, body }) -> { status, body }
 ```
 
-- `__db` is bound **per dispatch** to exactly one tenant's SQLite file (selected
+- `__db` is bound **per dispatch** to exactly one tenant's store (selected
   from the caller's validated org), so a route can only ever touch its own org's
   rows.
+The SQL a bundle issues is the dialect SQLite and PostgreSQL share, so one bundle
+runs on a tenant's SQLite file and on a schema of hanzo-sql: `$n` placeholders in
+the order they first appear, `INSERT ... ON CONFLICT`, `BIGINT` integers, a quoted
+`"camelCase"` alias where a column is renamed to one (PostgreSQL folds an unquoted
+name to lower case), and a text argument that is always a string. There is no
+`lastId`: PostgreSQL has none, and a bundle makes its own ids with `__newId`.
 - `__bcrypt` is a leaf-injected HostFn (bcrypt in vetted Go) — link passwords are
   **hashed, never plaintext**.
 - The per-tenant **schema** (DDL) lives in the Go leaf (`clients/dataroom/
